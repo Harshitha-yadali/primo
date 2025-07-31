@@ -139,43 +139,47 @@ function App() {
           {renderCurrentPage(isAuthenticated)}
         </>
       ) : (
-        // For other pages, show a simpler header with navigation
-        <>
-          <header className="bg-white/95 backdrop-blur-sm shadow-sm border-b border-secondary-200 sticky top-0 z-40">
-            <div className="container-responsive">
-              <div className="flex items-center justify-between h-14 sm:h-16">
-                <button
-                  onClick={() => setCurrentPage('new-home')}
-                  className="flex items-center space-x-2 sm:space-x-3 hover:opacity-80 transition-opacity"
-                >
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl overflow-hidden shadow-lg">
-                    <img
-                      src={logoImage}
-                      alt="PrimoBoost AI Logo"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div>
-                    <h1 className="text-lg sm:text-xl font-bold text-secondary-900">PrimoBoost AI</h1>
-                  </div>
-                </button>
+        currentPage === 'optimizer' ? (
+          renderCurrentPage(isAuthenticated)
+        ) : (
+          // For other pages, show a simpler header with navigation
+          <>
+            <header className="bg-white/95 backdrop-blur-sm shadow-sm border-b border-secondary-200 sticky top-0 z-40">
+              <div className="container-responsive">
+                <div className="flex items-center justify-between h-14 sm:h-16">
+                  <button
+                    onClick={() => setCurrentPage('new-home')}
+                    className="flex items-center space-x-2 sm:space-x-3 hover:opacity-80 transition-opacity"
+                  >
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl overflow-hidden shadow-lg">
+                      <img
+                        src={logoImage}
+                        alt="PrimoBoost AI Logo"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div>
+                      <h1 className="text-lg sm:text-xl font-bold text-secondary-900">PrimoBoost AI</h1>
+                    </div>
+                  </button>
 
-                <div className="hidden md:block">
-                  <Navigation currentPage={currentPage} onPageChange={setCurrentPage} />
+                  <div className="hidden md:block">
+                    <Navigation currentPage={currentPage} onPageChange={setCurrentPage} />
+                  </div>
+
+                  {/* Mobile Menu Button */}
+                  <button
+                    onClick={handleMobileMenuToggle}
+                    className="min-w-touch min-h-touch p-2 text-secondary-600 hover:text-secondary-900 hover:bg-secondary-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 md:hidden"
+                  >
+                    <Menu className="w-6 h-6" />
+                  </button>
                 </div>
-
-                {/* Mobile Menu Button */}
-                <button
-                  onClick={handleMobileMenuToggle}
-                  className="min-w-touch min-h-touch p-2 text-secondary-600 hover:text-secondary-900 hover:bg-secondary-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 md:hidden"
-                >
-                  <Menu className="w-6 h-6" />
-                </button>
               </div>
-            </div>
-          </header>
-          {renderCurrentPage(isAuthenticated)}
-        </>
+            </header>
+            {renderCurrentPage(isAuthenticated)}
+          </>
+        )
       )}
 
       {/* <MobileNavBar /> REMOVED as per instruction */}
