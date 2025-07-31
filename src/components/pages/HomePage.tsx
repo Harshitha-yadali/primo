@@ -37,10 +37,17 @@ export const HomePage: React.FC<HomePageProps> = ({
 }) => {
   // Now accepts the full feature object, simplifying the authentication check
   const handleFeatureClick = (feature: Feature) => {
+    console.log('Feature clicked:', feature.id);
+    console.log('Feature requiresAuth:', feature.requiresAuth);
+    console.log('User isAuthenticated:', isAuthenticated);
+
     if (feature.requiresAuth && !isAuthenticated) {
+      console.log('Authentication required and user is not authenticated. Calling onShowAuth().');
       onShowAuth();
       return;
     }
+
+    console.log('User is authenticated or feature does not require auth. Navigating to page.');
     onPageChange(feature.id);
   };
 
