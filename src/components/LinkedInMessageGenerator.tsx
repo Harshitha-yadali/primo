@@ -563,4 +563,4 @@ export const LinkedInMessageGenerator: React.FC<LinkedInMessageGeneratorProps> =
         </div>
       </div>
     </div>
-  );
+  )
