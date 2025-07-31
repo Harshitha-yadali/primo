@@ -48,8 +48,9 @@ function App() {
 
   // Handle showing auth modal
   const handleShowAuth = () => {
-    console.log('handleShowAuth called');
+    console.log('handleShowAuth called in App.tsx');
     setShowAuthModal(true);
+    console.log('showAuthModal set to true');
     setShowMobileMenu(false);
   };
 
@@ -276,7 +277,10 @@ function App() {
       {/* Auth Modal */}
       <AuthModal
         isOpen={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
+        onClose={() => {
+          setShowAuthModal(false);
+          console.log('AuthModal closed, showAuthModal set to false');
+        }}
         onProfileFillRequest={handleShowProfile}
       />
 
