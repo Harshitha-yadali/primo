@@ -135,7 +135,7 @@ Respond with exactly 3 messages, each on a separate line, numbered 1-3.`;
           "X-Title": "PrimoBoost AI"
         },
         body: JSON.stringify({
-          model: "google/gemini-2.5-flash",
+          model: "deepseek/deepseek-r1:free",
           messages: [
             {
               role: "user",
