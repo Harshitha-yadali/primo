@@ -13,7 +13,8 @@ import {
   Award,
   Crown,
   ChevronLeft, // Added for carousel navigation
-  ChevronRight // Added for carousel navigation
+  ChevronRight, // Added for carousel navigation
+  MessageCircle // Added for LinkedIn message generator
 } from 'lucide-react';
 
 interface HomePageProps {
@@ -80,6 +81,20 @@ export const HomePage: React.FC<HomePageProps> = ({
       features: ['Job Matching', 'Keyword Optimization', 'ATS Compatible', 'Role Specific'],
       buttonText: 'Optimize Now',
       requiresAuth: false
+    },
+    {
+      id: 'linkedin-generator',
+      title: 'LinkedIn Message Generator',
+      subtitle: 'AI-powered networking',
+      description: 'Generate personalized LinkedIn connection requests, cold outreach messages, and follow-ups that get responses.',
+      icon: <MessageCircle className="w-8 h-8" />,
+      gradient: 'from-blue-500 to-indigo-500',
+      bgGradient: 'from-blue-50 to-indigo-50',
+      borderColor: 'border-blue-200',
+      hoverShadow: 'hover:shadow-blue-200/50',
+      features: ['Connection Requests', 'Cold Outreach', 'Follow-up Messages', 'Personalized Content'],
+      buttonText: 'Generate Messages',
+      requiresAuth: true
     }
   ];
 

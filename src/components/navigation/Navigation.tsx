@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Menu, Home, Info, Phone, BookOpen, FileText, LogIn, LogOut } from 'lucide-react';
+import { X, Menu, Home, Info, Phone, BookOpen, FileText, LogIn, LogOut, MessageCircle } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 interface NavigationProps {
@@ -13,6 +13,7 @@ export const Navigation: React.FC<NavigationProps> = ({ currentPage, onPageChang
 
   const navigationItems = [
     { id: 'home', label: 'Home', icon: <Home className="w-4 h-4" /> },
+    { id: 'linkedin-generator', label: 'LinkedIn Messages', icon: <MessageCircle className="w-4 h-4" /> },
     { id: 'about', label: 'About Us', icon: <Info className="w-4 h-4" /> },
     { id: 'tutorials', label: 'Tutorials', icon: <BookOpen className="w-4 h-4" /> },
     { id: 'contact', label: 'Contact', icon: <Phone className="w-4 h-4" /> },

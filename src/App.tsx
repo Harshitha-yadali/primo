@@ -9,6 +9,7 @@ import ResumeOptimizer from './components/ResumeOptimizer';
 import { HomePage } from './components/pages/HomePage';
 import { GuidedResumeBuilder } from './components/GuidedResumeBuilder';
 import { ResumeScoreChecker } from './components/ResumeScoreChecker';
+import { LinkedInMessageGenerator } from './components/LinkedInMessageGenerator';
 import { AboutUs } from './components/pages/AboutUs';
 import { Contact } from './components/pages/Contact';
 import { Tutorials } from './components/pages/Tutorials';
@@ -104,6 +105,8 @@ function App() {
         return <Contact />;
       case 'tutorials':
         return <Tutorials />;
+      case 'linkedin-generator':
+        return <LinkedInMessageGenerator onNavigateBack={() => setCurrentPage('new-home')} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} />;
       default:
         return <HomePage onPageChange={setCurrentPage} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} />;
     }
