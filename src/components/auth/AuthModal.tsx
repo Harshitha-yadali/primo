@@ -28,6 +28,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   // Handle prompt dismissal when modal is closed while showing postSignupPrompt
   useEffect(() => {
+    console.log('AuthModal isOpen prop changed:', isOpen);
     if (!isOpen && currentView === 'postSignupPrompt') {
       onPromptDismissed();
       setCurrentView('login'); // Reset to login view for next time
@@ -73,7 +74,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
 
   // --- CONDITIONAL RETURN IS NOW AFTER ALL HOOKS ---
-  if (!isOpen) return null;
+  if (!isOpen) {
+    console.log('AuthModal is NOT open, returning null');
+    return null;
+  }
+  
+  console.log('AuthModal IS open, rendering content');
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
@@ -104,9 +110,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     // If `AuthContext.signup` automatically signs in, then `isAuthenticated` changes and the useEffect above fires.
     // If `AuthContext.signup` doesn't auto-sign in but indicates `needsVerification`,
     // then this component needs to respond by setting `currentView` to a verification message.
-    // Let's assume the AuthContext's signup already handles its side effects.
-    // This `handleSignupSuccess` prop usually means the successful *completion* of the signup process within the form.
-    // If `result.needsVerification` is true from AuthContext.signup, the `AuthModal` itself needs to transition to that view.
     // Let's adjust AuthModal's submit handlers to reflect this.
   };
 
@@ -204,7 +207,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     onClick={() => setCurrentView('login')}
                     className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-xl transition-colors"
                 >
-                    Back to Login
+                  Back to Login
                 </button>
             </form>
           )}
@@ -217,10 +220,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <h2 className="text-lg sm:text-2xl font-bold text-gray-900 mb-3">All Set!</h2>
               {/* Conditional message based on whether it's forgot password success or signup email sent */}
               {signupEmail ? (
-                 <p className="text-sm sm:text-base text-gray-600 leading-relaxed px-4">
-                   A verification email has been sent to **{signupEmail}**. Please check your inbox to activate your account.
-                 </p>
-              ) : (
+                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed px-4">
+                    A verification email has been sent to **{signupEmail}**. Please check your inbox to activate your account.
+                  </p>
+               ) : (
                 <p className="text-sm sm:text-base text-gray-600 leading-relaxed px-4">
                   Password reset email sent. Check your inbox!
                 </p>
