@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ArrowLeft,
   MessageCircle,
@@ -21,6 +21,7 @@ import {
   Briefcase
 } from 'lucide-react';
 import { generateLinkedInMessage } from '../services/linkedinService';
+import { useAuth } from '../../contexts/AuthContext';
 
 interface LinkedInMessageGeneratorProps {
   onNavigateBack: () => void;
@@ -51,6 +52,7 @@ export const LinkedInMessageGenerator: React.FC<LinkedInMessageGeneratorProps> =
   isAuthenticated,
   onShowAuth
 }) => {
+  const { user } = useAuth();
   const [formData, setFormData] = useState<MessageForm>({
     messageType: 'connection',
     recipientFirstName: '',
@@ -70,6 +72,13 @@ export const LinkedInMessageGenerator: React.FC<LinkedInMessageGeneratorProps> =
   const [isGenerating, setIsGenerating] = useState(false);
   const [copySuccess, setCopySuccess] = useState<number | null>(null);
   const [currentStep, setCurrentStep] = useState(0);
+
+  // Automatically set the sender's name from the authenticated user's data
+  useEffect(() => {
+    if (user?.name) {
+      setFormData(prev => ({ ...prev, senderName: user.name }));
+    }
+  }, [user]);
 
   const messageTypes = [
     {
@@ -131,7 +140,7 @@ export const LinkedInMessageGenerator: React.FC<LinkedInMessageGeneratorProps> =
 
   const handleCopyMessage = async (message: string, index: number) => {
     try {
-      await navigator.clipboard.writeText(message);
+      document.execCommand('copy');
       setCopySuccess(index);
       setTimeout(() => setCopySuccess(null), 2000);
     } catch (err) {
@@ -242,58 +251,6 @@ export const LinkedInMessageGenerator: React.FC<LinkedInMessageGeneratorProps> =
                 value={formData.industry}
                 onChange={(e) => handleInputChange('industry', e.target.value)}
                 placeholder="Technology, Healthcare, Finance, etc."
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-          </div>
-        </div>
-      )
-    },
-    {
-      title: 'Your Details',
-      component: (
-        <div className="space-y-6">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Your Information</h2>
-            <p className="text-gray-600">Tell us about yourself for personalization</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Your Name *
-              </label>
-              <input
-                type="text"
-                value={formData.senderName}
-                onChange={(e) => handleInputChange('senderName', e.target.value)}
-                placeholder="Your full name"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Your Company
-              </label>
-              <input
-                type="text"
-                value={formData.senderCompany}
-                onChange={(e) => handleInputChange('senderCompany', e.target.value)}
-                placeholder="Your company name"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Your Role *
-              </label>
-              <input
-                type="text"
-                value={formData.senderRole}
-                onChange={(e) => handleInputChange('senderRole', e.target.value)}
-                placeholder="Your job title or role"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
@@ -606,5 +563,4 @@ export const LinkedInMessageGenerator: React.FC<LinkedInMessageGeneratorProps> =
         </div>
       </div>
     </div>
-  );
-};
+  );
