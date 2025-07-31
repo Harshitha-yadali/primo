@@ -1,3 +1,4 @@
+// src/components/LinkedInMessageGenerator.tsx
 import React, { useState, useEffect } from 'react';
 import {
   ArrowLeft,
@@ -39,8 +40,8 @@ interface MessageForm {
   recipientCompany: string;
   recipientJobTitle: string;
   senderName: string;
-  senderCompany: string;
-  senderRole: string;
+  // senderCompany: string; // Removed
+  // senderRole: string; // Removed
   messagePurpose: string;
   tone: MessageTone;
   personalizedContext: string;
@@ -60,8 +61,8 @@ export const LinkedInMessageGenerator: React.FC<LinkedInMessageGeneratorProps> =
     recipientCompany: '',
     recipientJobTitle: '',
     senderName: '',
-    senderCompany: '',
-    senderRole: '',
+    // senderCompany: '', // Removed
+    // senderRole: '', // Removed
     messagePurpose: '',
     tone: 'professional',
     personalizedContext: '',
@@ -71,7 +72,7 @@ export const LinkedInMessageGenerator: React.FC<LinkedInMessageGeneratorProps> =
   const [generatedMessages, setGeneratedMessages] = useState<string[]>([]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [copySuccess, setCopySuccess] = useState<number | null>(null);
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0); // Start from 0, as "Message Type" is now the first step
 
   // Automatically set the sender's name from the authenticated user's data
   useEffect(() => {
@@ -140,11 +141,12 @@ export const LinkedInMessageGenerator: React.FC<LinkedInMessageGeneratorProps> =
 
   const handleCopyMessage = async (message: string, index: number) => {
     try {
-      document.execCommand('copy');
+      await navigator.clipboard.writeText(message); // Use modern clipboard API
       setCopySuccess(index);
       setTimeout(() => setCopySuccess(null), 2000);
     } catch (err) {
       console.error('Failed to copy message:', err);
+      // Fallback for older browsers if needed, but navigator.clipboard is widely supported
     }
   };
 
@@ -157,7 +159,7 @@ export const LinkedInMessageGenerator: React.FC<LinkedInMessageGeneratorProps> =
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Choose Message Type</h2>
             <p className="text-gray-600">Select the type of LinkedIn message you want to generate</p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {messageTypes.map((type) => (
               <button
@@ -439,7 +441,7 @@ export const LinkedInMessageGenerator: React.FC<LinkedInMessageGeneratorProps> =
                       className="flex items-center space-x-2 px-6 py-3 rounded-xl font-semibold transition-all duration-300 bg-blue-600 hover:bg-blue-700 text-white shadow-lg hover:shadow-xl"
                     >
                       <span>Next</span>
-                      <ArrowLeft className="w-5 h-5 rotate-180" />
+                      <ArrowRight className="w-5 h-5" />
                     </button>
                   ) : (
                     <button
@@ -471,26 +473,25 @@ export const LinkedInMessageGenerator: React.FC<LinkedInMessageGeneratorProps> =
             /* Generated Messages */
             <div className="space-y-8">
               {/* Results Header */}
-              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200">
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center">
-                    <div className="bg-green-100 w-12 h-12 rounded-full flex items-center justify-center mr-4">
-                      <CheckCircle className="w-6 h-6 text-green-600" />
-                    </div>
-                    <div>
-                      <h2 className="text-xl font-bold text-gray-900">Messages Generated!</h2>
-                      <p className="text-gray-600">Choose the message that best fits your style</p>
-                    </div>
+              <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-200 overflow-hidden">
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 border-b border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-gray-900">
+                      Messages Generated!
+                    </h3>
+                    <button
+                      onClick={() => {
+                        setGeneratedMessages([]);
+                        setCurrentStep(0);
+                      }}
+                      className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                    >
+                      Generate New
+                    </button>
                   </div>
-                  <button
-                    onClick={() => {
-                      setGeneratedMessages([]);
-                      setCurrentStep(0);
-                    }}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
-                  >
-                    Generate New
-                  </button>
+                </div>
+                <div className="p-6">
+                  <p className="text-gray-600">Choose the message that best fits your style</p>
                 </div>
               </div>
 
@@ -563,4 +564,5 @@ export const LinkedInMessageGenerator: React.FC<LinkedInMessageGeneratorProps> =
         </div>
       </div>
     </div>
-  );
+  );
+};
