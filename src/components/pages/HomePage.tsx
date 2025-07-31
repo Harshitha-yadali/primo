@@ -15,6 +15,15 @@ import {
   MessageCircle
 } from 'lucide-react';
 
+// Define the type for a feature object for clarity and type-safety
+interface Feature {
+  id: string;
+  title: string;
+  description: string;
+  icon: JSX.Element;
+  requiresAuth: boolean;
+}
+
 interface HomePageProps {
   onPageChange: (page: string) => void;
   isAuthenticated: boolean;
@@ -26,16 +35,16 @@ export const HomePage: React.FC<HomePageProps> = ({
   isAuthenticated,
   onShowAuth
 }) => {
-  // Removed carousel state and functions as they are no longer needed
-  const handleFeatureClick = (feature: string) => {
-    if (!isAuthenticated && (feature === 'guided-builder' || feature === 'score-checker' || feature === 'linkedin-generator')) {
+  // Now accepts the full feature object, simplifying the authentication check
+  const handleFeatureClick = (feature: Feature) => {
+    if (feature.requiresAuth && !isAuthenticated) {
       onShowAuth();
       return;
     }
-    onPageChange(feature);
+    onPageChange(feature.id);
   };
 
-  const features = [
+  const features: Feature[] = [
     {
       id: 'score-checker',
       title: 'Resume Score Check',
@@ -147,7 +156,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               {features.map((feature) => (
                 <button
                   key={feature.id}
-                  onClick={() => handleFeatureClick(feature.id)}
+                  onClick={() => handleFeatureClick(feature)} // Pass the full feature object
                   className="w-full flex items-center justify-between p-4 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 font-semibold transition-all duration-200 hover:bg-gray-100 hover:border-blue-500 group"
                   disabled={feature.requiresAuth && !isAuthenticated}
                 >
@@ -231,13 +240,13 @@ export const HomePage: React.FC<HomePageProps> = ({
             ) : (
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button
-                  onClick={() => handleFeatureClick('guided-builder')}
+                  onClick={() => handleFeatureClick(features[1])} // Pass the full feature object
                   className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl"
                 >
                   Build New Resume
                 </button>
                 <button
-                  onClick={() => handleFeatureClick('optimizer')}
+                  onClick={() => handleFeatureClick(features[2])} // Pass the full feature object
                   className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl"
                 >
                   Optimize Existing
