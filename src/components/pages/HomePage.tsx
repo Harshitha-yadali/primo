@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'; // Import useRef and useState
+import React from 'react';
 import {
   FileText,
   PlusCircle,
@@ -12,8 +12,7 @@ import {
   Zap,
   Award,
   Crown,
-  ChevronLeft, // Added for carousel navigation
-  ChevronRight // Added for carousel navigation
+  MessageCircle
 } from 'lucide-react';
 
 interface HomePageProps {
@@ -27,11 +26,9 @@ export const HomePage: React.FC<HomePageProps> = ({
   isAuthenticated,
   onShowAuth
 }) => {
-  const [currentSlide, setCurrentSlide] = useState(0); // State to track active slide
-  const carouselRef = useRef<HTMLDivElement>(null); // Ref for the carousel container
-
+  // Removed carousel state and functions as they are no longer needed
   const handleFeatureClick = (feature: string) => {
-    if (!isAuthenticated && (feature === 'guided-builder' || feature === 'score-checker')) {
+    if (!isAuthenticated && (feature === 'guided-builder' || feature === 'score-checker' || feature === 'linkedin-generator')) {
       onShowAuth();
       return;
     }
@@ -42,44 +39,30 @@ export const HomePage: React.FC<HomePageProps> = ({
     {
       id: 'score-checker',
       title: 'Resume Score Check',
-      subtitle: 'Get instant feedback',
-      description: 'Upload your existing resume and get an instant ATS score with detailed analysis and improvement suggestions.',
-      icon: <TrendingUp className="w-8 h-8" />,
-      gradient: 'from-blue-500 to-cyan-500',
-      bgGradient: 'from-blue-50 to-cyan-50',
-      borderColor: 'border-blue-200',
-      hoverShadow: 'hover:shadow-blue-200/50',
-      features: ['ATS Score Analysis', 'Improvement Tips', 'Keyword Check', 'Instant Results'],
-      buttonText: 'Check My Resume',
+      description: 'Get an instant ATS score with detailed analysis and improvement suggestions.',
+      icon: <TrendingUp className="w-6 h-6" />,
       requiresAuth: true
     },
     {
       id: 'guided-builder',
-      title: 'Build New Resume',
-      subtitle: 'From scratch to perfect',
-      description: 'Create a professional resume from scratch with our step-by-step guided builder. Perfect for freshers and students.',
-      icon: <PlusCircle className="w-8 h-8" />,
-      gradient: 'from-green-500 to-emerald-500',
-      bgGradient: 'from-green-50 to-emerald-50',
-      borderColor: 'border-green-200',
-      hoverShadow: 'hover:shadow-green-200/50',
-      features: ['Step-by-Step Guide', 'Multiple Templates', 'AI Enhancement', 'Download Ready'],
-      buttonText: 'Start Building',
+      title: 'Guided Resume Builder',
+      description: 'Create a professional resume from scratch with our step-by-step AI-powered builder.',
+      icon: <PlusCircle className="w-6 h-6" />,
       requiresAuth: true
     },
     {
       id: 'optimizer',
       title: 'JD-Based Optimizer',
-      subtitle: 'Job-specific optimization',
-      description: 'Upload your resume and job description to get a perfectly tailored resume that matches the role requirements.',
-      icon: <Target className="w-8 h-8" />,
-      gradient: 'from-purple-500 to-pink-500',
-      bgGradient: 'from-purple-50 to-pink-50',
-      borderColor: 'border-purple-200',
-      hoverShadow: 'hover:shadow-purple-200/50',
-      features: ['Job Matching', 'Keyword Optimization', 'ATS Compatible', 'Role Specific'],
-      buttonText: 'Optimize Now',
+      description: 'Upload your resume and a job description to get a perfectly tailored resume.',
+      icon: <Target className="w-6 h-6" />,
       requiresAuth: false
+    },
+    {
+      id: 'linkedin-generator',
+      title: 'LinkedIn Message Generator',
+      description: 'Generate personalized messages for connection requests and cold outreach.',
+      icon: <MessageCircle className="w-6 h-6" />,
+      requiresAuth: true
     }
   ];
 
@@ -90,30 +73,8 @@ export const HomePage: React.FC<HomePageProps> = ({
     { number: '24/7', label: 'AI Support', icon: <Sparkles className="w-5 h-5" /> }
   ];
 
-  // Carousel Navigation Functions
-  const scrollToSlide = (index: number) => {
-    if (carouselRef.current) {
-      const slideWidth = carouselRef.current.children[0].clientWidth; // Get width of first card
-      carouselRef.current.scrollTo({
-        left: index * slideWidth,
-        behavior: 'smooth',
-      });
-      setCurrentSlide(index);
-    }
-  };
-
-  const nextSlide = () => {
-    const nextIndex = (currentSlide + 1) % features.length;
-    scrollToSlide(nextIndex);
-  };
-
-  const prevSlide = () => {
-    const prevIndex = (currentSlide - 1 + features.length) % features.length;
-    scrollToSlide(prevIndex);
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 font-inter">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5"></div>
@@ -173,128 +134,36 @@ export const HomePage: React.FC<HomePageProps> = ({
         </div>
       </div>
 
-      {/* Main Features Section */}
+      {/* Main Features Section - Now with a consolidated frame */}
       <div className="container-responsive py-12 sm:py-16">
         <div className="text-center mb-12">
           <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
             Choose Your Resume Journey
           </h3>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Three powerful ways to create the perfect resume that gets you hired
-          </p>
         </div>
-
-        {/* Feature Cards Carousel Wrapper */}
-        <div className="relative max-w-7xl mx-auto">
-          {/* Navigation Arrows (Mobile Only) */}
-          <button
-            onClick={prevSlide}
-            className="absolute left-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-md z-10 md:hidden"
-            aria-label="Previous slide"
-          >
-            <ChevronLeft className="w-6 h-6 text-gray-700" />
-          </button>
-          <button
-            onClick={nextSlide}
-            className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-md z-10 md:hidden"
-            aria-label="Next slide"
-          >
-            <ChevronRight className="w-6 h-6 text-gray-700" />
-          </button>
-
-          {/* Feature Cards Container - Now a horizontally scrollable flex container on mobile */}
-          <div
-            ref={carouselRef} // Attach ref to the carousel container
-            className="flex overflow-x-scroll snap-x snap-mandatory scroll-smooth pb-4 md:grid md:grid-cols-3 md:gap-6 lg:gap-8"
-            // hide scrollbar for aesthetic, but keep functionality
-            style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-          >
-            {features.map((feature, index) => (
-              <div
-                key={feature.id}
-                className={`group relative bg-gradient-to-br ${feature.bgGradient} rounded-3xl p-6 sm:p-8 border-2 ${feature.borderColor} shadow-xl hover:shadow-2xl ${feature.hoverShadow} transition-all duration-500 hover:scale-105 hover:-translate-y-2 overflow-hidden
-                         flex-shrink-0 w-full snap-center md:w-auto`} // Added mobile carousel classes
-              >
-                {/* Background Pattern */}
-                <div className="absolute inset-0 opacity-5">
-                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-                </div>
-
-                {/* Popular Badge for Middle Card */}
-                {index === 1 && (
-                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-1 rounded-full text-xs font-bold shadow-lg flex items-center">
-                      <Crown className="w-3 h-3 mr-1" />
-                      Most Popular
-                    </span>
+        <div className="max-w-3xl mx-auto">
+          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
+            <div className="flex flex-col space-y-4">
+              {features.map((feature) => (
+                <button
+                  key={feature.id}
+                  onClick={() => handleFeatureClick(feature.id)}
+                  className="w-full flex items-center justify-between p-4 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 font-semibold transition-all duration-200 hover:bg-gray-100 hover:border-blue-500 group"
+                  disabled={feature.requiresAuth && !isAuthenticated}
+                >
+                  <div className="flex items-center space-x-4">
+                    <div className="bg-gray-200 rounded-full p-2 group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                      {feature.icon}
+                    </div>
+                    <div>
+                      <span className="text-base font-bold text-gray-900">{feature.title}</span>
+                      <p className="text-sm text-gray-600 font-normal">{feature.description}</p>
+                    </div>
                   </div>
-                )}
-
-                <div className="relative z-10 flex flex-col h-full"> {/* Added flex-col h-full for consistent card height */}
-                  {/* Icon */}
-                  <div className={`bg-gradient-to-r ${feature.gradient} w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                    {feature.icon}
-                  </div>
-
-                  {/* Content */}
-                  <div className="mb-6 flex-grow"> {/* flex-grow to push button to bottom */}
-                    <h4 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                      {feature.title}
-                    </h4>
-                    <p className="text-sm font-medium text-gray-600 mb-3">
-                      {feature.subtitle}
-                    </p>
-                    <p className="text-gray-700 leading-relaxed mb-6">
-                      {feature.description}
-                    </p>
-
-                    {/* Features List */}
-                    <ul className="space-y-2 mb-6">
-                      {feature.features.map((item, itemIndex) => (
-                        <li key={itemIndex} className="flex items-center text-sm text-gray-700">
-                          <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                          <span>{item}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-
-                  {/* Action Button */}
-                  <button
-                    onClick={() => handleFeatureClick(feature.id)}
-                    className={`w-full bg-gradient-to-r ${feature.gradient} hover:shadow-xl text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center space-x-2 group-hover:scale-105 transform shadow-lg mt-auto`} // mt-auto pushes button to bottom
-                  >
-                    <span>{feature.buttonText}</span>
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-                  </button>
-
-                  {/* Auth Warning */}
-                  {feature.requiresAuth && !isAuthenticated && (
-                    <p className="text-xs text-gray-500 mt-3 text-center">
-                      Sign in required to access this feature
-                    </p>
-                  )}
-                </div>
-
-                {/* Animated Background Elements */}
-                <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-xl group-hover:scale-150 transition-transform duration-700"></div>
-                <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-tr from-white/10 to-transparent rounded-full blur-lg group-hover:scale-125 transition-transform duration-500"></div>
-              </div>
-            ))}
-          </div>
-
-          {/* Pagination Dots (Mobile Only) */}
-          <div className="flex justify-center items-center mt-6 space-x-2 md:hidden">
-            {features.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => scrollToSlide(index)}
-                className={`w-3 h-3 rounded-full transition-colors duration-300 ${
-                  index === currentSlide ? 'bg-blue-600' : 'bg-gray-300 hover:bg-gray-400'
-                }`}
-                aria-label={`Go to slide ${index + 1}`}
-              ></button>
-            ))}
+                  <ArrowRight className={`w-5 h-5 text-gray-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all ${feature.requiresAuth && !isAuthenticated ? 'opacity-50' : ''}`} />
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
