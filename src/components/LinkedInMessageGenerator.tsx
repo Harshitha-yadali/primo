@@ -19,6 +19,7 @@ import {
   Sparkles,
   Zap,
   Heart,
+  ArrowRight,
   Briefcase
 } from 'lucide-react';
 import { generateLinkedInMessage } from '../services/linkedinService';
