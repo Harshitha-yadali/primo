@@ -26,28 +26,40 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, userTy
   }>({ type: null, status: null, message: '' });
 
   const handleExportPDF = async () => {
-    if (isExportingPDF || isExportingWord) return; // Prevent double clicks
-    setShowExportOptionsModal(true); // Open modal for options before PDF export
+    // Prevent double clicks if an export is already in progress
+    if (isExportingPDF || isExportingWord) return;
+    
+    // Open the modal for PDF export options
+    setShowExportOptionsModal(true);
+    
+    // Debugging: Log the state change immediately after setting it
+    console.log('showExportOptionsModal state after click:', true); 
   };
 
   const handleExportWithCustomOptions = async (options: ExportOptions) => {
+    // Close the options modal
     setShowExportOptionsModal(false);
+    // Set PDF exporting status to true
     setIsExportingPDF(true);
-    setExportStatus({ type: null, status: null, message: '' }); // Clear previous status
+    // Clear any previous export status messages
+    setExportStatus({ type: null, status: null, message: '' }); 
     
     try {
+      // Call the utility function to export the resume to PDF with custom options
       await exportToPDF(resumeData, userType, options);
+      // Set success status
       setExportStatus({
         type: 'pdf',
         status: 'success',
         message: 'PDF exported successfully!'
       });
       
-      // Clear success message after 3 seconds
+      // Clear success message after 3 seconds for user feedback
       setTimeout(() => {
         setExportStatus({ type: null, status: null, message: '' });
       }, 3000);
     } catch (error) {
+      // Log and set error status if PDF export fails
       console.error('PDF export failed:', error);
       setExportStatus({
         type: 'pdf',
@@ -60,18 +72,24 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, userTy
         setExportStatus({ type: null, status: null, message: '' });
       }, 5000);
     } finally {
+      // Reset PDF exporting status
       setIsExportingPDF(false);
     }
   };
 
   const handleExportWord = async () => {
-    if (isExportingWord || isExportingPDF) return; // Prevent double clicks
+    // Prevent double clicks if an export is already in progress
+    if (isExportingWord || isExportingPDF) return; 
     
+    // Set Word exporting status to true
     setIsExportingWord(true);
-    setExportStatus({ type: null, status: null, message: '' }); // Clear previous status
+    // Clear any previous export status messages
+    setExportStatus({ type: null, status: null, message: '' }); 
     
     try {
-      exportToWord(resumeData, userType); // exportToWord does not take options in your current setup
+      // Call the utility function to export the resume to Word (does not take options)
+      exportToWord(resumeData, userType); 
+      // Set success status
       setExportStatus({
         type: 'word',
         status: 'success',
@@ -83,6 +101,7 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, userTy
         setExportStatus({ type: null, status: null, message: '' });
       }, 3000);
     } catch (error) {
+      // Log and set error status if Word export fails
       console.error('Word export failed:', error);
       setExportStatus({
         type: 'word',
@@ -95,6 +114,7 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, userTy
         setExportStatus({ type: null, status: null, message: '' });
       }, 5000);
     } finally {
+      // Reset Word exporting status
       setIsExportingWord(false);
     }
   };
@@ -123,9 +143,9 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, userTy
         // Ideally, you'd get the actual file blob/URL here and pass it to share
         // Example: const file = new File([blob], 'resume.pdf', { type: 'application/pdf' });
         // navigator.share({
-        //   files: [file],
-        //   title: 'My Resume',
-        //   text: 'Check out my optimized resume!'
+        //    files: [file],
+        //    title: 'My Resume',
+        //    text: 'Check out my optimized resume!'
         // });
         setExportStatus({
           type,
@@ -148,6 +168,11 @@ export const ExportButtons: React.FC<ExportButtonsProps> = ({ resumeData, userTy
       });
     }
   };
+
+  // Expose state variables globally for debugging purposes
+  // This allows checking their values directly in the browser's developer console
+  (window as any).isExportingPDF = isExportingPDF;
+  (window as any).isExportingWord = isExportingWord;
 
   return (
     <div className="card p-4 sm:p-6">
