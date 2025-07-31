@@ -1,4 +1,3 @@
-// App.tsx
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Home, Info, BookOpen, Phone, FileText, LogIn, LogOut, User, Wallet } from 'lucide-react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
@@ -73,6 +72,11 @@ function App() {
     }, 3000);
   };
 
+  // New function to navigate back to the home page
+  const handleNavigateHome = () => {
+    setCurrentPage('new-home');
+  };
+
   // Close mobile menu on window resize
   useEffect(() => {
     const handleResize = () => {
@@ -96,7 +100,7 @@ function App() {
       case 'optimizer':
         return (
           <main className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
-            <ResumeOptimizer isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} onShowProfile={handleShowProfile} />
+            <ResumeOptimizer isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} onShowProfile={handleShowProfile} onNavigateBack={handleNavigateHome} />
           </main>
         );
       case 'about':
