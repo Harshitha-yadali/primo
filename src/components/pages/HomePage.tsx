@@ -164,8 +164,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <button
                   key={feature.id}
                   onClick={() => handleFeatureClick(feature)} // Pass the full feature object
-                  className="w-full flex items-center justify-between p-4 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 font-semibold transition-all duration-200 hover:bg-gray-100 hover:border-blue-500 group"
-                  disabled={feature.requiresAuth && !isAuthenticated}
+                  className={`w-full flex items-center justify-between p-4 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 font-semibold transition-all duration-200 hover:bg-gray-100 hover:border-blue-500 group ${feature.requiresAuth && !isAuthenticated ? 'opacity-70 cursor-pointer' : ''}`}
                 >
                   <div className="flex items-center space-x-4">
                     <div className="bg-gray-200 rounded-full p-2 group-hover:bg-blue-500 group-hover:text-white transition-colors">
