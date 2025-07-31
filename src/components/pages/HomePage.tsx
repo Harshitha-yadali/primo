@@ -141,7 +141,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             Choose Your Resume Journey
           </h3>
         </div>
-        <div className="max-w-3xl mx-auto">
+        <div className="">
           <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
             <div className="flex flex-col space-y-4">
               {features.map((feature) => (
