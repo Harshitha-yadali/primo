@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react'; // Import useRef and useState
 import {
   FileText,
   PlusCircle,
@@ -12,7 +12,8 @@ import {
   Zap,
   Award,
   Crown,
-  MessageCircle // Added for LinkedIn message generator
+  ChevronLeft, // Added for carousel navigation
+  ChevronRight // Added for carousel navigation
 } from 'lucide-react';
 
 interface HomePageProps {
@@ -26,7 +27,8 @@ export const HomePage: React.FC<HomePageProps> = ({
   isAuthenticated,
   onShowAuth
 }) => {
-  // Removed currentSlide state and carouselRef useRef hook as carousel is removed
+  const [currentSlide, setCurrentSlide] = useState(0); // State to track active slide
+  const carouselRef = useRef<HTMLDivElement>(null); // Ref for the carousel container
 
   const handleFeatureClick = (feature: string) => {
     if (!isAuthenticated && (feature === 'guided-builder' || feature === 'score-checker')) {
@@ -78,20 +80,6 @@ export const HomePage: React.FC<HomePageProps> = ({
       features: ['Job Matching', 'Keyword Optimization', 'ATS Compatible', 'Role Specific'],
       buttonText: 'Optimize Now',
       requiresAuth: false
-    },
-    {
-      id: 'linkedin-generator',
-      title: 'LinkedIn Message Generator',
-      subtitle: 'AI-powered networking',
-      description: 'Generate personalized LinkedIn connection requests, cold outreach messages, and follow-ups that get responses.',
-      icon: <MessageCircle className="w-8 h-8" />,
-      gradient: 'from-blue-500 to-indigo-500',
-      bgGradient: 'from-blue-50 to-indigo-50',
-      borderColor: 'border-blue-200',
-      hoverShadow: 'hover:shadow-blue-200/50',
-      features: ['Connection Requests', 'Cold Outreach', 'Follow-up Messages', 'Personalized Content'],
-      buttonText: 'Generate Messages',
-      requiresAuth: true
     }
   ];
 
@@ -102,7 +90,27 @@ export const HomePage: React.FC<HomePageProps> = ({
     { number: '24/7', label: 'AI Support', icon: <Sparkles className="w-5 h-5" /> }
   ];
 
-  // Removed Carousel Navigation Functions (scrollToSlide, nextSlide, prevSlide)
+  // Carousel Navigation Functions
+  const scrollToSlide = (index: number) => {
+    if (carouselRef.current) {
+      const slideWidth = carouselRef.current.children[0].clientWidth; // Get width of first card
+      carouselRef.current.scrollTo({
+        left: index * slideWidth,
+        behavior: 'smooth',
+      });
+      setCurrentSlide(index);
+    }
+  };
+
+  const nextSlide = () => {
+    const nextIndex = (currentSlide + 1) % features.length;
+    scrollToSlide(nextIndex);
+  };
+
+  const prevSlide = () => {
+    const prevIndex = (currentSlide - 1 + features.length) % features.length;
+    scrollToSlide(prevIndex);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
@@ -176,86 +184,119 @@ export const HomePage: React.FC<HomePageProps> = ({
           </p>
         </div>
 
-        {/* Feature Cards Container - Now a responsive grid */}
-        <div
-          // Removed ref={carouselRef}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8" // Updated for responsive grid
-        >
-          {features.map((feature, index) => (
-            <div
-              key={feature.id}
-              className={`group relative bg-gradient-to-br ${feature.bgGradient} rounded-3xl p-6 sm:p-8 border-2 ${feature.borderColor} shadow-xl hover:shadow-2xl ${feature.hoverShadow} transition-all duration-500 hover:scale-105 hover:-translate-y-2 overflow-hidden
-                flex flex-col`} // Removed carousel-specific classes, added flex flex-col for consistent height
-            >
-              {/* Background Pattern */}
-              <div className="absolute inset-0 opacity-5">
-                <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
-              </div>
+        {/* Feature Cards Carousel Wrapper */}
+        <div className="relative max-w-7xl mx-auto">
+          {/* Navigation Arrows (Mobile Only) */}
+          <button
+            onClick={prevSlide}
+            className="absolute left-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-md z-10 md:hidden"
+            aria-label="Previous slide"
+          >
+            <ChevronLeft className="w-6 h-6 text-gray-700" />
+          </button>
+          <button
+            onClick={nextSlide}
+            className="absolute right-0 top-1/2 -translate-y-1/2 bg-white rounded-full p-2 shadow-md z-10 md:hidden"
+            aria-label="Next slide"
+          >
+            <ChevronRight className="w-6 h-6 text-gray-700" />
+          </button>
 
-              {/* Popular Badge for Middle Card */}
-              {index === 1 && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-1 rounded-full text-xs font-bold shadow-lg flex items-center">
-                    <Crown className="w-3 h-3 mr-1" />
-                    Most Popular
-                  </span>
-                </div>
-              )}
-
-              <div className="relative z-10 flex flex-col h-full"> {/* Added flex-col h-full for consistent card height */}
-                {/* Icon */}
-                <div className={`bg-gradient-to-r ${feature.gradient} w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                  {feature.icon}
-                </div>
-
-                {/* Content */}
-                <div className="mb-6 flex-grow"> {/* flex-grow to push button to bottom */}
-                  <h4 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
-                    {feature.title}
-                  </h4>
-                  <p className="text-sm font-medium text-gray-600 mb-3">
-                    {feature.subtitle}
-                  </p>
-                  <p className="text-gray-700 leading-relaxed mb-6">
-                    {feature.description}
-                  </p>
-
-                  {/* Features List */}
-                  <ul className="space-y-2 mb-6">
-                    {feature.features.map((item, itemIndex) => (
-                      <li key={itemIndex} className="flex items-center text-sm text-gray-700">
-                        <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
+          {/* Feature Cards Container - Now a horizontally scrollable flex container on mobile */}
+          <div
+            ref={carouselRef} // Attach ref to the carousel container
+            className="flex overflow-x-scroll snap-x snap-mandatory scroll-smooth pb-4 md:grid md:grid-cols-3 md:gap-6 lg:gap-8"
+            // hide scrollbar for aesthetic, but keep functionality
+            style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {features.map((feature, index) => (
+              <div
+                key={feature.id}
+                className={`group relative bg-gradient-to-br ${feature.bgGradient} rounded-3xl p-6 sm:p-8 border-2 ${feature.borderColor} shadow-xl hover:shadow-2xl ${feature.hoverShadow} transition-all duration-500 hover:scale-105 hover:-translate-y-2 overflow-hidden
+                         flex-shrink-0 w-full snap-center md:w-auto`} // Added mobile carousel classes
+              >
+                {/* Background Pattern */}
+                <div className="absolute inset-0 opacity-5">
+                  <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent"></div>
                 </div>
 
-                {/* Action Button */}
-                <button
-                  onClick={() => handleFeatureClick(feature.id)}
-                  className={`w-full bg-gradient-to-r ${feature.gradient} hover:shadow-xl text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center space-x-2 group-hover:scale-105 transform shadow-lg mt-auto`} // mt-auto pushes button to bottom
-                >
-                  <span>{feature.buttonText}</span>
-                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-                </button>
-
-                {/* Auth Warning */}
-                {feature.requiresAuth && !isAuthenticated && (
-                  <p className="text-xs text-gray-500 mt-3 text-center">
-                    Sign in required to access this feature
-                  </p>
+                {/* Popular Badge for Middle Card */}
+                {index === 1 && (
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                    <span className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-1 rounded-full text-xs font-bold shadow-lg flex items-center">
+                      <Crown className="w-3 h-3 mr-1" />
+                      Most Popular
+                    </span>
+                  </div>
                 )}
+
+                <div className="relative z-10 flex flex-col h-full"> {/* Added flex-col h-full for consistent card height */}
+                  {/* Icon */}
+                  <div className={`bg-gradient-to-r ${feature.gradient} w-16 h-16 sm:w-20 sm:h-20 rounded-2xl flex items-center justify-center text-white mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                    {feature.icon}
+                  </div>
+
+                  {/* Content */}
+                  <div className="mb-6 flex-grow"> {/* flex-grow to push button to bottom */}
+                    <h4 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+                      {feature.title}
+                    </h4>
+                    <p className="text-sm font-medium text-gray-600 mb-3">
+                      {feature.subtitle}
+                    </p>
+                    <p className="text-gray-700 leading-relaxed mb-6">
+                      {feature.description}
+                    </p>
+
+                    {/* Features List */}
+                    <ul className="space-y-2 mb-6">
+                      {feature.features.map((item, itemIndex) => (
+                        <li key={itemIndex} className="flex items-center text-sm text-gray-700">
+                          <CheckCircle className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Action Button */}
+                  <button
+                    onClick={() => handleFeatureClick(feature.id)}
+                    className={`w-full bg-gradient-to-r ${feature.gradient} hover:shadow-xl text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 flex items-center justify-center space-x-2 group-hover:scale-105 transform shadow-lg mt-auto`} // mt-auto pushes button to bottom
+                  >
+                    <span>{feature.buttonText}</span>
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
+                  </button>
+
+                  {/* Auth Warning */}
+                  {feature.requiresAuth && !isAuthenticated && (
+                    <p className="text-xs text-gray-500 mt-3 text-center">
+                      Sign in required to access this feature
+                    </p>
+                  )}
+                </div>
+
+                {/* Animated Background Elements */}
+                <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-xl group-hover:scale-150 transition-transform duration-700"></div>
+                <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-tr from-white/10 to-transparent rounded-full blur-lg group-hover:scale-125 transition-transform duration-500"></div>
               </div>
+            ))}
+          </div>
 
-              {/* Animated Background Elements */}
-              <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-white/20 to-transparent rounded-full blur-xl group-hover:scale-150 transition-transform duration-700"></div>
-              <div className="absolute -bottom-4 -left-4 w-16 h-16 bg-gradient-to-tr from-white/10 to-transparent rounded-full blur-lg group-hover:scale-125 transition-transform duration-500"></div>
-            </div>
-          ))}
+          {/* Pagination Dots (Mobile Only) */}
+          <div className="flex justify-center items-center mt-6 space-x-2 md:hidden">
+            {features.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => scrollToSlide(index)}
+                className={`w-3 h-3 rounded-full transition-colors duration-300 ${
+                  index === currentSlide ? 'bg-blue-600' : 'bg-gray-300 hover:bg-gray-400'
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              ></button>
+            ))}
+          </div>
         </div>
-
-        {/* Removed Pagination Dots */}
       </div>
 
       {/* Additional Features Teaser */}
