@@ -22,7 +22,7 @@ import {
   Briefcase
 } from 'lucide-react';
 import { generateLinkedInMessage } from '../services/linkedinService';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from "../contexts/AuthContext";
 
 interface LinkedInMessageGeneratorProps {
   onNavigateBack: () => void;
