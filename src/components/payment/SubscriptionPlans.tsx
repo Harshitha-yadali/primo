@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Check, Star, Zap, Crown, Clock, X, Tag, Sparkles, ArrowRight, Info, ChevronLeft, ChevronRight, Timer, Target, Rocket, Briefcase, Infinity, CheckCircle, AlertCircle } from 'lucide-react';
+import { Check, Star, Zap, Crown, Clock, X, Tag, Sparkles, ArrowRight, Info, ChevronLeft, ChevronRight, Timer, Target, Rocket, Briefcase, Infinity, CheckCircle, AlertCircle, Wrench, Gift, Plus } from 'lucide-react';
 import { SubscriptionPlan } from '../../types/payment';
 import { paymentService } from '../../services/paymentService';
 import { supabase } from '../../lib/supabaseClient';
@@ -30,8 +30,11 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
   const [walletBalance, setWalletBalance] = useState<number>(0);
   const [useWalletBalance, setUseWalletBalance] = useState<boolean>(false);
   const [loadingWallet, setLoadingWallet] = useState<boolean>(true);
+  const [showAddOns, setShowAddOns] = useState<boolean>(false);
+  const [selectedAddOns, setSelectedAddOns] = useState<{[key: string]: number}>({});
 
   const plans = paymentService.getPlans();
+  const addOns = paymentService.getAddOns();
 
   // Set initial selected plan to the current slide
   useEffect(() => {
@@ -76,9 +79,13 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
 
   const getPlanIcon = (iconType: string) => {
     switch (iconType) {
-      case 'timer': return <Timer className="w-5 h-5 sm:w-6 sm:h-6" />;
-      case 'target': return <Target className="w-5 h-5 sm:w-6 sm:h-6" />;
+      case 'crown': return <Crown className="w-5 h-5 sm:w-6 sm:h-6" />;
+      case 'zap': return <Zap className="w-5 h-5 sm:w-6 sm:h-6" />;
       case 'rocket': return <Rocket className="w-5 h-5 sm:w-6 sm:h-6" />;
+      case 'target': return <Target className="w-5 h-5 sm:w-6 sm:h-6" />;
+      case 'wrench': return <Wrench className="w-5 h-5 sm:w-6 sm:h-6" />;
+      case 'check_circle': return <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6" />;
+      case 'gift': return <Gift className="w-5 h-5 sm:w-6 sm:h-6" />;
       case 'briefcase': return <Briefcase className="w-5 h-5 sm:w-6 sm:h-6" />;
       case 'infinity': return <Infinity className="w-5 h-5 sm:w-6 sm:h-6" />;
       default: return <Star className="w-5 h-5 sm:w-6 sm:h-6" />;
@@ -188,6 +195,21 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
   const walletDeduction = useWalletBalance ? Math.min(walletBalance, finalPrice) : 0;
   finalPrice = Math.max(0, finalPrice - walletDeduction);
 
+  // Calculate add-ons total
+  const addOnsTotal = Object.entries(selectedAddOns).reduce((total, [addOnId, quantity]) => {
+    const addOn = paymentService.getAddOnById(addOnId);
+    return total + (addOn ? addOn.price * quantity : 0);
+  }, 0);
+
+  const grandTotal = finalPrice + addOnsTotal;
+
+  const handleAddOnQuantityChange = (addOnId: string, quantity: number) => {
+    setSelectedAddOns(prev => ({
+      ...prev,
+      [addOnId]: Math.max(0, quantity)
+    }));
+  };
+
   return (
     // Outer modal overlay div
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-2 sm:p-4 backdrop-blur-sm">
@@ -207,7 +229,7 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
               <Sparkles className="w-6 h-6 sm:w-10 sm:h-10 text-white" />
             </div>
             <h1 className="text-lg sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2 sm:mb-3">
-              Choose Your Plan
+              🏆 Ultimate Resume & Job Prep Plans
             </h1>
             <p className="text-sm sm:text-lg lg:text-xl text-gray-600 mb-3 sm:mb-6">
               AI-powered resume optimization with secure payment
@@ -239,7 +261,7 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
                         {plan.popular && (
                           <div className="absolute -top-2 sm:-top-4 left-1/2 transform -translate-x-1/2">
                             <span className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 sm:px-6 py-1 sm:py-2 rounded-full text-xs font-bold shadow-lg">
-                              Most Popular
+                              🏆 Most Popular
                             </span>
                           </div>
                         )}
@@ -253,7 +275,6 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
                             
                             {/* Plan Tag */}
                             <div className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium border mb-2 sm:mb-3 ${plan.tagColor}`}>
-                              <Tag className="w-2 h-2 sm:w-3 sm:h-3 mr-1" />
                               {plan.tag}
                             </div>
                             
@@ -333,7 +354,7 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
                 {plan.popular && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                     <span className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 lg:px-6 py-1 lg:py-2 rounded-full text-xs lg:text-sm font-bold shadow-lg">
-                      Most Popular
+                      🏆 Most Popular
                     </span>
                   </div>
                 )}
@@ -347,7 +368,6 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
                     
                     {/* Plan Tag */}
                     <div className={`inline-flex items-center px-2 lg:px-3 py-1 rounded-full text-xs font-medium border mb-1 lg:mb-3 ${plan.tagColor}`}>
-                      <Tag className="w-2 h-2 lg:w-3 lg:h-3 mr-1" />
                       {plan.tag}
                     </div>
                     
@@ -519,10 +539,62 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
                   )}
                   <div className="flex justify-between items-center text-base sm:text-xl font-bold">
                     <span>Total Amount:</span>
-                    <span className="text-indigo-600">₹{finalPrice}</span>
+                    <span className="text-indigo-600">₹{grandTotal}</span>
                   </div>
+                  
+                  {addOnsTotal > 0 && (
+                    <div className="text-sm text-gray-600 mt-2">
+                      Plan: ₹{finalPrice} + Add-ons: ₹{addOnsTotal}
+                    </div>
+                  )}
                 </div>
               </div>
+            </div>
+
+            {/* Add-ons Section */}
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg sm:rounded-2xl p-3 sm:p-6 mb-3 sm:mb-6 border border-blue-200">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-base sm:text-xl font-semibold text-gray-900 flex items-center">
+                  <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-blue-600" />
+                  🛒 Add-Ons (Optional)
+                </h3>
+                <button
+                  onClick={() => setShowAddOns(!showAddOns)}
+                  className="text-blue-600 hover:text-blue-700 font-medium text-sm"
+                >
+                  {showAddOns ? 'Hide' : 'Show'} Add-ons
+                </button>
+              </div>
+              
+              {showAddOns && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                  {addOns.map((addOn) => (
+                    <div key={addOn.id} className="bg-white rounded-lg p-3 sm:p-4 border border-gray-200">
+                      <div className="flex items-center justify-between mb-2">
+                        <div>
+                          <h4 className="font-medium text-gray-900 text-sm">{addOn.name}</h4>
+                          <p className="text-blue-600 font-semibold">₹{addOn.price}</p>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <button
+                            onClick={() => handleAddOnQuantityChange(addOn.id, (selectedAddOns[addOn.id] || 0) - 1)}
+                            className="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-600"
+                          >
+                            -
+                          </button>
+                          <span className="w-8 text-center font-medium">{selectedAddOns[addOn.id] || 0}</span>
+                          <button
+                            onClick={() => handleAddOnQuantityChange(addOn.id, (selectedAddOns[addOn.id] || 0) + 1)}
+                            className="w-8 h-8 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center"
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Payment Button */}
@@ -545,7 +617,7 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
                   <>
                     <Sparkles className="w-4 h-4 sm:w-6 sm:h-6 flex-shrink-0" />
                     <span className="break-words text-center">
-                      {finalPrice === 0 ? 'Get Free Plan' : `Pay ₹${finalPrice} - Start Optimizing`}
+                      {grandTotal === 0 ? 'Get Free Plan' : `Pay ₹${grandTotal} - Start Optimizing`}
                     </span>
                     <ArrowRight className="w-3 h-3 sm:w-5 sm:h-5 flex-shrink-0" />
                   </>
@@ -560,9 +632,6 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
               </p>
             </div>
           </div>
-          
-          {/* Coupon Information */}
-          
         </div>
       </div>
     </div>

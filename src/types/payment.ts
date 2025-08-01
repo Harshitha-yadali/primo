@@ -12,6 +12,14 @@ export interface SubscriptionPlan {
   icon: string;
 }
 
+export interface AddOn {
+  id: string;
+  name: string;
+  price: number;
+  type: string;
+  quantity: number;
+}
+
 export interface PaymentData {
   planId: string;
   amount: number;

@@ -24,44 +24,60 @@ interface PlanConfig {
 
 const plans: PlanConfig[] = [
   {
-    id: 'starter',
-    name: 'Starter Plan',
-    price: 49,
-    duration: 'Lifetime Use',
-    optimizations: 1,
+    id: 'career_pro_max',
+    name: 'Career Pro Max',
+    price: 1999,
+    duration: 'One-time Purchase',
+    optimizations: 30,
     durationInHours: 24 * 365 * 10 // 10 years for lifetime
   },
   {
-    id: 'smart_pack',
-    name: 'Smart Pack',
-    price: 99,
-    duration: 'Use Anytime',
-    optimizations: 3,
+    id: 'career_boost_plus',
+    name: 'Career Boost+',
+    price: 1499,
+    duration: 'One-time Purchase',
+    optimizations: 15,
     durationInHours: 24 * 365 * 10 // 10 years for anytime use
   },
   {
-    id: 'pro_pack',
-    name: 'Pro Pack',
-    price: 149,
-    duration: 'Use Anytime',
-    optimizations: 6,
-    durationInHours: 24 * 365 * 10 // 10 years for anytime use
-  },
-  {
-    id: 'growth_pack',
-    name: 'Growth Pack',
-    price: 249,
-    duration: 'Use Anytime',
+    id: 'pro_resume_kit',
+    name: 'Pro Resume Kit',
+    price: 999,
+    duration: 'One-time Purchase',
     optimizations: 10,
     durationInHours: 24 * 365 * 10 // 10 years for anytime use
   },
   {
-    id: 'lifetime',
-    name: 'Lifetime Plan',
-    price: 999,
-    duration: '1 Year',
-    optimizations: 60,
-    durationInHours: 24 * 365 // 1 year
+    id: 'smart_apply_pack',
+    name: 'Smart Apply Pack',
+    price: 499,
+    duration: 'One-time Purchase',
+    optimizations: 5,
+    durationInHours: 24 * 365 * 10 // 10 years for anytime use
+  },
+  {
+    id: 'resume_fix_pack',
+    name: 'Resume Fix Pack',
+    price: 199,
+    duration: 'One-time Purchase',
+    optimizations: 2,
+    durationInHours: 24 * 365 * 10 // 10 years
+  },
+  {
+    id: 'lite_check',
+    name: 'Lite Check',
+    price: 99,
+    duration: 'One-time Purchase',
+    optimizations: 1,
+    durationInHours: 24 * 365 * 10 // 10 years
+  },
+  {
+    id: 'free_trial',
+    name: 'Free Trial',
+    price: 0,
+    duration: 'One-time Use',
+    optimizations: 0,
+    durationInHours: 24 * 365 * 10 // 10 years
   }
 ]
 
