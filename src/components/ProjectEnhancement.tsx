@@ -211,7 +211,7 @@ export const ProjectEnhancement: React.FC<ProjectEnhancementProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm">
-      <div className="bg-white rounded-none shadow-2xl w-full max-w-full max-h-full overflow-hidden flex flex-col">
+      <div className="bg-white rounded-none shadow-2xl w-full h-screen overflow-hidden flex flex-col">
         {/* Header */}
         <div className="relative bg-gradient-to-r from-purple-50 to-blue-50 p-3 sm:p-6 border-b border-gray-200">
           <button
