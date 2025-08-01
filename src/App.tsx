@@ -19,6 +19,9 @@ import { paymentService } from './services/paymentService'; // Import paymentSer
 
 
 function App() {
+  // This line must be at the top of the function
+  const { isAuthenticated, user } = useAuth();
+
   const [currentPage, setCurrentPage] = useState('new-home');
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -129,13 +132,10 @@ function App() {
       case 'linkedin-generator':
         return <LinkedInMessageGenerator onNavigateBack={() => setCurrentPage('new-home')} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} userSubscription={userSubscription} onShowSubscriptionPlans={() => setShowSubscriptionPlans(true)} />;
       default:
-        return <HomePage onPageChange={setCurrentPage} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} onShowSubscriptionPlans={() => setShowSubscriptionPlans(true)} userSubscription={userSubscription} />;
+        return <HomePage onPageChange={setCurrentPage} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} />;
     }
   };
 
-  // This line must be inside App component if App itself is not wrapped by AuthProvider.
-  // If App is wrapped by AuthProvider at a higher level (e.g., index.tsx), then this is fine.
-  const { isAuthenticated, user } = useAuth();
 
   return (
     <div className="min-h-screen pb-safe-bottom safe-area">
