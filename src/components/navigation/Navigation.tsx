@@ -13,7 +13,7 @@ export const Navigation: React.FC<NavigationProps> = ({ currentPage, onPageChang
 
   const navigationItems = [
     { id: 'home', label: 'Home', icon: <Home className="w-4 h-4" /> },
-    { id: 'linkedin-generator', label: 'LinkedIn Messages', icon: <MessageCircle className="w-4 h-4" /> },
+    
     { id: 'about', label: 'About Us', icon: <Info className="w-4 h-4" /> },
     { id: 'tutorials', label: 'Tutorials', icon: <BookOpen className="w-4 h-4" /> },
     { id: 'contact', label: 'Contact', icon: <Phone className="w-4 h-4" /> },
