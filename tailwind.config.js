@@ -30,40 +30,40 @@ export default {
       // Consistent color palette (3-4 primary colors)
       colors: {
         primary: {
-          50: '#eff6ff',
-          100: '#dbeafe',
-          200: '#bfdbfe',
-          300: '#93c5fd',
-          400: '#60a5fa',
-          500: '#3b82f6',
-          600: '#2563eb',
-          700: '#1d4ed8',
-          800: '#1e40af',
-          900: '#1e3a8a',
+          50: '#e0f7fa',   // Lightest Teal
+          100: '#b2ebf2',
+          200: '#80deea',
+          300: '#4dd0e1',
+          400: '#26c6da',
+          500: '#00bcd4',  // Main Teal
+          600: '#00acc1',
+          700: '#0097a7',
+          800: '#00838f',
+          900: '#006064',   // Darkest Teal
         },
         secondary: {
-          50: '#f8fafc',
-          100: '#f1f5f9',
-          200: '#e2e8f0',
-          300: '#cbd5e1',
-          400: '#94a3b8',
-          500: '#64748b',
-          600: '#475569',
-          700: '#334155',
-          800: '#1e293b',
-          900: '#0f172a',
+          50: '#fdfdfc',   // Lightest Warm Grey/Beige
+          100: '#f8f8f6',
+          200: '#f0f0ed',
+          300: '#e0e0db',
+          400: '#c0c0b8',
+          500: '#a0a095',  // Main Warm Grey/Beige
+          600: '#808075',
+          700: '#606055',
+          800: '#404035',
+          900: '#202015',   // Darkest Warm Grey/Beige
         },
         accent: {
-          50: '#faf5ff',
-          100: '#f3e8ff',
-          200: '#e9d5ff',
-          300: '#d8b4fe',
-          400: '#c084fc',
-          500: '#a855f7',
-          600: '#9333ea',
-          700: '#7c3aed',
-          800: '#6b21a8',
-          900: '#581c87',
+          50: '#fff3e0',   // Lightest Coral/Orange
+          100: '#ffe0b2',
+          200: '#ffcc80',
+          300: '#ffb74d',
+          400: '#ffa726',
+          500: '#ff9800',  // Main Coral/Orange
+          600: '#fb8c00',
+          700: '#f57c00',
+          800: '#ef6c00',
+          900: '#e65100',   // Darkest Coral/Orange
         }
       },
       // Minimum touch target sizes
