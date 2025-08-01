@@ -656,11 +656,6 @@ const ResumeOptimizer: React.FC<ResumeOptimizerProps> = ({
         {!optimizedResume ? ( // Conditional rendering: show input form OR results tabs
           <>
             
-            
-
-            {/* Optimization Status Dropdown (visible before optimization) */}
-            {isAuthenticated && !loadingSubscription && (
-
             <button
               onClick={onNavigateBack}
               className="mb-6 bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800 shadow-md hover:shadow-lg py-3 px-5 rounded-xl inline-flex items-center space-x-2 transition-all duration-200"
@@ -668,6 +663,11 @@ const ResumeOptimizer: React.FC<ResumeOptimizerProps> = ({
               <ArrowLeft className="w-5 h-5" />
               <span className="hidden sm:block">Back to Home</span>
             </button>
+
+            {/* Optimization Status Dropdown (visible before optimization) */}
+            {isAuthenticated && !loadingSubscription && (
+
+            
               <div className="relative text-center mb-8 z-10">
                 <button
                   onClick={() => setShowOptimizationDropdown(!showOptimizationDropdown)}
