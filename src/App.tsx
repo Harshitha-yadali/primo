@@ -129,7 +129,7 @@ function App() {
       case 'linkedin-generator':
         return <LinkedInMessageGenerator onNavigateBack={() => setCurrentPage('new-home')} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} userSubscription={userSubscription} onShowSubscriptionPlans={() => setShowSubscriptionPlans(true)} />;
       default:
-        return <HomePage onPageChange={setCurrentPage} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} />;
+        return <HomePage onPageChange={setCurrentPage} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} onShowSubscriptionPlans={() => setShowSubscriptionPlans(true)} userSubscription={userSubscription} />;
     }
   };
 

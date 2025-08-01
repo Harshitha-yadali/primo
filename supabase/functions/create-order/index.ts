@@ -18,6 +18,9 @@ interface PlanConfig {
   price: number
   duration: string
   optimizations: number
+  scoreChecks: number
+  linkedinMessages: number
+  guidedBuilds: number
   durationInHours: number
 }
 
@@ -28,6 +31,9 @@ const plans: PlanConfig[] = [
     price: 1999,
     duration: 'One-time Purchase',
     optimizations: 30,
+    scoreChecks: 50,
+    linkedinMessages: 999999, // Representing Infinity as a large number
+    guidedBuilds: 5,
     durationInHours: 24 * 365 * 10 // 10 years for lifetime
   },
   {
@@ -36,6 +42,9 @@ const plans: PlanConfig[] = [
     price: 1499,
     duration: 'One-time Purchase',
     optimizations: 15,
+    scoreChecks: 30,
+    linkedinMessages: 999999, // Representing Infinity as a large number
+    guidedBuilds: 3,
     durationInHours: 24 * 365 * 10 // 10 years for anytime use
   },
   {
@@ -44,6 +53,9 @@ const plans: PlanConfig[] = [
     price: 999,
     duration: 'One-time Purchase',
     optimizations: 10,
+    scoreChecks: 20,
+    linkedinMessages: 100,
+    guidedBuilds: 2,
     durationInHours: 24 * 365 * 10 // 10 years for anytime use
   },
   {
@@ -52,6 +64,9 @@ const plans: PlanConfig[] = [
     price: 499,
     duration: 'One-time Purchase',
     optimizations: 5,
+    scoreChecks: 10,
+    linkedinMessages: 50,
+    guidedBuilds: 1,
     durationInHours: 24 * 365 * 10 // 10 years for anytime use
   },
   {
@@ -60,6 +75,9 @@ const plans: PlanConfig[] = [
     price: 199,
     duration: 'One-time Purchase',
     optimizations: 2,
+    scoreChecks: 2,
+    linkedinMessages: 0,
+    guidedBuilds: 0,
     durationInHours: 24 * 365 * 10 // 10 years
   },
   {
@@ -68,6 +86,9 @@ const plans: PlanConfig[] = [
     price: 99,
     duration: 'One-time Purchase',
     optimizations: 1,
+    scoreChecks: 2,
+    linkedinMessages: 10,
+    guidedBuilds: 0,
     durationInHours: 24 * 365 * 10 // 10 years
   },
   {
@@ -76,6 +97,9 @@ const plans: PlanConfig[] = [
     price: 0,
     duration: 'One-time Use',
     optimizations: 0,
+    scoreChecks: 2,
+    linkedinMessages: 5,
+    guidedBuilds: 0,
     durationInHours: 24 * 365 * 10 // 10 years
   }
 ]

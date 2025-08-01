@@ -206,7 +206,11 @@ export const HomePage: React.FC<HomePageProps> = ({
             <button
               key={feature.id}
               onClick={() => handleFeatureClick(feature)} // Pass the full feature object
-              className={`card-hover p-6 flex flex-col items-start sm:flex-row sm:items-center justify-between transition-all duration-300 ${feature.requiresAuth && !isAuthenticated ? 'opacity-70 cursor-not-allowed' : ''}`}
+              className={`card-hover p-6 flex flex-col items-start sm:flex-row sm:items-center justify-between transition-all duration-300 ${
+                !isFeatureAvailable(feature.id) && isAuthenticated // If authenticated but no credits
+                  ? 'opacity-70 cursor-not-allowed'
+                  : ''
+              }`}
             >
               <div className="flex items-center space-x-4">
                 <div className="bg-primary-100 rounded-xl p-3 group-hover:bg-primary-600 group-hover:text-white transition-all duration-300 shadow-sm flex-shrink-0">
@@ -214,10 +218,14 @@ export const HomePage: React.FC<HomePageProps> = ({
                 </div>
                 <div>
                   <span className="text-lg font-bold text-secondary-900">{feature.title}</span>
-                  <p className="text-sm text-secondary-700">{feature.description}</p>
+                  <p className="text-sm text-secondary-700">
+                    {!isFeatureAvailable(feature.id) && isAuthenticated
+                      ? 'Upgrade to unlock' // Text for authenticated but no credits
+                      : feature.description}
+                  </p>
                 </div>
               </div>
-              <ArrowRight className={`w-6 h-6 text-secondary-400 group-hover:text-primary-600 group-hover:translate-x-1 transition-transform duration-300 flex-shrink-0 ${feature.requiresAuth && !isAuthenticated ? 'opacity-50' : ''}`} />
+              <ArrowRight className={`w-6 h-6 text-secondary-400 group-hover:text-primary-600 group-hover:translate-x-1 transition-transform duration-300 flex-shrink-0 ${!isFeatureAvailable(feature.id) && isAuthenticated ? 'opacity-50' : ''}`} />
             </button>
           ))}
         </div>

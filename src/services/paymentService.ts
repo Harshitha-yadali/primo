@@ -687,12 +687,6 @@ class PaymentService {
         linkedinMessagesTotal: sub.linkedin_messages_total,
         guidedBuildsUsed: sub.guided_builds_used,
         guidedBuildsTotal: sub.guided_builds_total
-        scoreChecksUsed: sub.score_checks_used,
-        scoreChecksTotal: sub.score_checks_total,
-        linkedinMessagesUsed: sub.linkedin_messages_used,
-        linkedinMessagesTotal: sub.linkedin_messages_total,
-        guidedBuildsUsed: sub.guided_builds_used,
-        guidedBuildsTotal: sub.guided_builds_total
       }));
     } catch (error) {
       console.error('Error getting subscription history:', error);
@@ -738,6 +732,24 @@ class PaymentService {
     } catch (error) {
       console.error('Error cancelling subscription:', error);
       return { success: false, error: 'Failed to cancel subscription' };
+    }
+  }
+
+  // Activate free trial for new users
+  async activateFreeTrial(userId: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      // Check if user already has an active subscription
+      const existingSubscription = await this.getUserSubscription(userId);
+      if (existingSubscription) {
+        return { success: false, error: 'User already has an active subscription' };
+      }
+
+      // Create free trial subscription
+      const result = await this.processFreeSubscription('free_trial', userId);
+      return result;
+    } catch (error) {
+      console.error('Error activating free trial:', error);
+      return { success: false, error: 'Failed to activate free trial' };
     }
   }
 }

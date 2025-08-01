@@ -98,6 +98,14 @@ class AuthService {
       // Don't fail signup if device tracking fails
     }
 
+    // Activate free trial for new users
+    try {
+      await paymentService.activateFreeTrial(data.user.id);
+      console.log('Free trial activated for new user:', data.user.id);
+    } catch (trialError) {
+      console.error('Failed to activate free trial for new user:', trialError);
+    }
+
     return {
       needsVerification: !data.session,
       email: credentials.email

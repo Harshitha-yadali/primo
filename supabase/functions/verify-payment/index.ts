@@ -162,6 +162,12 @@ serve(async (req) => {
         end_date: endDate.toISOString(),
         optimizations_used: 0,
         optimizations_total: plan.optimizations,
+        score_checks_used: 0,
+        score_checks_total: plan.scoreChecks,
+        linkedin_messages_used: 0,
+        linkedin_messages_total: plan.linkedinMessages,
+        guided_builds_used: 0,
+        guided_builds_total: plan.guidedBuilds,
         payment_id: razorpay_payment_id,
         coupon_used: couponCode
       })
