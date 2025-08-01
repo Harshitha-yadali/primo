@@ -140,24 +140,6 @@ class PaymentService {
         '✅ 2 Resume Score Checks',
         '✅ 10 LinkedIn Messages'
       ]
-    },
-    {
-      id: 'free_trial',
-      name: '🧪 Free Trial',
-      price: 0,
-      duration: 'One-time Use',
-      optimizations: 0, // No JD-based optimizations
-      scoreChecks: 2,
-      linkedinMessages: 5,
-      guidedBuilds: 0,
-      tag: 'New users just exploring',
-      tagColor: 'text-yellow-800 bg-yellow-100',
-      gradient: 'from-yellow-500 to-orange-500',
-      icon: 'gift',
-      features: [
-        '✅ 2 Resume Score Checks',
-        '✅ 5 LinkedIn Messages'
-      ]
     }
   ];
 
@@ -606,7 +588,7 @@ class PaymentService {
       // Update optimization count
       const { error } = await supabase
         .from('subscriptions')
-        .update({ 
+        .update({  
           optimizations_used: subscription.optimizationsUsed + 1,
           updated_at: new Date().toISOString()
         })
@@ -635,8 +617,8 @@ class PaymentService {
 
       const remaining = subscription.optimizationsTotal - subscription.optimizationsUsed;
       
-      return { 
-        canOptimize: remaining > 0, 
+      return {  
+        canOptimize: remaining > 0,  
         remaining,
         subscription
       };
