@@ -672,8 +672,8 @@ const ResumeOptimizer: React.FC<ResumeOptimizerProps> = ({
                 <button
                   onClick={() => setShowOptimizationDropdown(!showOptimizationDropdown)}
                   className="inline-flex items-center space-x-2 px-6 py-3 rounded-full transition-all duration-200 font-semibold text-sm
-                                 bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
-                                 max-w-[300px] mx-auto justify-center"
+                                          bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
+                                          max-w-[300px] mx-auto justify-center"
                 >
                   <span>
                     {subscription
@@ -818,16 +818,7 @@ const ResumeOptimizer: React.FC<ResumeOptimizerProps> = ({
           </div>
         )}
 
-        {/* Subscription Status Display */}
-        {isAuthenticated && !loadingSubscription && (
-          <div className="mt-8">
-            <SubscriptionStatus
-              subscription={subscription}
-              loading={loadingSubscription}
-              onUpgrade={() => setShowSubscriptionPlans(true)}
-            />
-          </div>
-        )}
+        {/* Removed SubscriptionStatus Display */}
       </div>
 
       {/* Modals */}
