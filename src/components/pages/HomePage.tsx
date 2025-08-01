@@ -32,15 +32,17 @@ interface HomePageProps {
   isAuthenticated: boolean;
   onShowAuth: () => void;
   onShowSubscriptionPlans: () => void;
+  userSubscription: any; // New prop for user's subscription status
 }
 
 export const HomePage: React.FC<HomePageProps> = ({
   onPageChange,
   isAuthenticated,
   onShowAuth,
-  onShowSubscriptionPlans
+  onShowSubscriptionPlans,
+  userSubscription // Destructure new prop
 }) => {
-  // Helper function to get plan icon
+  // Helper function to get plan icon based on icon string
   const getPlanIcon = (iconType: string) => {
     switch (iconType) {
       case 'crown': return <Crown className="w-6 h-6" />;
@@ -50,21 +52,41 @@ export const HomePage: React.FC<HomePageProps> = ({
     }
   };
 
-  // Now accepts the full feature object, simplifying the authentication check
+  // Helper function to check if a feature is available based on subscription
+  const isFeatureAvailable = (featureId: string) => {
+    if (!isAuthenticated) return false; // Must be authenticated to check subscription
+    if (!userSubscription) return false; // No active subscription
+
+    switch (featureId) {
+      case 'optimizer':
+        return userSubscription.optimizationsTotal > userSubscription.optimizationsUsed;
+      case 'score-checker':
+        return userSubscription.scoreChecksTotal > userSubscription.scoreChecksUsed;
+      case 'guided-builder':
+        return userSubscription.guidedBuildsTotal > userSubscription.guidedBuildsUsed;
+      case 'linkedin-generator':
+        return userSubscription.linkedinMessagesTotal > userSubscription.linkedinMessagesUsed;
+      default:
+        return false;
+    }
+  };
+
   const handleFeatureClick = (feature: Feature) => {
     console.log('Feature clicked:', feature.id);
     console.log('Feature requiresAuth:', feature.requiresAuth);
     console.log('User isAuthenticated:', isAuthenticated);
+    console.log('User Subscription:', userSubscription);
 
-    if (feature.requiresAuth && !isAuthenticated) {
-      console.log('Authentication required and user is not authenticated. Calling onShowAuth().');
-      // Show subscription plans instead of just auth for premium features
-      if (feature.id === 'score-checker' || feature.id === 'guided-builder' || feature.id === 'linkedin-generator') {
-        onShowSubscriptionPlans();
-        return;
-      } else {
+    // If the feature requires an active plan (or credits) and the user doesn't have it
+    if (!isFeatureAvailable(feature.id)) {
+      // If not authenticated, prompt to sign in first
+      if (!isAuthenticated) {
         onShowAuth();
         return;
+      } else {
+        // If authenticated but no credits/plan, show subscription plans
+        onShowSubscriptionPlans(); // Show subscription plans for upgrade
+        return; // Stop further execution
       }
     }
 
@@ -219,8 +241,8 @@ export const HomePage: React.FC<HomePageProps> = ({
                 .map((plan) => (
                   <div
                     key={plan.id}
-                    className={`relative rounded-xl shadow-lg border-2 transition-all duration-300 ${
-                      plan.popular ? 'border-indigo-500 shadow-2xl shadow-indigo-500/20 ring-4 ring-indigo-100' : 'border-gray-200 hover:border-indigo-300 hover:shadow-xl'
+                    className={`relative rounded-xl shadow-lg border-2 transition-all duration-300 hover:shadow-xl hover:scale-105 ${
+                      plan.popular ? 'border-indigo-500 shadow-2xl shadow-indigo-500/20 ring-4 ring-indigo-100' : 'border-gray-200 hover:border-indigo-300'
                     }`}
                   >
                     {plan.popular && (
@@ -239,8 +261,8 @@ export const HomePage: React.FC<HomePageProps> = ({
                       <div className="text-3xl font-bold text-gray-900 mb-4">₹{plan.price}</div>
                       <ul className="text-left text-sm text-gray-700 space-y-2 mb-6">
                         {plan.features.slice(0, 3).map((feature, idx) => (
-                          <li key={idx} className="flex items-center">
-                            <Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
+                          <li key={idx} className="flex items-start">
+                            <Check className="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
                             <span>{feature}</span>
                           </li>
                         ))}
