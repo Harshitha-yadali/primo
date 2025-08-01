@@ -687,6 +687,12 @@ class PaymentService {
         linkedinMessagesTotal: sub.linkedin_messages_total,
         guidedBuildsUsed: sub.guided_builds_used,
         guidedBuildsTotal: sub.guided_builds_total
+        scoreChecksUsed: sub.score_checks_used,
+        scoreChecksTotal: sub.score_checks_total,
+        linkedinMessagesUsed: sub.linkedin_messages_used,
+        linkedinMessagesTotal: sub.linkedin_messages_total,
+        guidedBuildsUsed: sub.guided_builds_used,
+        guidedBuildsTotal: sub.guided_builds_total
       }));
     } catch (error) {
       console.error('Error getting subscription history:', error);
