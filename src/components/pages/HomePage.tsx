@@ -45,6 +45,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   userSubscription // Destructure new prop
 }) => {
   const [showOptimizationDropdown, setShowOptimizationDropdown] = React.useState(false);
+  const [showPlanDetails, setShowPlanDetails] = React.useState(false); // New state for the dropdown
 
   // Helper function to get plan icon based on icon string
   const getPlanIcon = (iconType: string) => {
@@ -231,6 +232,72 @@ export const HomePage: React.FC<HomePageProps> = ({
       {isAuthenticated && (
         <div className="bg-white py-16">
           <div className="container-responsive">
+            {/* New Dropdown for User's Plan Status */}
+            <div className="max-w-2xl mx-auto mb-10">
+              <div className="relative inline-block text-left w-full">
+                <button
+                  onClick={() => setShowPlanDetails(!showPlanDetails)}
+                  className="w-full bg-slate-100 text-slate-800 font-semibold py-3 px-6 rounded-xl flex items-center justify-between shadow-sm hover:bg-slate-200 transition-colors"
+                >
+                  <span className="flex items-center">
+                    <Sparkles className="w-5 h-5 text-indigo-500 mr-2" />
+                    {userSubscription ? (
+                      <span>
+                        Optimizations Left:{' '}
+                        <span className="font-bold">
+                          {userSubscription.optimizationsTotal - userSubscription.optimizationsUsed}
+                        </span>
+                      </span>
+                    ) : (
+                      <span>No Active Plan. Upgrade to use all features.</span>
+                    )}
+                  </span>
+                  {showPlanDetails ? <ChevronUp className="w-5 h-5 ml-2" /> : <ChevronDown className="w-5 h-5 ml-2" />}
+                </button>
+                {showPlanDetails && (
+                  <div className="absolute z-10 mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                      {userSubscription ? (
+                        <>
+                          <div className="block px-4 py-2 text-sm text-gray-700">
+                            <p className="font-semibold">{userSubscription.name} Plan</p>
+                            <p className="text-xs text-gray-500">Details for your current subscription.</p>
+                          </div>
+                          <hr className="my-1 border-gray-100" />
+                          <div className="px-4 py-2 text-sm text-gray-700 space-y-1">
+                            <div className="flex justify-between items-center">
+                              <span>Optimizations:</span>
+                              <span className="font-medium">{userSubscription.optimizationsTotal - userSubscription.optimizationsUsed} / {userSubscription.optimizationsTotal}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span>Score Checks:</span>
+                              <span className="font-medium">{userSubscription.scoreChecksTotal - userSubscription.scoreChecksUsed} / {userSubscription.scoreChecksTotal}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                              <span>Guided Builds:</span>
+                              <span className="font-medium">{userSubscription.guidedBuildsTotal - userSubscription.guidedBuildsUsed} / {userSubscription.guidedBuildsTotal}</span>
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="block px-4 py-2 text-sm text-gray-700">
+                          You currently don't have an active subscription.
+                        </div>
+                      )}
+                      <div className="p-4 border-t border-gray-100">
+                        <button
+                          onClick={onShowSubscriptionPlans}
+                          className="w-full btn-primary py-2"
+                        >
+                          {userSubscription ? 'Upgrade Plan' : 'Choose Your Plan'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+            
             <div className="text-center mb-12">
               <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
                 🏆 Choose Your Perfect Plan
