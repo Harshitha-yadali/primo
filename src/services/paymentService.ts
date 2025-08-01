@@ -19,78 +19,182 @@ class PaymentService {
   // Updated subscription plans - New structure
   private readonly plans: SubscriptionPlan[] = [
     {
-      id: 'starter',
-      name: 'Starter Plan',
-      price: 49,
-      duration: 'Lifetime Use',
-      optimizations: 1,
-      tag: 'Perfect for first-time users',
-      gradient: 'from-green-500 to-emerald-500',
-      icon: 'timer',
-      features: [
-        '1 Resume Credit',
-        'Lifetime Use',
-        'PDF Download Included',
-        'GPT-4-based rewriting',
-        'ATS score analysis',
-        'Missing skills detection',
-        'Job-specific project suggestions'
-      ]
-    },
-    {
-      id: 'smart_pack',
-      name: 'Smart Pack',
-      price: 99,
-      duration: 'Use Anytime',
-      optimizations: 3,
-      tag: 'Apply smarter to multiple roles',
-      gradient: 'from-blue-500 to-cyan-500',
-      icon: 'target',
-      features: [
-        '3 Resume Credits',
-        'Use Anytime',
-        'Tailored JD Matching',
-        'AI customization for each role',
-        'Perfect alignment optimization'
-      ]
-    },
-    {
-      id: 'pro_pack',
-      name: 'Pro Pack',
-      price: 149,
-      duration: 'Use Anytime',
-      optimizations: 6,
-      popular: true,
-      tag: 'Our most popular plan',
+      id: 'career_pro_max',
+      name: '💎 Career Pro Max',
+      price: 1999,
+      duration: 'One-time Purchase',
+      optimizations: 30,
+      tag: 'Serious job seekers & job switchers',
+      tagColor: 'text-purple-800 bg-purple-100 border-purple-200',
       gradient: 'from-purple-500 to-indigo-500',
+      icon: 'crown',
+      features: [
+        '✅ 3 Months LinkedIn Premium',
+        '✅ 30 JD-Based Optimizations',
+        '✅ 5 Guided Resume Builds',
+        '✅ 50 Resume Score Checks',
+        '✅ Unlimited LinkedIn Messages (1 Month)',
+        '✅ 1 LinkedIn Optimization',
+        '✅ 1 Resume Guidance Session (Live)',
+        '✅ Job Application Tutorial Video'
+      ],
+      popular: true
+    },
+    {
+      id: 'career_boost_plus',
+      name: '⭐ Career Boost+',
+      price: 1499,
+      duration: 'One-time Purchase',
+      optimizations: 15,
+      tag: 'Active job seekers',
+      tagColor: 'text-blue-800 bg-blue-100 border-blue-200',
+      gradient: 'from-blue-500 to-cyan-500',
+      icon: 'zap',
+      features: [
+        '✅ 15 JD-Based Optimizations',
+        '✅ 3 Guided Resume Builds',
+        '✅ 30 Resume Score Checks',
+        '✅ Unlimited LinkedIn Messages (1 Month)',
+        '✅ 1 Resume Guidance Session (Live)'
+      ]
+    },
+    {
+      id: 'pro_resume_kit',
+      name: '🔥 Pro Resume Kit',
+      price: 999,
+      duration: 'One-time Purchase',
+      optimizations: 10,
+      tag: 'Freshers & intern seekers',
+      tagColor: 'text-orange-800 bg-orange-100 border-orange-200',
+      gradient: 'from-orange-500 to-red-500',
       icon: 'rocket',
       features: [
-        '6 Credits',
-        'Save 30% vs Starter',
-        'Includes Full Rewrite + Scoring',
-        'LinkedIn, Naukri optimization',
-        'Referral-ready formats'
+        '✅ 10 JD-Based Optimizations',
+        '✅ 2 Guided Resume Builds',
+        '✅ 20 Resume Score Checks',
+        '✅ 100 LinkedIn Messages'
       ]
     },
     {
-      id: 'growth_pack',
-      name: 'Growth Pack',
-      price: 249,
-      duration: 'Use Anytime',
-      optimizations: 10,
-      tag: 'For serious job hunters',
-      gradient: 'from-orange-500 to-red-500',
-      icon: 'briefcase',
+      id: 'smart_apply_pack',
+      name: '⚡ Smart Apply Pack',
+      price: 499,
+      duration: 'One-time Purchase',
+      optimizations: 5,
+      tag: 'Targeted resume improvement',
+      tagColor: 'text-green-800 bg-green-100 border-green-200',
+      gradient: 'from-green-500 to-emerald-500',
+      icon: 'target',
       features: [
-        '10 Credits',
-        'Best Value',
-        'Role-Specific Optimization',
-        'ATS Format',
-        'Tech & non-tech roles',
-        'Domain-specific optimization'
+        '✅ 5 JD-Based Optimizations',
+        '✅ 1 Guided Resume Build',
+        '✅ 10 Resume Score Checks',
+        '✅ 50 LinkedIn Messages'
+      ]
+    },
+    {
+      id: 'resume_fix_pack',
+      name: '🛠 Resume Fix Pack',
+      price: 199,
+      duration: 'One-time Purchase',
+      optimizations: 2,
+      tag: 'Quick fixes for job applications',
+      tagColor: 'text-gray-800 bg-gray-100 border-gray-200',
+      gradient: 'from-gray-500 to-gray-700',
+      icon: 'wrench',
+      features: [
+        '✅ 2 JD-Based Optimizations',
+        '✅ 2 Resume Score Checks'
+      ]
+    },
+    {
+      id: 'lite_check',
+      name: '🎯 Lite Check',
+      price: 99,
+      duration: 'One-time Purchase',
+      optimizations: 1,
+      tag: 'First-time premium users',
+      tagColor: 'text-teal-800 bg-teal-100 border-teal-200',
+      gradient: 'from-teal-500 to-blue-500',
+      icon: 'check_circle',
+      features: [
+        '✅ 1 JD-Based Optimization',
+        '✅ 2 Resume Score Checks',
+        '✅ 10 LinkedIn Messages'
+      ]
+    },
+    {
+      id: 'free_trial',
+      name: '🧪 Free Trial',
+      price: 0,
+      duration: 'One-time Use',
+      optimizations: 0,
+      tag: 'New users just exploring',
+      tagColor: 'text-yellow-800 bg-yellow-100 border-yellow-200',
+      gradient: 'from-yellow-500 to-orange-500',
+      icon: 'gift',
+      features: [
+        '✅ 2 Resume Score Checks',
+        '✅ 5 LinkedIn Messages'
       ]
     }
   ];
+
+  // Add-on products for individual purchases
+  private readonly addOns = [
+    {
+      id: 'jd_optimization_single',
+      name: 'JD-Based Optimization (1x)',
+      price: 49,
+      type: 'optimization',
+      quantity: 1
+    },
+    {
+      id: 'guided_resume_build_single',
+      name: 'Guided Resume Build (1x)',
+      price: 99,
+      type: 'guided_build',
+      quantity: 1
+    },
+    {
+      id: 'resume_score_check_single',
+      name: 'Resume Score Check (1x)',
+      price: 19,
+      type: 'score_check',
+      quantity: 1
+    },
+    {
+      id: 'linkedin_messages_50',
+      name: 'LinkedIn Messages (50x)',
+      price: 29,
+      type: 'linkedin_messages',
+      quantity: 50
+    },
+    {
+      id: 'linkedin_optimization_single',
+      name: 'LinkedIn Optimization (1x Review)',
+      price: 199,
+      type: 'linkedin_optimization',
+      quantity: 1
+    },
+    {
+      id: 'resume_guidance_session',
+      name: 'Resume Guidance Session (Live)',
+      price: 299,
+      type: 'guidance_session',
+      quantity: 1
+    }
+  ];
+
+  // Get all add-ons
+  getAddOns() {
+    return this.addOns;
+  }
+
+  // Get add-on by ID
+  getAddOnById(addOnId: string) {
+    return this.addOns.find(addon => addon.id === addOnId) || null;
+  }
 
   // Load Razorpay script
   private loadRazorpayScript(): Promise<boolean> {
