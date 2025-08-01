@@ -1,6 +1,7 @@
 import { User, LoginCredentials, SignupCredentials, ForgotPasswordData } from '../types/auth';
 import { supabase } from '../lib/supabaseClient';
 import { deviceTrackingService } from './deviceTrackingService';
+import { paymentService } from './paymentService';
 
 class AuthService {
   private isValidGmail(email: string): boolean {
