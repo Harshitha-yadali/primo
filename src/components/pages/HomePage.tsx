@@ -37,7 +37,7 @@ interface HomePageProps {
 export const HomePage: React.FC<HomePageProps> = ({
   onPageChange,
   isAuthenticated,
-  onShowAuth
+  onShowAuth,
   onShowSubscriptionPlans
 }) => {
   // Helper function to get plan icon
@@ -73,7 +73,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   };
 
   const features: Feature[] = [
-     {
+    {
       id: 'optimizer',
       title: 'JD-Based Optimizer',
       description: 'Upload your resume and a job description to get a perfectly tailored resume.',
@@ -94,7 +94,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       icon: <PlusCircle className="w-6 h-6" />,
       requiresAuth: true
     },
-   
+    
     {
       id: 'linkedin-generator',
       title: 'LinkedIn Message Generator',
@@ -221,8 +221,8 @@ export const HomePage: React.FC<HomePageProps> = ({
                 <div
                   key={plan.id}
                   className={`relative bg-white rounded-2xl shadow-lg border-2 transition-all duration-300 hover:shadow-xl hover:scale-105 ${
-                    plan.popular 
-                      ? 'border-purple-500 ring-2 ring-purple-200' 
+                    plan.popular
+                      ? 'border-purple-500 ring-2 ring-purple-200'
                       : 'border-gray-200 hover:border-purple-300'
                   }`}
                 >
@@ -378,44 +378,6 @@ export const HomePage: React.FC<HomePageProps> = ({
           </div>
         </div>
       </div>
-
-      {/* Upgrade Prompt for Non-Authenticated Users */}
-      {!isAuthenticated && (
-        <div className="bg-gradient-to-r from-orange-50 to-red-50 py-12">
-          <div className="container-responsive text-center">
-            <div className="max-w-3xl mx-auto">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                🚀 Ready to Supercharge Your Job Search?
-              </h3>
-              <p className="text-lg text-gray-600 mb-8">
-                Join thousands who've landed their dream jobs with our AI-powered optimization
-              </p>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                <div className="bg-white p-4 rounded-xl shadow-md">
-                  <div className="text-2xl font-bold text-purple-600">₹99</div>
-                  <div className="text-sm text-gray-600">Starting from</div>
-                </div>
-                <div className="bg-white p-4 rounded-xl shadow-md">
-                  <div className="text-2xl font-bold text-green-600">30+</div>
-                  <div className="text-sm text-gray-600">Optimizations</div>
-                </div>
-                <div className="bg-white p-4 rounded-xl shadow-md">
-                  <div className="text-2xl font-bold text-blue-600">95%</div>
-                  <div className="text-sm text-gray-600">Success Rate</div>
-                </div>
-              </div>
-
-              <button
-                onClick={onShowSubscriptionPlans}
-                className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
-              >
-                View Plans & Pricing
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
