@@ -27,7 +27,6 @@ class PaymentService {
       scoreChecks: 50,
       linkedinMessages: Infinity, // Unlimited
       guidedBuilds: 5,
-      linkedinOptimizations: 1, // New field for LinkedIn optimization count
       tag: 'Serious job seekers & job switchers',
       tagColor: 'text-purple-800 bg-purple-100',
       gradient: 'from-purple-500 to-indigo-500',
@@ -38,7 +37,6 @@ class PaymentService {
         '✅ 5 Guided Resume Builds',
         '✅ 50 Resume Score Checks',
         '✅ Unlimited LinkedIn Messages (1 Month)',
-        '✅ 1 LinkedIn Optimization',
         '✅ 1 Resume Guidance Session (Live)',
         '✅ Job Application Tutorial Video'
       ],
@@ -53,7 +51,6 @@ class PaymentService {
       scoreChecks: 30,
       linkedinMessages: Infinity, // Unlimited
       guidedBuilds: 3,
-      linkedinOptimizations: 1, // New field for LinkedIn optimization count
       tag: 'Active job seekers',
       tagColor: 'text-blue-800 bg-blue-100',
       gradient: 'from-blue-500 to-cyan-500',
@@ -75,7 +72,6 @@ class PaymentService {
       scoreChecks: 20,
       linkedinMessages: 100,
       guidedBuilds: 2,
-      linkedinOptimizations: 0, // New field for LinkedIn optimization count
       tag: 'Freshers & intern seekers',
       tagColor: 'text-orange-800 bg-orange-100',
       gradient: 'from-orange-500 to-red-500',
@@ -96,7 +92,6 @@ class PaymentService {
       scoreChecks: 10,
       linkedinMessages: 50,
       guidedBuilds: 1,
-      linkedinOptimizations: 0, // New field for LinkedIn optimization count
       tag: 'Targeted resume improvement',
       tagColor: 'text-green-800 bg-green-100',
       gradient: 'from-green-500 to-emerald-500',
@@ -117,7 +112,6 @@ class PaymentService {
       scoreChecks: 2,
       linkedinMessages: 0,
       guidedBuilds: 0,
-      linkedinOptimizations: 0, // New field for LinkedIn optimization count
       tag: 'Quick fixes for job applications',
       tagColor: 'text-gray-800 bg-gray-100',
       gradient: 'from-gray-500 to-gray-700',
@@ -136,7 +130,6 @@ class PaymentService {
       scoreChecks: 2,
       linkedinMessages: 10,
       guidedBuilds: 0,
-      linkedinOptimizations: 0, // New field for LinkedIn optimization count
       tag: 'First-time premium users',
       tagColor: 'text-teal-800 bg-teal-100',
       gradient: 'from-teal-500 to-blue-500',
@@ -147,7 +140,24 @@ class PaymentService {
         '✅ 10 LinkedIn Messages'
       ]
     },
-    
+    {
+      id: 'free_trial',
+      name: '🧪 Free Trial',
+      price: 0,
+      duration: 'One-time Use',
+      optimizations: 0, // No JD-based optimizations
+      scoreChecks: 2,
+      linkedinMessages: 5,
+      guidedBuilds: 0,
+      tag: 'New users just exploring',
+      tagColor: 'text-yellow-800 bg-yellow-100',
+      gradient: 'from-yellow-500 to-orange-500',
+      icon: 'gift',
+      features: [
+        '✅ 2 Resume Score Checks',
+        '✅ 5 LinkedIn Messages'
+      ]
+    }
   ];
 
   // Add-on products for individual purchases
@@ -493,8 +503,6 @@ class PaymentService {
           linkedin_messages_total: plan.linkedinMessages,
           guided_builds_used: 0,
           guided_builds_total: plan.guidedBuilds,
-          linkedin_optimizations_used: 0, // New field
-          linkedin_optimizations_total: plan.linkedinOptimizations, // New field
           payment_id: null,
           coupon_used: couponCode || null,
           created_at: now.toISOString(),
@@ -530,9 +538,7 @@ class PaymentService {
           linkedin_messages_used,
           linkedin_messages_total,
           guided_builds_used,
-          guided_builds_total,
-          linkedin_optimizations_used,
-          linkedin_optimizations_total
+          guided_builds_total
         `)
         .eq('user_id', userId)
         .eq('status', 'active')
@@ -566,9 +572,7 @@ class PaymentService {
         linkedinMessagesUsed: data.linkedin_messages_used,
         linkedinMessagesTotal: data.linkedin_messages_total,
         guidedBuildsUsed: data.guided_builds_used,
-        guidedBuildsTotal: data.guided_builds_total,
-        linkedinOptimizationsUsed: data.linkedin_optimizations_used,
-        linkedinOptimizationsTotal: data.linkedin_optimizations_total
+        guidedBuildsTotal: data.guided_builds_total
       };
     } catch (error) {
       console.error('Error getting user subscription:', error);
@@ -650,8 +654,6 @@ class PaymentService {
           linkedin_messages_total,
           guided_builds_used,
           guided_builds_total,
-          linkedin_optimizations_used,
-          linkedin_optimizations_total
         `)
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
@@ -677,9 +679,7 @@ class PaymentService {
         linkedinMessagesUsed: sub.linkedin_messages_used,
         linkedinMessagesTotal: sub.linkedin_messages_total,
         guidedBuildsUsed: sub.guided_builds_used,
-        guidedBuildsTotal: sub.guided_builds_total,
-        linkedinOptimizationsUsed: sub.linkedin_optimizations_used,
-        linkedinOptimizationsTotal: sub.linkedin_optimizations_total
+        guidedBuildsTotal: sub.guided_builds_total
       }));
     } catch (error) {
       console.error('Error getting subscription history:', error);
@@ -743,45 +743,6 @@ class PaymentService {
     } catch (error) {
       console.error('Error activating free trial:', error);
       return { success: false, error: 'Failed to activate free trial' };
-    }
-  }
-
-  // New method to use a LinkedIn optimization credit
-  async useLinkedInOptimization(userId: string): Promise<{ success: boolean; link?: string; remaining?: number; error?: string }> {
-    try {
-      const subscription = await this.getUserSubscription(userId);
-
-      // Check if user has an active subscription with LinkedIn optimization credits
-      if (!subscription || subscription.linkedinOptimizationsTotal <= subscription.linkedinOptimizationsUsed) {
-        return { success: false, remaining: 0, error: 'No LinkedIn optimization credits available.' };
-      }
-
-      const newUsedCount = subscription.linkedinOptimizationsUsed + 1;
-
-      // Update the subscription in the database
-      const { error } = await supabase
-        .from('subscriptions')
-        .update({
-          linkedin_optimizations_used: newUsedCount,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', subscription.id);
-
-      if (error) {
-        console.error('Error using LinkedIn optimization:', error);
-        return { success: false, remaining: subscription.linkedinOptimizationsTotal - subscription.linkedinOptimizationsUsed, error: 'Failed to update optimization count.' };
-      }
-      
-      const remaining = subscription.linkedinOptimizationsTotal - newUsedCount;
-
-      // Return a success message with a hardcoded placeholder link
-      // This could be made dynamic based on newUsedCount if needed
-      const link = `https://linkedin-optimization-link.com/${subscription.id}/${newUsedCount}`;
-      return { success: true, link, remaining };
-
-    } catch (error) {
-      console.error('Error in useLinkedInOptimization:', error);
-      return { success: false, remaining: 0, error: 'An unexpected error occurred.' };
     }
   }
 }

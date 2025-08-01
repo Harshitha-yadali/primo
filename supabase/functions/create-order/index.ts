@@ -21,7 +21,6 @@ interface PlanConfig {
   scoreChecks: number
   linkedinMessages: number
   guidedBuilds: number
-  linkedinOptimizations: number // New property
   durationInHours: number
 }
 
@@ -35,7 +34,6 @@ const plans: PlanConfig[] = [
     scoreChecks: 50,
     linkedinMessages: 999999, // Representing Infinity as a large number
     guidedBuilds: 5,
-    linkedinOptimizations: 1, // Added for consistency
     durationInHours: 24 * 365 * 10 // 10 years for lifetime
   },
   {
@@ -47,7 +45,6 @@ const plans: PlanConfig[] = [
     scoreChecks: 30,
     linkedinMessages: 999999, // Representing Infinity as a large number
     guidedBuilds: 3,
-    linkedinOptimizations: 1, // Added for consistency
     durationInHours: 24 * 365 * 10 // 10 years for anytime use
   },
   {
@@ -59,7 +56,6 @@ const plans: PlanConfig[] = [
     scoreChecks: 20,
     linkedinMessages: 100,
     guidedBuilds: 2,
-    linkedinOptimizations: 0, // Added for consistency
     durationInHours: 24 * 365 * 10 // 10 years for anytime use
   },
   {
@@ -71,7 +67,6 @@ const plans: PlanConfig[] = [
     scoreChecks: 10,
     linkedinMessages: 50,
     guidedBuilds: 1,
-    linkedinOptimizations: 0, // Added for consistency
     durationInHours: 24 * 365 * 10 // 10 years for anytime use
   },
   {
@@ -83,7 +78,6 @@ const plans: PlanConfig[] = [
     scoreChecks: 2,
     linkedinMessages: 0,
     guidedBuilds: 0,
-    linkedinOptimizations: 0, // Added for consistency
     durationInHours: 24 * 365 * 10 // 10 years
   },
   {
@@ -95,7 +89,6 @@ const plans: PlanConfig[] = [
     scoreChecks: 2,
     linkedinMessages: 10,
     guidedBuilds: 0,
-    linkedinOptimizations: 0, // Added for consistency
     durationInHours: 24 * 365 * 10 // 10 years
   },
   {
@@ -107,7 +100,6 @@ const plans: PlanConfig[] = [
     scoreChecks: 2,
     linkedinMessages: 5,
     guidedBuilds: 0,
-    linkedinOptimizations: 0, // Added for consistency
     durationInHours: 24 * 365 * 10 // 10 years
   }
 ]

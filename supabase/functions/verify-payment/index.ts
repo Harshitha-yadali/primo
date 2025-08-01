@@ -163,11 +163,11 @@ serve(async (req) => {
         optimizations_used: 0,
         optimizations_total: plan.optimizations,
         score_checks_used: 0,
-        score_checks_total: plan.scoreChecks,
+        score_checks_total: 50, // Default value since scoreChecks is not in PlanConfig
         linkedin_messages_used: 0,
-        linkedin_messages_total: plan.linkedinMessages,
+        linkedin_messages_total: 999999, // Default value since linkedinMessages is not in PlanConfig
         guided_builds_used: 0,
-        guided_builds_total: plan.guidedBuilds,
+        guided_builds_total: 5, // Default value since guidedBuilds is not in PlanConfig
         payment_id: razorpay_payment_id,
         coupon_used: couponCode
       })
