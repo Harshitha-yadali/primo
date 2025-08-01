@@ -66,6 +66,12 @@ export interface Subscription {
   optimizationsTotal: number;
   paymentId?: string;
   couponUsed?: string;
+  scoreChecksUsed: number;
+  scoreChecksTotal: number;
+  linkedinMessagesUsed: number;
+  linkedinMessagesTotal: number;
+  guidedBuildsUsed: number;
+  guidedBuildsTotal: number;
 }
 
 declare global {
