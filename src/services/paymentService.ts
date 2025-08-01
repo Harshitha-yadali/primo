@@ -147,25 +147,7 @@ class PaymentService {
         '✅ 10 LinkedIn Messages'
       ]
     },
-    {
-      id: 'free_trial',
-      name: '🧪 Free Trial',
-      price: 0,
-      duration: 'One-time Use',
-      optimizations: 0, // No JD-based optimizations
-      scoreChecks: 2,
-      linkedinMessages: 5,
-      guidedBuilds: 0,
-      linkedinOptimizations: 0, // New field for LinkedIn optimization count
-      tag: 'New users just exploring',
-      tagColor: 'text-yellow-800 bg-yellow-100',
-      gradient: 'from-yellow-500 to-orange-500',
-      icon: 'gift',
-      features: [
-        '✅ 2 Resume Score Checks',
-        '✅ 5 LinkedIn Messages'
-      ]
-    }
+    
   ];
 
   // Add-on products for individual purchases
