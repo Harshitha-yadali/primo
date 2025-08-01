@@ -325,11 +325,11 @@ export const ProjectAnalysisModal: React.FC<ProjectAnalysisModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-2 sm:p-4 backdrop-blur-sm">
+    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 backdrop-blur-sm">
       <div
-  className="bg-white rounded-xl shadow-2xl w-full overflow-y-auto flex flex-col"
-  style={{ maxHeight: '80vh' }}
->
+        className="bg-white rounded-none shadow-2xl w-full overflow-y-auto flex flex-col"
+        style={{ maxHeight: 'full', maxWidth: 'full' }}
+      >
 
         {/* Header */}
         <div className="relative bg-gradient-to-r from-blue-50 to-purple-50 p-3 sm:p-6 border-b border-gray-200">
@@ -617,57 +617,160 @@ export const ProjectAnalysisModal: React.FC<ProjectAnalysisModalProps> = ({
                           </div>
                         )}
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
-              )}
+              </div>
+            )}
 
-              {/* Suggested Projects Section */}
-              {analysisResult.suggestedProjects.length > 0 && (
-                <div className="bg-green-50 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-green-200">
-                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center">
-                    <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-green-600" />
-                    Suggested Additional Projects
-                  </h2>
+            {/* Suggested Projects Section */}
+            {analysisResult.suggestedProjects.length > 0 && (
+              <div className="bg-green-50 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-green-200">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center">
+                  <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-green-600" />
+                  Suggested Additional Projects
+                </h2>
 
-                  <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
-                    {analysisResult.suggestedProjects.map((project, index) => (
-                      <div key={index} className="border border-gray-200 rounded-lg bg-white p-3 sm:p-4">
-                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between space-y-3 sm:space-y-0 mb-3">
-                          <div className="flex items-center">
-                            <div className="p-2 rounded-full bg-green-100 text-green-600 mr-3 flex-shrink-0">
-                              <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h3 className="font-semibold text-gray-900 text-sm sm:text-base break-words">{project.title}</h3>
-                              <div className="flex flex-col sm:flex-row sm:items-center mt-1 space-y-1 sm:space-y-0">
-                                <a
-                                  href={project.githubUrl}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-blue-600 hover:text-blue-800 text-xs sm:text-sm flex items-center space-x-1 break-all min-h-[44px]"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  <Github className="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" />
-                                  <span className="font-mono text-xs break-all">{project.githubUrl.replace('https://github.com/', '')}</span>
-                                </a>
-                              </div>
+                <div className="space-y-3 sm:space-y-4 mb-4 sm:mb-6">
+                  {analysisResult.suggestedProjects.map((project, index) => (
+                    <div key={index} className="border border-gray-200 rounded-lg bg-white p-3 sm:p-4">
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between space-y-3 sm:space-y-0 mb-3">
+                        <div className="flex items-center">
+                          <div className="p-2 rounded-full bg-green-100 text-green-600 mr-3 flex-shrink-0">
+                            <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-gray-900 text-sm sm:text-base break-words">{project.title}</h3>
+                            <div className="flex flex-col sm:flex-row sm:items-center mt-1 space-y-1 sm:space-y-0">
+                              <a
+                                href={project.githubUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 text-xs sm:text-sm flex items-center space-x-1 break-all min-h-[44px]"
+                                onClick={(e) => e.stopPropagation()}
+                              >
+                                <Github className="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" />
+                                <span className="font-mono text-xs break-all">{project.githubUrl.replace('https://github.com/', '')}</span>
+                              </a>
                             </div>
                           </div>
-                          <button
-                            onClick={() => handleToggleSuggestion(project.title)}
-                            className={`px-3 py-2 rounded-full text-xs font-medium transition-colors min-h-[44px] min-w-[80px] flex-shrink-0 ${
-                              selectedSuggestions[project.title]
-                                ? 'bg-blue-600 text-white'
-                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                            }`}
-                          >
-                            {selectedSuggestions[project.title] ? 'Selected' : 'Select'}
-                          </button>
                         </div>
+                        <button
+                          onClick={() => handleToggleSuggestion(project.title)}
+                          className={`px-3 py-2 rounded-full text-xs font-medium transition-colors min-h-[44px] min-w-[80px] flex-shrink-0 ${
+                            selectedSuggestions[project.title]
+                              ? 'bg-blue-600 text-white'
+                              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                          }`}
+                        >
+                          {selectedSuggestions[project.title] ? 'Selected' : 'Select'}
+                        </button>
+                      </div>
 
-                        <ul className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-gray-700 mt-3">
-                          {project.bulletPoints.map((bullet, i) => (
+                      <ul className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-gray-700 mt-3">
+                        {project.bulletPoints.map((bullet, i) => (
+                          <li key={i} className="flex items-start break-words">
+                            <span className="text-green-600 mr-2">•</span>
+                            <span className="break-words">{bullet}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Manual Project Addition */}
+            <div className="bg-purple-50 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-purple-200">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 mb-4">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900 flex items-center">
+                  <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-purple-600" />
+                  Add Project Manually
+                </h2>
+                <button
+                  onClick={() => setShowManualForm(!showManualForm)}
+                  className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm flex items-center justify-center space-x-2 min-h-[44px]"
+                >
+                  {showManualForm ? <X className="w-3 h-3 sm:w-4 sm:h-4" /> : <Plus className="w-3 h-3 sm:w-4 sm:h-4" />}
+                  <span>{showManualForm ? 'Cancel' : 'Add Project'}</span>
+                </button>
+              </div>
+
+              {showManualForm && (
+                <div className="bg-white rounded-lg p-3 sm:p-4 border border-gray-200">
+                  <div className="space-y-3 sm:space-y-4">
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
+                        Project Title *
+                      </label>
+                      <input
+                        type="text"
+                        value={manualProject.title}
+                        onChange={(e) => setManualProject({...manualProject, title: e.target.value})}
+                        placeholder="e.g., E-commerce Website"
+                        className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm min-h-[44px]"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
+                        Tech Stack *
+                      </label>
+                      <div className="flex flex-col sm:flex-row gap-2 mb-2">
+                        <input
+                          type="text"
+                          value={manualProject.newTech}
+                          onChange={(e) => setManualProject({...manualProject, newTech: e.target.value})}
+                          placeholder="Add technology (e.g., React, Node.js)"
+                          className="w-full sm:flex-1 px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm min-h-[44px]"
+                          onKeyPress={(e) => e.key === 'Enter' && handleAddTech()}
+                        />
+                        <button
+                          onClick={handleAddTech}
+                          className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-colors text-sm min-h-[44px]"
+                        >
+                          Add
+                        </button>
+                      </div>
+                      <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
+                        {manualProject.techStack.map((tech, index) => (
+                          <span
+                            key={index}
+                            className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm bg-purple-100 text-purple-800"
+                          >
+                            {tech}
+                            <button
+                              onClick={() => handleRemoveTech(tech)}
+                              className="ml-1 sm:ml-2 text-purple-600 hover:text-purple-800 min-w-[20px] min-h-[20px] flex items-center justify-center"
+                            >
+                              <X className="w-3 h-3" />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
+                        Brief Description (Optional)
+                      </label>
+                      <textarea
+                        value={manualProject.description}
+                        onChange={(e) => setManualProject({...manualProject, description: e.target.value})}
+                        placeholder="Brief description of what the project does"
+                        className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 h-20 resize-none text-sm"
+                      />
+                    </div>
+
+                    {manualBullets.length > 0 ? (
+                      <div className="bg-green-50 p-3 sm:p-4 rounded-lg border border-green-200">
+                        <h4 className="font-medium text-green-800 mb-2 flex items-center text-sm">
+                          <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
+                          Generated Bullet Points
+                        </h4>
+                        <ul className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-gray-700">
+                          {manualBullets.map((bullet, i) => (
                             <li key={i} className="flex items-start break-words">
                               <span className="text-green-600 mr-2">•</span>
                               <span className="break-words">{bullet}</span>
@@ -675,161 +778,58 @@ export const ProjectAnalysisModal: React.FC<ProjectAnalysisModalProps> = ({
                           ))}
                         </ul>
                       </div>
-                    ))}
+                    ) : (
+                      <button
+                        onClick={handleGenerateManualBullets}
+                        disabled={!manualProject.title || manualProject.techStack.length === 0 || generatingBullets}
+                        className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2 text-sm min-h-[44px]"
+                      >
+                        {generatingBullets ? (
+                          <>
+                            <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
+                            <span>Generating Bullet Points...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Lightbulb className="w-3 h-3 sm:w-4 sm:h-4" />
+                            <span>Generate Bullet Points</span>
+                          </>
+                        )}
+                      </button>
+                    )}
+
+                    {manualBullets.length > 0 && (
+                      <button
+                        onClick={handleAddManualProject}
+                        className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition-colors text-sm min-h-[44px]"
+                      >
+                        Add Project to Resume
+                      </button>
+                    )}
                   </div>
                 </div>
               )}
+            </div>
 
-              {/* Manual Project Addition */}
-              <div className="bg-purple-50 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-purple-200">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0 mb-4">
-                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900 flex items-center">
-                    <Plus className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-purple-600" />
-                    Add Project Manually
-                  </h2>
-                  <button
-                    onClick={() => setShowManualForm(!showManualForm)}
-                    className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm flex items-center justify-center space-x-2 min-h-[44px]"
-                  >
-                    {showManualForm ? <X className="w-3 h-3 sm:w-4 sm:h-4" /> : <Plus className="w-3 h-3 sm:w-4 sm:h-4" />}
-                    <span>{showManualForm ? 'Cancel' : 'Add Project'}</span>
-                  </button>
-                </div>
-
-                {showManualForm && (
-                  <div className="bg-white rounded-lg p-3 sm:p-4 border border-gray-200">
-                    <div className="space-y-3 sm:space-y-4">
-                      <div>
-                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
-                          Project Title *
-                        </label>
-                        <input
-                          type="text"
-                          value={manualProject.title}
-                          onChange={(e) => setManualProject({...manualProject, title: e.target.value})}
-                          placeholder="e.g., E-commerce Website"
-                          className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm min-h-[44px]"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
-                          Tech Stack *
-                        </label>
-                        <div className="flex flex-col sm:flex-row gap-2 mb-2">
-                          <input
-                            type="text"
-                            value={manualProject.newTech}
-                            onChange={(e) => setManualProject({...manualProject, newTech: e.target.value})}
-                            placeholder="Add technology (e.g., React, Node.js)"
-                            className="w-full sm:flex-1 px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 text-sm min-h-[44px]"
-                            onKeyPress={(e) => e.key === 'Enter' && handleAddTech()}
-                          />
-                          <button
-                            onClick={handleAddTech}
-                            className="w-full sm:w-auto bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 px-4 rounded-lg transition-colors text-sm min-h-[44px]"
-                          >
-                            Add
-                          </button>
-                        </div>
-                        <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-                          {manualProject.techStack.map((tech, index) => (
-                            <span
-                              key={index}
-                              className="inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm bg-purple-100 text-purple-800"
-                            >
-                              {tech}
-                              <button
-                                onClick={() => handleRemoveTech(tech)}
-                                className="ml-1 sm:ml-2 text-purple-600 hover:text-purple-800 min-w-[20px] min-h-[20px] flex items-center justify-center"
-                              >
-                                <X className="w-3 h-3" />
-                              </button>
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
-                          Brief Description (Optional)
-                        </label>
-                        <textarea
-                          value={manualProject.description}
-                          onChange={(e) => setManualProject({...manualProject, description: e.target.value})}
-                          placeholder="Brief description of what the project does"
-                          className="w-full px-3 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 h-20 resize-none text-sm"
-                        />
-                      </div>
-
-                      {manualBullets.length > 0 ? (
-                        <div className="bg-green-50 p-3 sm:p-4 rounded-lg border border-green-200">
-                          <h4 className="font-medium text-green-800 mb-2 flex items-center text-sm">
-                            <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
-                            Generated Bullet Points
-                          </h4>
-                          <ul className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-gray-700">
-                            {manualBullets.map((bullet, i) => (
-                              <li key={i} className="flex items-start break-words">
-                                <span className="text-green-600 mr-2">•</span>
-                                <span className="break-words">{bullet}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ) : (
-                        <button
-                          onClick={handleGenerateManualBullets}
-                          disabled={!manualProject.title || manualProject.techStack.length === 0 || generatingBullets}
-                          className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center space-x-2 text-sm min-h-[44px]"
-                        >
-                          {generatingBullets ? (
-                            <>
-                              <Loader2 className="w-3 h-3 sm:w-4 sm:h-4 animate-spin" />
-                              <span>Generating Bullet Points...</span>
-                            </>
-                          ) : (
-                            <>
-                              <Lightbulb className="w-3 h-3 sm:w-4 sm:h-4" />
-                              <span>Generate Bullet Points</span>
-                            </>
-                          )}
-                        </button>
-                      )}
-
-                      {manualBullets.length > 0 && (
-                        <button
-                          onClick={handleAddManualProject}
-                          className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-3 px-4 rounded-lg transition-colors text-sm min-h-[44px]"
-                        >
-                          Add Project to Resume
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                )}
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
+              <div className="text-xs sm:text-sm text-gray-600 text-center sm:text-left">
+                {countSelectedProjects()} project{countSelectedProjects() !== 1 ? 's' : ''} selected
               </div>
-
-              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
-                <div className="text-xs sm:text-sm text-gray-600 text-center sm:text-left">
-                  {countSelectedProjects()} project{countSelectedProjects() !== 1 ? 's' : ''} selected
-                </div>
-                <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
-                  <button
-                    onClick={() => setStep('analysis')}
-                    className="w-full sm:w-auto px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors text-sm min-h-[44px]"
-                  >
-                    Back
-                  </button>
-                  <button
-                    onClick={handleApplyChanges}
-                    disabled={countSelectedProjects() === 0}
-                    className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-3 px-6 rounded-xl transition-colors flex items-center justify-center space-x-2 text-sm min-h-[44px]"
-                  >
-                    <span>Apply Changes & Preview</span>
-                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </button>
-                </div>
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
+                <button
+                  onClick={() => setStep('analysis')}
+                  className="w-full sm:w-auto px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors text-sm min-h-[44px]"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={handleApplyChanges}
+                  disabled={countSelectedProjects() === 0}
+                  className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-semibold py-3 px-6 rounded-xl transition-colors flex items-center justify-center space-x-2 text-sm min-h-[44px]"
+                >
+                  <span>Apply Changes & Preview</span>
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                </button>
               </div>
             </div>
           ) : step === 'preview' && updatedResume ? (
