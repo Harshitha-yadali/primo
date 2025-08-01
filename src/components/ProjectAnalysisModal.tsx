@@ -944,4 +944,3 @@ export const ProjectAnalysisModal: React.FC<ProjectAnalysisModalProps> = ({
       </div>
     </div>
   );
-};
