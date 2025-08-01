@@ -15,6 +15,7 @@ import { Tutorials } from './components/pages/Tutorials';
 import { AuthModal } from './components/auth/AuthModal';
 import { UserProfileManagement } from './components/UserProfileManagement';
 import { SubscriptionPlans } from './components/payment/SubscriptionPlans';
+import { paymentService } from './services/paymentService'; // Import paymentService
 
 
 function App() {
@@ -26,7 +27,7 @@ function App() {
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [profileViewMode, setProfileViewMode] = useState<'profile' | 'wallet'>('profile');
-
+  const [userSubscription, setUserSubscription] = useState<any>(null); // New state for user subscription
 
   // Handle mobile menu toggle
   const handleMobileMenuToggle = () => {
@@ -80,6 +81,19 @@ function App() {
     setCurrentPage('new-home');
   };
 
+  // Fetch user subscription on auth state change
+  useEffect(() => {
+    const fetchSubscription = async () => {
+      if (isAuthenticated && user) {
+        const sub = await paymentService.getUserSubscription(user.id);
+        setUserSubscription(sub);
+      } else {
+        setUserSubscription(null);
+      }
+    };
+    fetchSubscription();
+  }, [isAuthenticated, user]);
+  
   // Close mobile menu on window resize
   useEffect(() => {
     const handleResize = () => {
@@ -95,11 +109,11 @@ function App() {
   const renderCurrentPage = (isAuthenticatedProp: boolean) => {
     switch (currentPage) {
       case 'new-home':
-        return <HomePage onPageChange={setCurrentPage} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} onShowSubscriptionPlans={() => setShowSubscriptionPlans(true)} />;
+        return <HomePage onPageChange={setCurrentPage} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} onShowSubscriptionPlans={() => setShowSubscriptionPlans(true)} userSubscription={userSubscription} />;
       case 'guided-builder':
-        return <GuidedResumeBuilder onNavigateBack={() => setCurrentPage('new-home')} />;
+        return <GuidedResumeBuilder onNavigateBack={() => setCurrentPage('new-home')} userSubscription={userSubscription} onShowSubscriptionPlans={() => setShowSubscriptionPlans(true)} />;
       case 'score-checker':
-        return <ResumeScoreChecker onNavigateBack={() => setCurrentPage('new-home')} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} />;
+        return <ResumeScoreChecker onNavigateBack={() => setCurrentPage('new-home')} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} userSubscription={userSubscription} onShowSubscriptionPlans={() => setShowSubscriptionPlans(true)} />;
       case 'optimizer':
         return (
           <main className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -113,7 +127,7 @@ function App() {
       case 'tutorials':
         return <Tutorials />;
       case 'linkedin-generator':
-        return <LinkedInMessageGenerator onNavigateBack={() => setCurrentPage('new-home')} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} />;
+        return <LinkedInMessageGenerator onNavigateBack={() => setCurrentPage('new-home')} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} userSubscription={userSubscription} onShowSubscriptionPlans={() => setShowSubscriptionPlans(true)} />;
       default:
         return <HomePage onPageChange={setCurrentPage} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} />;
     }
@@ -121,7 +135,7 @@ function App() {
 
   // This line must be inside App component if App itself is not wrapped by AuthProvider.
   // If App is wrapped by AuthProvider at a higher level (e.g., index.tsx), then this is fine.
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
 
   return (
     <div className="min-h-screen pb-safe-bottom safe-area">
