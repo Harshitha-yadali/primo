@@ -88,7 +88,7 @@ export default {
       maxWidth: {
         '8xl': '88rem',
         'prose': '75ch',
-        '10xl':'120rem',
+        '10xl':'110rem',
       },
       // Animation and transitions
       animation: {
