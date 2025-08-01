@@ -119,6 +119,8 @@ SKILLS REQUIREMENTS:
 4. Match skills to job requirements and industry standards
 5. Include both technical and soft skills relevant to the role
 6.NO NEED TO GENERATE SOFT SKILLS
+CERTIFICATIONS REQUIREMENTS:
+1. For each certification, provide a concise 2-3 sentence description in the 'description' field.
 
 SOCIAL LINKS REQUIREMENTS - CRITICAL:
 1. LinkedIn URL: "${linkedinUrl || ''}" - ONLY include if this is NOT empty
