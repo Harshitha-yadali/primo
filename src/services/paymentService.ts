@@ -27,6 +27,7 @@ class PaymentService {
       scoreChecks: 50,
       linkedinMessages: Infinity, // Unlimited
       guidedBuilds: 5,
+      linkedinOptimizations: 1, // New field for LinkedIn optimization count
       tag: 'Serious job seekers & job switchers',
       tagColor: 'text-purple-800 bg-purple-100',
       gradient: 'from-purple-500 to-indigo-500',
@@ -52,6 +53,7 @@ class PaymentService {
       scoreChecks: 30,
       linkedinMessages: Infinity, // Unlimited
       guidedBuilds: 3,
+      linkedinOptimizations: 1, // New field for LinkedIn optimization count
       tag: 'Active job seekers',
       tagColor: 'text-blue-800 bg-blue-100',
       gradient: 'from-blue-500 to-cyan-500',
@@ -73,6 +75,7 @@ class PaymentService {
       scoreChecks: 20,
       linkedinMessages: 100,
       guidedBuilds: 2,
+      linkedinOptimizations: 0, // New field for LinkedIn optimization count
       tag: 'Freshers & intern seekers',
       tagColor: 'text-orange-800 bg-orange-100',
       gradient: 'from-orange-500 to-red-500',
@@ -93,6 +96,7 @@ class PaymentService {
       scoreChecks: 10,
       linkedinMessages: 50,
       guidedBuilds: 1,
+      linkedinOptimizations: 0, // New field for LinkedIn optimization count
       tag: 'Targeted resume improvement',
       tagColor: 'text-green-800 bg-green-100',
       gradient: 'from-green-500 to-emerald-500',
@@ -113,6 +117,7 @@ class PaymentService {
       scoreChecks: 2,
       linkedinMessages: 0,
       guidedBuilds: 0,
+      linkedinOptimizations: 0, // New field for LinkedIn optimization count
       tag: 'Quick fixes for job applications',
       tagColor: 'text-gray-800 bg-gray-100',
       gradient: 'from-gray-500 to-gray-700',
@@ -131,6 +136,7 @@ class PaymentService {
       scoreChecks: 2,
       linkedinMessages: 10,
       guidedBuilds: 0,
+      linkedinOptimizations: 0, // New field for LinkedIn optimization count
       tag: 'First-time premium users',
       tagColor: 'text-teal-800 bg-teal-100',
       gradient: 'from-teal-500 to-blue-500',
@@ -150,6 +156,7 @@ class PaymentService {
       scoreChecks: 2,
       linkedinMessages: 5,
       guidedBuilds: 0,
+      linkedinOptimizations: 0, // New field for LinkedIn optimization count
       tag: 'New users just exploring',
       tagColor: 'text-yellow-800 bg-yellow-100',
       gradient: 'from-yellow-500 to-orange-500',
@@ -504,6 +511,8 @@ class PaymentService {
           linkedin_messages_total: plan.linkedinMessages,
           guided_builds_used: 0,
           guided_builds_total: plan.guidedBuilds,
+          linkedin_optimizations_used: 0, // New field
+          linkedin_optimizations_total: plan.linkedinOptimizations, // New field
           payment_id: null,
           coupon_used: couponCode || null,
           created_at: now.toISOString(),
@@ -539,7 +548,9 @@ class PaymentService {
           linkedin_messages_used,
           linkedin_messages_total,
           guided_builds_used,
-          guided_builds_total
+          guided_builds_total,
+          linkedin_optimizations_used,
+          linkedin_optimizations_total
         `)
         .eq('user_id', userId)
         .eq('status', 'active')
@@ -573,7 +584,9 @@ class PaymentService {
         linkedinMessagesUsed: data.linkedin_messages_used,
         linkedinMessagesTotal: data.linkedin_messages_total,
         guidedBuildsUsed: data.guided_builds_used,
-        guidedBuildsTotal: data.guided_builds_total
+        guidedBuildsTotal: data.guided_builds_total,
+        linkedinOptimizationsUsed: data.linkedin_optimizations_used,
+        linkedinOptimizationsTotal: data.linkedin_optimizations_total
       };
     } catch (error) {
       console.error('Error getting user subscription:', error);
@@ -581,171 +594,214 @@ class PaymentService {
     }
   }
 
-  // Use optimization (decrement count)
-  async useOptimization(userId: string): Promise<{ success: boolean; remaining: number }> {
-    try {
-      // Get active subscription
-      const subscription = await this.getUserSubscription(userId);
-      
-      if (!subscription) {
-        return { success: false, remaining: 0 };
-      }
+  // Use optimization (decrement count)
+  async useOptimization(userId: string): Promise<{ success: boolean; remaining: number }> {
+    try {
+      // Get active subscription
+      const subscription = await this.getUserSubscription(userId);
+      
+      if (!subscription) {
+        return { success: false, remaining: 0 };
+      }
 
-      const remaining = subscription.optimizationsTotal - subscription.optimizationsUsed;
-      
-      if (remaining <= 0) {
-        return { success: false, remaining: 0 };
-      }
+      const remaining = subscription.optimizationsTotal - subscription.optimizationsUsed;
+      
+      if (remaining <= 0) {
+        return { success: false, remaining: 0 };
+      }
 
-      // Update optimization count
-      const { error } = await supabase
-        .from('subscriptions')
-        .update({  
-          optimizations_used: subscription.optimizationsUsed + 1,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', subscription.id);
+      // Update optimization count
+      const { error } = await supabase
+        .from('subscriptions')
+        .update({  
+          optimizations_used: subscription.optimizationsUsed + 1,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', subscription.id);
 
-      if (error) {
-        console.error('Error using optimization:', error);
-        return { success: false, remaining: 0 };
-      }
+      if (error) {
+        console.error('Error using optimization:', error);
+        return { success: false, remaining: 0 };
+      }
 
-      return { success: true, remaining: remaining - 1 };
-    } catch (error) {
-      console.error('Error using optimization:', error);
-      return { success: false, remaining: 0 };
-    }
-  }
+      return { success: true, remaining: remaining - 1 };
+    } catch (error) {
+      console.error('Error using optimization:', error);
+      return { success: false, remaining: 0 };
+    }
+  }
 
-  // Check if user can optimize
-  async canOptimize(userId: string): Promise<{ canOptimize: boolean; remaining: number; subscription?: Subscription }> {
-    try {
-      const subscription = await this.getUserSubscription(userId);
-      
-      if (!subscription) {
-        return { canOptimize: false, remaining: 0 };
-      }
+  // Check if user can optimize
+  async canOptimize(userId: string): Promise<{ canOptimize: boolean; remaining: number; subscription?: Subscription }> {
+    try {
+      const subscription = await this.getUserSubscription(userId);
+      
+      if (!subscription) {
+        return { canOptimize: false, remaining: 0 };
+      }
 
-      const remaining = subscription.optimizationsTotal - subscription.optimizationsUsed;
-      
-      return {  
-        canOptimize: remaining > 0,  
-        remaining,
-        subscription
-      };
-    } catch (error) {
-      console.error('Error checking subscription:', error);
-      return { canOptimize: false, remaining: 0 };
-    }
-  }
+      const remaining = subscription.optimizationsTotal - subscription.optimizationsUsed;
+      
+      return {  
+        canOptimize: remaining > 0,  
+        remaining,
+        subscription
+      };
+    } catch (error) {
+      console.error('Error checking subscription:', error);
+      return { canOptimize: false, remaining: 0 };
+    }
+  }
 
-  // Get subscription history
-  async getSubscriptionHistory(userId: string): Promise<Subscription[]> {
-    try {
-      const { data, error } = await supabase
-        .from('subscriptions')
-        .select(`
-          *,
-          optimizations_used,
-          optimizations_total,
-          score_checks_used,
-          score_checks_total,
-          linkedin_messages_used,
-          linkedin_messages_total,
-          guided_builds_used,
-          guided_builds_total
-        `)
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false });
+  // Get subscription history
+  async getSubscriptionHistory(userId: string): Promise<Subscription[]> {
+    try {
+      const { data, error } = await supabase
+        .from('subscriptions')
+        .select(`
+          *,
+          optimizations_used,
+          optimizations_total,
+          score_checks_used,
+          score_checks_total,
+          linkedin_messages_used,
+          linkedin_messages_total,
+          guided_builds_used,
+          guided_builds_total,
+          linkedin_optimizations_used,
+          linkedin_optimizations_total
+        `)
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error getting subscription history:', error);
-        return [];
-      }
+      if (error) {
+        console.error('Error getting subscription history:', error);
+        return [];
+      }
 
-      return data.map(sub => ({
-        id: sub.id,
-        userId: sub.user_id,
-        planId: sub.plan_id,
-        status: sub.status,
-        startDate: sub.start_date,
-        endDate: sub.end_date,
-        optimizationsUsed: sub.optimizations_used,
-        optimizationsTotal: sub.optimizations_total,
-        paymentId: sub.payment_id,
-        couponUsed: sub.coupon_used,
-        scoreChecksUsed: sub.score_checks_used,
-        scoreChecksTotal: sub.score_checks_total,
-        linkedinMessagesUsed: sub.linkedin_messages_used,
-        linkedinMessagesTotal: sub.linkedin_messages_total,
-        guidedBuildsUsed: sub.guided_builds_used,
-        guidedBuildsTotal: sub.guided_builds_total
-      }));
-    } catch (error) {
-      console.error('Error getting subscription history:', error);
-      return [];
-    }
-  }
+      return data.map(sub => ({
+        id: sub.id,
+        userId: sub.user_id,
+        planId: sub.plan_id,
+        status: sub.status,
+        startDate: sub.start_date,
+        endDate: sub.end_date,
+        optimizationsUsed: sub.optimizations_used,
+        optimizationsTotal: sub.optimizations_total,
+        paymentId: sub.payment_id,
+        couponUsed: sub.coupon_used,
+        scoreChecksUsed: sub.score_checks_used,
+        scoreChecksTotal: sub.score_checks_total,
+        linkedinMessagesUsed: sub.linkedin_messages_used,
+        linkedinMessagesTotal: sub.linkedin_messages_total,
+        guidedBuildsUsed: sub.guided_builds_used,
+        guidedBuildsTotal: sub.guided_builds_total,
+        linkedinOptimizationsUsed: sub.linkedin_optimizations_used,
+        linkedinOptimizationsTotal: sub.linkedin_optimizations_total
+      }));
+    } catch (error) {
+      console.error('Error getting subscription history:', error);
+      return [];
+    }
+  }
 
-  // Get payment transactions
-  async getPaymentHistory(userId: string): Promise<any[]> {
-    try {
-      const { data, error } = await supabase
-        .from('payment_transactions')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false });
+  // Get payment transactions
+  async getPaymentHistory(userId: string): Promise<any[]> {
+    try {
+      const { data, error } = await supabase
+        .from('payment_transactions')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error getting payment history:', error);
-        return [];
-      }
+      if (error) {
+        console.error('Error getting payment history:', error);
+        return [];
+      }
 
-      return data;
-    } catch (error) {
-      console.error('Error getting payment history:', error);
-      return [];
-    }
-  }
+      return data;
+    } catch (error) {
+      console.error('Error getting payment history:', error);
+      return [];
+    }
+  }
 
-  // Cancel subscription
-  async cancelSubscription(subscriptionId: string): Promise<{ success: boolean; error?: string }> {
-    try {
-      const { error } = await supabase
-        .from('subscriptions')
-        .update({ status: 'cancelled' })
-        .eq('id', subscriptionId);
+  // Cancel subscription
+  async cancelSubscription(subscriptionId: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      const { error } = await supabase
+        .from('subscriptions')
+        .update({ status: 'cancelled' })
+        .eq('id', subscriptionId);
 
-      if (error) {
-        console.error('Error cancelling subscription:', error);
-        return { success: false, error: 'Failed to cancel subscription' };
-      }
+      if (error) {
+        console.error('Error cancelling subscription:', error);
+        return { success: false, error: 'Failed to cancel subscription' };
+      }
 
-      return { success: true };
-    } catch (error) {
-      console.error('Error cancelling subscription:', error);
-      return { success: false, error: 'Failed to cancel subscription' };
-    }
-  }
+      return { success: true };
+    } catch (error) {
+      console.error('Error cancelling subscription:', error);
+      return { success: false, error: 'Failed to cancel subscription' };
+    }
+  }
 
-  // Activate free trial for new users
-  async activateFreeTrial(userId: string): Promise<{ success: boolean; error?: string }> {
-    try {
-      // Check if user already has an active subscription
-      const existingSubscription = await this.getUserSubscription(userId);
-      if (existingSubscription) {
-        return { success: false, error: 'User already has an active subscription' };
-      }
+  // Activate free trial for new users
+  async activateFreeTrial(userId: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      // Check if user already has an active subscription
+      const existingSubscription = await this.getUserSubscription(userId);
+      if (existingSubscription) {
+        return { success: false, error: 'User already has an active subscription' };
+      }
 
-      // Create free trial subscription
-      const result = await this.processFreeSubscription('free_trial', userId);
-      return result;
-    } catch (error) {
-      console.error('Error activating free trial:', error);
-      return { success: false, error: 'Failed to activate free trial' };
-    }
-  }
+      // Create free trial subscription
+      const result = await this.processFreeSubscription('free_trial', userId);
+      return result;
+    } catch (error) {
+      console.error('Error activating free trial:', error);
+      return { success: false, error: 'Failed to activate free trial' };
+    }
+  }
+
+  // New method to use a LinkedIn optimization credit
+  async useLinkedInOptimization(userId: string): Promise<{ success: boolean; link?: string; remaining?: number; error?: string }> {
+    try {
+      const subscription = await this.getUserSubscription(userId);
+
+      // Check if user has an active subscription with LinkedIn optimization credits
+      if (!subscription || subscription.linkedinOptimizationsTotal <= subscription.linkedinOptimizationsUsed) {
+        return { success: false, remaining: 0, error: 'No LinkedIn optimization credits available.' };
+      }
+
+      const newUsedCount = subscription.linkedinOptimizationsUsed + 1;
+
+      // Update the subscription in the database
+      const { error } = await supabase
+        .from('subscriptions')
+        .update({
+          linkedin_optimizations_used: newUsedCount,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', subscription.id);
+
+      if (error) {
+        console.error('Error using LinkedIn optimization:', error);
+        return { success: false, remaining: subscription.linkedinOptimizationsTotal - subscription.linkedinOptimizationsUsed, error: 'Failed to update optimization count.' };
+      }
+      
+      const remaining = subscription.linkedinOptimizationsTotal - newUsedCount;
+
+      // Return a success message with a hardcoded placeholder link
+      // This could be made dynamic based on newUsedCount if needed
+      const link = `https://linkedin-optimization-link.com/${subscription.id}/${newUsedCount}`;
+      return { success: true, link, remaining };
+
+    } catch (error) {
+      console.error('Error in useLinkedInOptimization:', error);
+      return { success: false, remaining: 0, error: 'An unexpected error occurred.' };
+    }
+  }
 }
 
 export const paymentService = new PaymentService();
