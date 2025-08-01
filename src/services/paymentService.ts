@@ -98,7 +98,7 @@ class PaymentService {
       icon: 'target',
       features: [
         '✅ 5 JD-Based Optimizations',
-        '✅ 1 Guided Resume Build',
+        '✅ 2 Guided Resume Build',
         '✅ 10 Resume Score Checks',
         '✅ 50 LinkedIn Messages'
       ]
@@ -119,6 +119,7 @@ class PaymentService {
       features: [
         '✅ 2 JD-Based Optimizations',
         '✅ 2 Resume Score Checks'
+        '✅ 1 Guided Resume Build'
       ]
     },
     {
