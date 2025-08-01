@@ -14,7 +14,9 @@ import {
   Crown,
   MessageCircle,
   Check,
-  Plus
+  Plus,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react';
 import { paymentService } from '../../services/paymentService';
 
@@ -42,6 +44,8 @@ export const HomePage: React.FC<HomePageProps> = ({
   onShowSubscriptionPlans,
   userSubscription // Destructure new prop
 }) => {
+  const [showOptimizationDropdown, setShowOptimizationDropdown] = React.useState(false);
+
   // Helper function to get plan icon based on icon string
   const getPlanIcon = (iconType: string) => {
     switch (iconType) {
