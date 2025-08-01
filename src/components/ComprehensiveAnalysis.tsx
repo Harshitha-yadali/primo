@@ -6,8 +6,8 @@ import { getDetailedResumeScore } from '../services/scoringService'; // This imp
 import { analyzeProjectAlignment } from '../services/projectAnalysisService'; // This import seems unused, but I'll leave it as it was in original
 
 interface ComprehensiveAnalysisProps {
-  beforeScore: MatchScore;
-  afterScore: MatchScore;
+  initialDetailedScore: DetailedScore;
+  finalDetailedScore: DetailedScore;
   changedSections: string[];
   resumeData: ResumeData; // This prop seems unused here, but I'll leave it as it was in original
   jobDescription: string; // This prop seems unused here, but I'll leave it as it was in original
@@ -15,14 +15,14 @@ interface ComprehensiveAnalysisProps {
 }
 
 export const ComprehensiveAnalysis: React.FC<ComprehensiveAnalysisProps> = ({
-  beforeScore,
-  afterScore,
+  initialDetailedScore,
+  finalDetailedScore,
   changedSections,
   resumeData,
   jobDescription,
   targetRole
 }) => {
-  const improvement = afterScore.score - beforeScore.score;
+  const improvement = finalDetailedScore.totalScore - initialDetailedScore.totalScore;
 
   // State to manage the open/close state of each collapsible section
   const [openSections, setOpenSections] = useState<{[key: string]: boolean}>({});
@@ -175,7 +175,7 @@ export const ComprehensiveAnalysis: React.FC<ComprehensiveAnalysisProps> = ({
             <div className="text-center">
               <h4 className="text-fluid-base sm:text-fluid-lg font-semibold text-secondary-900 mb-3 sm:mb-4">Before Optimization</h4>
               <div className="flex justify-center mb-3 sm:mb-4">
-                <PieChart score={beforeScore.score} size={100} strokeWidth={6} />
+                <PieChart score={initialDetailedScore.totalScore} size={100} strokeWidth={6} />
               </div>
               <div className="mb-3">
                 <span className="px-3 py-1 rounded-full text-fluid-sm font-medium bg-red-100 text-red-800">
@@ -183,7 +183,7 @@ export const ComprehensiveAnalysis: React.FC<ComprehensiveAnalysisProps> = ({
                 </span>
               </div>
               <p className="text-fluid-xs sm:text-fluid-sm text-secondary-600 leading-relaxed">
-                {beforeScore.analysis}
+                {initialDetailedScore.analysis}
               </p>
             </div>
 
@@ -203,7 +203,7 @@ export const ComprehensiveAnalysis: React.FC<ComprehensiveAnalysisProps> = ({
             <div className="text-center">
               <h4 className="text-fluid-base sm:text-fluid-lg font-semibold text-secondary-900 mb-3 sm:mb-4">After Optimization</h4>
               <div className="flex justify-center mb-3 sm:mb-4">
-                <PieChart score={afterScore.score} size={100} strokeWidth={6} />
+                <PieChart score={finalDetailedScore.totalScore} size={100} strokeWidth={6} />
               </div>
               <div className="mb-3">
                 <span className="px-3 py-1 rounded-full text-fluid-sm font-medium bg-green-100 text-green-800">
@@ -211,7 +211,7 @@ export const ComprehensiveAnalysis: React.FC<ComprehensiveAnalysisProps> = ({
                 </span>
               </div>
               <p className="text-fluid-xs sm:text-fluid-sm text-secondary-600 leading-relaxed">
-                {afterScore.analysis}
+                {finalDetailedScore.analysis}
               </p>
             </div>
           </div>
@@ -245,7 +245,7 @@ export const ComprehensiveAnalysis: React.FC<ComprehensiveAnalysisProps> = ({
           </h3>
 
           {/* Iterate through each breakdown category in afterScore.breakdown */}
-          {Object.entries(afterScore.breakdown).map(([key, category]) => (
+          {Object.entries(finalDetailedScore.breakdown).map(([key, category]) => (
             <div key={key} className="bg-white rounded-xl shadow-sm border border-gray-200 mb-3">
               <button
                 onClick={() => toggleSection(key)}
@@ -280,14 +280,14 @@ export const ComprehensiveAnalysis: React.FC<ComprehensiveAnalysisProps> = ({
         </div>
 
         {/* Overall Recommendations */}
-        {afterScore.recommendations && afterScore.recommendations.length > 0 && (
+        {finalDetailedScore.recommendations && finalDetailedScore.recommendations.length > 0 && (
           <div className="bg-primary-50 rounded-xl p-4 sm:p-6 border border-primary-200 mb-6 lg:mb-8">
             <h4 className="text-fluid-base sm:text-fluid-lg font-semibold text-secondary-900 mb-3 sm:mb-4 flex items-center">
               <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-primary-600" />
               Overall Recommendations
             </h4>
             <ul className="space-y-2">
-              {afterScore.recommendations.map((rec, index) => (
+              {finalDetailedScore.recommendations.map((rec, index) => (
                 <li key={index} className="flex items-start">
                   <div className="w-2 h-2 bg-primary-500 rounded-full mr-3 mt-2 flex-shrink-0"></div>
                   <span className="text-fluid-xs sm:text-fluid-sm text-secondary-700">{rec}</span>
@@ -307,7 +307,7 @@ export const ComprehensiveAnalysis: React.FC<ComprehensiveAnalysisProps> = ({
               </h3>
             </div>
             <p className="text-fluid-xs sm:text-fluid-sm text-secondary-700 mb-3">
-              Your resume score improved by <strong>{improvement} points</strong> (from {beforeScore.score}% to {afterScore.score}%), 
+              Your resume score improved by <strong>{improvement} points</strong> (from {initialDetailedScore.totalScore}% to {finalDetailedScore.totalScore}%),
               making it significantly more competitive and likely to pass ATS systems.
             </p>
             <div className="flex flex-wrap justify-center gap-2 text-fluid-xs">
@@ -321,7 +321,7 @@ export const ComprehensiveAnalysis: React.FC<ComprehensiveAnalysisProps> = ({
                 Industry Aligned
               </span>
               <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full">
-                {afterScore.score >= 90 ? 'Excellent Score' : 'Good Score'}
+                {finalDetailedScore.totalScore >= 90 ? 'Excellent Score' : 'Good Score'}
               </span>
             </div>
           </div>
