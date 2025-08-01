@@ -874,4 +874,74 @@ export const ProjectAnalysisModal: React.FC<ProjectAnalysisModalProps> = ({
                   </div>
                 </div>
 
-                <div className="bg-blue-50
+                <div className="bg-blue-50 p-3 sm:p-4 rounded-lg border border-blue-200">
+                  <div className="flex flex-col space-y-3">
+                    <div className="flex items-start">
+                      <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" />
+                      <div className="text-xs sm:text-sm text-blue-800">
+
+                        <p className="break-words">GitHub links are **not** included in the final exported document.</p> {/* Updated text */}
+                      </div>
+                    </div>
+
+                    {updatedResume.projects?.some(p => p.githubUrl) && (
+                      <div className="mt-2 bg-white p-2 sm:p-3 rounded-lg border border-blue-100">
+                        <h5 className="font-medium text-blue-800 mb-2 text-xs sm:text-sm">🔗 Referenced Projects</h5>
+                        <ul className="space-y-1 max-h-32 overflow-y-auto">
+                          {updatedResume.projects
+                            .filter(p => p.githubUrl)
+                            .map((p, idx) => (
+                              <li key={idx} className="text-xs sm:text-sm break-words">
+                                <span className="font-medium break-words">{p.title}:</span>{' '}
+                                <a
+                                  href={p.githubUrl as string}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-blue-600 hover:text-blue-800 break-all min-h-[44px] inline-flex items-center"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  {p.githubUrl}
+                                </a>
+                              </li>
+                            ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
+                <button
+                  onClick={() => setStep('selection')}
+                  className="w-full sm:w-auto px-4 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors text-sm min-h-[44px]"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={handleFinish}
+                  className="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors flex items-center justify-center space-x-2 text-sm min-h-[44px]"
+                >
+                  <span>Apply Changes to Resume</span>
+                  <CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-8 sm:py-12 px-4">
+              <AlertTriangle className="w-10 h-10 sm:w-12 sm:h-12 text-orange-500 mx-auto mb-4" />
+              <p className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">No Analysis Available</p>
+              <p className="text-sm sm:text-base text-gray-600 mb-4 break-words">There was a problem analyzing your projects. Please try again.</p>
+              <button
+                onClick={analyzeProjects}
+                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors text-sm min-h-[44px]"
+              >
+                Retry Analysis
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
