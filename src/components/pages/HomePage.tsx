@@ -52,6 +52,13 @@ export const HomePage: React.FC<HomePageProps> = ({
   };
 
   const features: Feature[] = [
+     {
+      id: 'optimizer',
+      title: 'JD-Based Optimizer',
+      description: 'Upload your resume and a job description to get a perfectly tailored resume.',
+      icon: <Target className="w-6 h-6" />,
+      requiresAuth: false
+    },
     {
       id: 'score-checker',
       title: 'Resume Score Check',
@@ -66,13 +73,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       icon: <PlusCircle className="w-6 h-6" />,
       requiresAuth: true
     },
-    {
-      id: 'optimizer',
-      title: 'JD-Based Optimizer',
-      description: 'Upload your resume and a job description to get a perfectly tailored resume.',
-      icon: <Target className="w-6 h-6" />,
-      requiresAuth: false
-    },
+   
     {
       id: 'linkedin-generator',
       title: 'LinkedIn Message Generator',
