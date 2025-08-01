@@ -6,6 +6,9 @@ export interface SubscriptionPlan {
   features: string[];
   popular?: boolean;
   optimizations: number;
+  scoreChecks: number;
+  linkedinMessages: number;
+  guidedBuilds: number;
   tag: string;
   tagColor: string;
   gradient: string;
@@ -66,6 +69,12 @@ export interface Subscription {
   optimizationsTotal: number;
   paymentId?: string;
   couponUsed?: string;
+  scoreChecksUsed: number;
+  scoreChecksTotal: number;
+  linkedinMessagesUsed: number;
+  linkedinMessagesTotal: number;
+  guidedBuildsUsed: number;
+  guidedBuildsTotal: number;
   scoreChecksUsed: number;
   scoreChecksTotal: number;
   linkedinMessagesUsed: number;

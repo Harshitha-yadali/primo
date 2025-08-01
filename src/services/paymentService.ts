@@ -573,6 +573,12 @@ class PaymentService {
         linkedinMessagesUsed: data.linkedin_messages_used,
         linkedinMessagesTotal: data.linkedin_messages_total,
         guidedBuildsUsed: data.guided_builds_used,
+        couponUsed: data.coupon_used,
+        scoreChecksUsed: data.score_checks_used,
+        scoreChecksTotal: data.score_checks_total,
+        linkedinMessagesUsed: data.linkedin_messages_used,
+        linkedinMessagesTotal: data.linkedin_messages_total,
+        guidedBuildsUsed: data.guided_builds_used,
         guidedBuildsTotal: data.guided_builds_total
       };
     } catch (error) {
@@ -645,7 +651,17 @@ class PaymentService {
     try {
       const { data, error } = await supabase
         .from('subscriptions')
-        .select('*')
+        .select(`
+          *,
+          optimizations_used,
+          optimizations_total,
+          score_checks_used,
+          score_checks_total,
+          linkedin_messages_used,
+          linkedin_messages_total,
+          guided_builds_used,
+          guided_builds_total
+        `)
         .eq('user_id', userId)
         .order('created_at', { ascending: false });
 
