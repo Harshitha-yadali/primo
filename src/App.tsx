@@ -14,6 +14,7 @@ import { Contact } from './components/pages/Contact';
 import { Tutorials } from './components/pages/Tutorials';
 import { AuthModal } from './components/auth/AuthModal';
 import { UserProfileManagement } from './components/UserProfileManagement';
+import { SubscriptionPlans } from './components/payment/SubscriptionPlans';
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showProfileManagement, setShowProfileManagement] = useState(false);
+  const [showSubscriptionPlans, setShowSubscriptionPlans] = useState(false);
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [profileViewMode, setProfileViewMode] = useState<'profile' | 'wallet'>('profile');
@@ -93,7 +95,7 @@ function App() {
   const renderCurrentPage = (isAuthenticatedProp: boolean) => {
     switch (currentPage) {
       case 'new-home':
-        return <HomePage onPageChange={setCurrentPage} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} />;
+        return <HomePage onPageChange={setCurrentPage} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} onShowSubscriptionPlans={() => setShowSubscriptionPlans(true)} />;
       case 'guided-builder':
         return <GuidedResumeBuilder onNavigateBack={() => setCurrentPage('new-home')} />;
       case 'score-checker':
@@ -295,6 +297,23 @@ function App() {
         onProfileCompleted={handleProfileCompleted}
         viewMode={profileViewMode}
       />
+
+      {/* Subscription Plans Modal */}
+      {showSubscriptionPlans && (
+        <SubscriptionPlans
+          isOpen={showSubscriptionPlans}
+          onNavigateBack={() => setShowSubscriptionPlans(false)}
+          onSubscriptionSuccess={() => {
+            setShowSubscriptionPlans(false);
+            setSuccessMessage('Subscription activated successfully!');
+            setShowSuccessNotification(true);
+            setTimeout(() => {
+              setShowSuccessNotification(false);
+              setSuccessMessage('');
+            }, 3000);
+          }}
+        />
+      )}
     </div>
   );
 }
