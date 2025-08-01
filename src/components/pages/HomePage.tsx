@@ -202,102 +202,76 @@ export const HomePage: React.FC<HomePageProps> = ({
       </div>
 
       {/* Minimalist Plans Section */}
-      <div className="bg-white py-16">
-        <div className="container-responsive">
-          <div className="text-center mb-12">
-            <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-              🏆 Choose Your Perfect Plan
-            </h3>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Affordable AI-powered resume optimization starting from just ₹99
-            </p>
-          </div>
-
-          {/* Top 3 Plans Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            {paymentService.getPlans()
-              .filter(p => ['career_pro_max', 'pro_resume_kit', 'lite_check'].includes(p.id))
-              .map((plan) => (
-                <div
-                  key={plan.id}
-                  className={`relative bg-white rounded-2xl shadow-lg border-2 transition-all duration-300 hover:shadow-xl hover:scale-105 ${
-                    plan.popular
-                      ? 'border-purple-500 ring-2 ring-purple-200'
-                      : 'border-gray-200 hover:border-purple-300'
-                  }`}
-                >
-                  {plan.popular && (
-                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-1 rounded-full text-xs font-bold shadow-lg">
-                        🏆 Most Popular
-                      </span>
+      {isAuthenticated && (
+        <div className="bg-white py-16">
+          <div className="container-responsive">
+            <div className="text-center mb-12">
+              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+                🏆 Choose Your Perfect Plan
+              </h3>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                Unlock full potential with our flexible and affordable AI-powered resume optimization plans.
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {paymentService.getPlans()
+                .filter(p => ['career_pro_max', 'career_boost_plus', 'pro_resume_kit'].includes(p.id))
+                .map((plan) => (
+                  <div
+                    key={plan.id}
+                    className={`relative rounded-xl shadow-lg border-2 transition-all duration-300 ${
+                      plan.popular ? 'border-indigo-500 shadow-2xl shadow-indigo-500/20 ring-4 ring-indigo-100' : 'border-gray-200 hover:border-indigo-300 hover:shadow-xl'
+                    }`}
+                  >
+                    {plan.popular && (
+                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                        <span className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+                          🏆 Most Popular
+                        </span>
+                      </div>
+                    )}
+                    <div className="p-6 text-center">
+                      <div className={`bg-gradient-to-r ${plan.gradient} w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4 text-white shadow-lg`}>
+                        {getPlanIcon(plan.icon)}
+                      </div>
+                      <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+                      <p className="text-gray-600 text-sm mb-4">{plan.tag}</p>
+                      <div className="text-3xl font-bold text-gray-900 mb-4">₹{plan.price}</div>
+                      <ul className="text-left text-sm text-gray-700 space-y-2 mb-6">
+                        {plan.features.slice(0, 3).map((feature, idx) => (
+                          <li key={idx} className="flex items-center">
+                            <Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
+                            <span>{feature}</span>
+                          </li>
+                        ))}
+                        {plan.features.length > 3 && (
+                          <li className="flex items-center text-gray-500">
+                            <Plus className="w-4 h-4 mr-2 flex-shrink-0" />
+                            <span>{plan.features.length - 3} more features...</span>
+                          </li>
+                        )}
+                      </ul>
+                      <button
+                        onClick={onShowSubscriptionPlans}
+                        className="w-full btn-primary py-3"
+                      >
+                        Get Started
+                      </button>
                     </div>
-                  )}
-
-                  <div className="p-6 text-center">
-                    {/* Plan Icon */}
-                    <div className={`bg-gradient-to-r ${plan.gradient} w-14 h-14 rounded-xl flex items-center justify-center mx-auto mb-4 text-white shadow-lg`}>
-                      {getPlanIcon(plan.icon)}
-                    </div>
-
-                    {/* Plan Name & Tag */}
-                    <h4 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h4>
-                    <p className="text-sm text-gray-600 mb-4">{plan.tag}</p>
-
-                    {/* Price */}
-                    <div className="mb-6">
-                      <span className="text-3xl font-bold text-gray-900">₹{plan.price}</span>
-                      <span className="text-gray-600 text-sm ml-1">one-time</span>
-                    </div>
-
-                    {/* Key Features (Top 3) */}
-                    <ul className="text-left text-sm space-y-2 mb-6">
-                      {plan.features.slice(0, 3).map((feature, idx) => (
-                        <li key={idx} className="flex items-start">
-                          <Check className="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                          <span className="text-gray-700">{feature}</span>
-                        </li>
-                      ))}
-                      {plan.features.length > 3 && (
-                        <li className="flex items-center text-gray-500 text-xs">
-                          <Plus className="w-3 h-3 mr-2" />
-                          <span>+{plan.features.length - 3} more features</span>
-                        </li>
-                      )}
-                    </ul>
-
-                    {/* Get Started Button */}
-                    <button
-                      onClick={onShowSubscriptionPlans}
-                      className={`w-full py-3 px-4 rounded-xl font-semibold transition-all duration-300 ${
-                        plan.popular
-                          ? 'bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg'
-                          : 'bg-gray-900 hover:bg-gray-800 text-white'
-                      }`}
-                    >
-                      Get Started
-                    </button>
                   </div>
-                </div>
-              ))}
-          </div>
-
-          {/* View All Plans Button */}
-          <div className="text-center">
-            <button
-              onClick={onShowSubscriptionPlans}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center space-x-2 mx-auto"
-            >
-              <Crown className="w-5 h-5" />
-              <span>View All Plans & Add-ons</span>
-              <ArrowRight className="w-5 h-5" />
-            </button>
-            <p className="text-gray-500 text-sm mt-3">
-              💡 Individual features available • No subscription required
-            </p>
+                ))}
+            </div>
+            <div className="text-center mt-12">
+              <button
+                onClick={onShowSubscriptionPlans}
+                className="btn-secondary px-8 py-3"
+              >
+                View All Plans & Add-ons
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Additional Features Teaser */}
       <div className="bg-gradient-to-r from-gray-900 to-blue-900 text-white py-16">
