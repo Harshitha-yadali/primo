@@ -118,7 +118,7 @@ class PaymentService {
       icon: 'wrench',
       features: [
         '✅ 2 JD-Based Optimizations',
-        '✅ 2 Resume Score Checks'
+        '✅ 2 Resume Score Checks',
         '✅ 1 Guided Resume Build'
       ]
     },
