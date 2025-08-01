@@ -157,29 +157,25 @@ export const HomePage: React.FC<HomePageProps> = ({
             Choose Your Resume Journey
           </h3>
         </div>
-        <div className="">
-          <div className="bg-white rounded-2xl shadow-lg p-6 border border-gray-200">
-            <div className="flex flex-col space-y-4">
-              {features.map((feature) => (
-                <button
-                  key={feature.id}
-                  onClick={() => handleFeatureClick(feature)} // Pass the full feature object
-                  className={`w-full flex items-center justify-between p-4 rounded-xl border border-gray-300 bg-gray-50 text-gray-800 font-semibold transition-all duration-200 hover:bg-gray-100 hover:border-blue-500 group ${feature.requiresAuth && !isAuthenticated ? 'opacity-70 cursor-pointer' : ''}`}
-                >
-                  <div className="flex items-center space-x-4">
-                    <div className="bg-gray-200 rounded-full p-2 group-hover:bg-blue-500 group-hover:text-white transition-colors">
-                      {feature.icon}
-                    </div>
-                    <div>
-                      <span className="text-base font-bold text-gray-900">{feature.title}</span>
-                      <p className="text-sm text-gray-600 font-normal">{feature.description}</p>
-                    </div>
-                  </div>
-                  <ArrowRight className={`w-5 h-5 text-gray-400 group-hover:text-blue-500 group-hover:translate-x-1 transition-all ${feature.requiresAuth && !isAuthenticated ? 'opacity-50' : ''}`} />
-                </button>
-              ))}
-            </div>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {features.map((feature) => (
+            <button
+              key={feature.id}
+              onClick={() => handleFeatureClick(feature)} // Pass the full feature object
+              className={`card-hover p-6 flex flex-col items-start sm:flex-row sm:items-center justify-between transition-all duration-300 ${feature.requiresAuth && !isAuthenticated ? 'opacity-70 cursor-not-allowed' : ''}`}
+            >
+              <div className="flex items-center space-x-4">
+                <div className="bg-primary-100 rounded-xl p-3 group-hover:bg-primary-600 group-hover:text-white transition-all duration-300 shadow-sm flex-shrink-0">
+                  {React.cloneElement(feature.icon, { className: "w-8 h-8" })}
+                </div>
+                <div>
+                  <span className="text-lg font-bold text-secondary-900">{feature.title}</span>
+                  <p className="text-sm text-secondary-700">{feature.description}</p>
+                </div>
+              </div>
+              <ArrowRight className={`w-6 h-6 text-secondary-400 group-hover:text-primary-600 group-hover:translate-x-1 transition-transform duration-300 flex-shrink-0 ${feature.requiresAuth && !isAuthenticated ? 'opacity-50' : ''}`} />
+            </button>
+          ))}
         </div>
       </div>
 
