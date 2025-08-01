@@ -333,6 +333,7 @@ export const LinkedInMessageGenerator: React.FC<LinkedInMessageGeneratorProps> =
 >
   <ArrowLeft className="w-5 h-5" />
   <span className="block sm:hidden">Back to Home</span>
+            <span className="hidden sm:block">Back to Home</span>
 </button>
 
 
