@@ -95,7 +95,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5"></div>
         <div className="relative container-responsive py-12 sm:py-16 lg:py-20">
-          <div className="text-center max-w-4xl mx-auto">
+          <div className="text-left max-w-4xl mx-auto">
             {/* Logo and Brand */}
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden shadow-xl mr-4">
@@ -152,7 +152,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
       {/* Main Features Section - Now with a consolidated frame */}
       <div className="container-responsive py-12 sm:py-16">
-        <div className="text-center mb-12">
+        <div className="mb-12">
           <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
             Choose Your Resume Journey
           </h3>
@@ -185,7 +185,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
       {/* Additional Features Teaser */}
       <div className="bg-gradient-to-r from-gray-900 to-blue-900 text-white py-16">
-        <div className="container-responsive text-center">
+        <div className="container-responsive text-left">
           <div className="max-w-3xl mx-auto">
             <h3 className="text-2xl sm:text-3xl font-bold mb-4">
               Powered by Advanced AI Technology
@@ -225,7 +225,7 @@ export const HomePage: React.FC<HomePageProps> = ({
 
       {/* CTA Section */}
       <div className="bg-white py-16">
-        <div className="container-responsive text-center">
+        <div className="container-responsive text-left">
           <div className="max-w-2xl mx-auto">
             <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
               Ready to Land Your Dream Job?
