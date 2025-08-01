@@ -1,4 +1,3 @@
-// src/components/LinkedInMessageGenerator.tsx
 import React, { useState, useEffect } from 'react';
 import {
   ArrowLeft,
@@ -23,7 +22,7 @@ import {
   Briefcase
 } from 'lucide-react';
 import { generateLinkedInMessage } from '../services/linkedinService';
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface LinkedInMessageGeneratorProps {
   onNavigateBack: () => void;
@@ -62,8 +61,8 @@ export const LinkedInMessageGenerator: React.FC<LinkedInMessageGeneratorProps> =
     recipientCompany: '',
     recipientJobTitle: '',
     senderName: '',
-    // senderCompany: '', // Removed
-    // senderRole: '', // Removed
+    senderCompany: '',
+    senderRole: '',
     messagePurpose: '',
     tone: 'professional',
     personalizedContext: '',
