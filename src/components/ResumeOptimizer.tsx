@@ -662,23 +662,7 @@ const ResumeOptimizer: React.FC<ResumeOptimizerProps> = ({
               <ArrowLeft className="w-5 h-5" />
               <span className="hidden sm:block">Back to Home</span>
             </button>
-            <div className="text-center mb-8">
-              <div className="w-20 h-20 rounded-full overflow-hidden shadow-lg mx-auto mb-4">
-                <img
-                  src="https://res.cloudinary.com/dlkovvlud/image/upload/w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/v1751536902/a-modern-logo-design-featuring-primoboos_XhhkS8E_Q5iOwxbAXB4CqQ_HnpCsJn4S1yrhb826jmMDw_nmycqj.jpg"
-                  alt="PrimoBoost AI Logo"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">PrimoBoost AI</h1>
-              <p className="text-lg text-gray-600 mb-2">Upgrade Your Resume, Unlock Your Future</p>
-              <p className="text-base text-gray-500 max-w-2xl mx-auto mb-6">Transform. Optimize. Get Hired – With PrimoBoost.AI</p>
-
-              <div className="inline-flex items-center px-4 py-2 bg-blue-50 border border-blue-200 rounded-full text-sm text-blue-700 mb-8">
-                <Sparkles className="w-4 h-4 mr-2" />
-                Powered by Advanced AI Technology
-              </div>
-            </div>
+            
 
             {/* Optimization Status Dropdown (visible before optimization) */}
             {isAuthenticated && !loadingSubscription && (
