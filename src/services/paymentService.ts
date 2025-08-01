@@ -24,8 +24,11 @@ class PaymentService {
       price: 1999,
       duration: 'One-time Purchase',
       optimizations: 30,
+      scoreChecks: 50,
+      linkedinMessages: Infinity, // Unlimited
+      guidedBuilds: 5,
       tag: 'Serious job seekers & job switchers',
-      tagColor: 'text-purple-800 bg-purple-100 border-purple-200',
+      tagColor: 'text-purple-800 bg-purple-100',
       gradient: 'from-purple-500 to-indigo-500',
       icon: 'crown',
       features: [
@@ -46,8 +49,11 @@ class PaymentService {
       price: 1499,
       duration: 'One-time Purchase',
       optimizations: 15,
+      scoreChecks: 30,
+      linkedinMessages: Infinity, // Unlimited
+      guidedBuilds: 3,
       tag: 'Active job seekers',
-      tagColor: 'text-blue-800 bg-blue-100 border-blue-200',
+      tagColor: 'text-blue-800 bg-blue-100',
       gradient: 'from-blue-500 to-cyan-500',
       icon: 'zap',
       features: [
@@ -64,8 +70,11 @@ class PaymentService {
       price: 999,
       duration: 'One-time Purchase',
       optimizations: 10,
+      scoreChecks: 20,
+      linkedinMessages: 100,
+      guidedBuilds: 2,
       tag: 'Freshers & intern seekers',
-      tagColor: 'text-orange-800 bg-orange-100 border-orange-200',
+      tagColor: 'text-orange-800 bg-orange-100',
       gradient: 'from-orange-500 to-red-500',
       icon: 'rocket',
       features: [
@@ -81,8 +90,11 @@ class PaymentService {
       price: 499,
       duration: 'One-time Purchase',
       optimizations: 5,
+      scoreChecks: 10,
+      linkedinMessages: 50,
+      guidedBuilds: 1,
       tag: 'Targeted resume improvement',
-      tagColor: 'text-green-800 bg-green-100 border-green-200',
+      tagColor: 'text-green-800 bg-green-100',
       gradient: 'from-green-500 to-emerald-500',
       icon: 'target',
       features: [
@@ -98,8 +110,11 @@ class PaymentService {
       price: 199,
       duration: 'One-time Purchase',
       optimizations: 2,
+      scoreChecks: 2,
+      linkedinMessages: 0,
+      guidedBuilds: 0,
       tag: 'Quick fixes for job applications',
-      tagColor: 'text-gray-800 bg-gray-100 border-gray-200',
+      tagColor: 'text-gray-800 bg-gray-100',
       gradient: 'from-gray-500 to-gray-700',
       icon: 'wrench',
       features: [
@@ -113,8 +128,11 @@ class PaymentService {
       price: 99,
       duration: 'One-time Purchase',
       optimizations: 1,
+      scoreChecks: 2,
+      linkedinMessages: 10,
+      guidedBuilds: 0,
       tag: 'First-time premium users',
-      tagColor: 'text-teal-800 bg-teal-100 border-teal-200',
+      tagColor: 'text-teal-800 bg-teal-100',
       gradient: 'from-teal-500 to-blue-500',
       icon: 'check_circle',
       features: [
@@ -128,9 +146,12 @@ class PaymentService {
       name: '🧪 Free Trial',
       price: 0,
       duration: 'One-time Use',
-      optimizations: 0,
+      optimizations: 0, // No JD-based optimizations
+      scoreChecks: 2,
+      linkedinMessages: 5,
+      guidedBuilds: 0,
       tag: 'New users just exploring',
-      tagColor: 'text-yellow-800 bg-yellow-100 border-yellow-200',
+      tagColor: 'text-yellow-800 bg-yellow-100',
       gradient: 'from-yellow-500 to-orange-500',
       icon: 'gift',
       features: [
@@ -477,6 +498,12 @@ class PaymentService {
           end_date: endDate.toISOString(),
           optimizations_used: 0,
           optimizations_total: plan.optimizations,
+          score_checks_used: 0,
+          score_checks_total: plan.scoreChecks,
+          linkedin_messages_used: 0,
+          linkedin_messages_total: plan.linkedinMessages,
+          guided_builds_used: 0,
+          guided_builds_total: plan.guidedBuilds,
           payment_id: null,
           coupon_used: couponCode || null,
           created_at: now.toISOString(),
@@ -503,7 +530,17 @@ class PaymentService {
     try {
       const { data, error } = await supabase
         .from('subscriptions')
-        .select('*')
+        .select(`
+          *,
+          optimizations_used,
+          optimizations_total,
+          score_checks_used,
+          score_checks_total,
+          linkedin_messages_used,
+          linkedin_messages_total,
+          guided_builds_used,
+          guided_builds_total
+        `)
         .eq('user_id', userId)
         .eq('status', 'active')
         .gt('end_date', new Date().toISOString())
@@ -530,7 +567,13 @@ class PaymentService {
         optimizationsUsed: data.optimizations_used,
         optimizationsTotal: data.optimizations_total,
         paymentId: data.payment_id,
-        couponUsed: data.coupon_used
+        couponUsed: data.coupon_used,
+        scoreChecksUsed: data.score_checks_used,
+        scoreChecksTotal: data.score_checks_total,
+        linkedinMessagesUsed: data.linkedin_messages_used,
+        linkedinMessagesTotal: data.linkedin_messages_total,
+        guidedBuildsUsed: data.guided_builds_used,
+        guidedBuildsTotal: data.guided_builds_total
       };
     } catch (error) {
       console.error('Error getting user subscription:', error);
@@ -621,7 +664,13 @@ class PaymentService {
         optimizationsUsed: sub.optimizations_used,
         optimizationsTotal: sub.optimizations_total,
         paymentId: sub.payment_id,
-        couponUsed: sub.coupon_used
+        couponUsed: sub.coupon_used,
+        scoreChecksUsed: sub.score_checks_used,
+        scoreChecksTotal: sub.score_checks_total,
+        linkedinMessagesUsed: sub.linkedin_messages_used,
+        linkedinMessagesTotal: sub.linkedin_messages_total,
+        guidedBuildsUsed: sub.guided_builds_used,
+        guidedBuildsTotal: sub.guided_builds_total
       }));
     } catch (error) {
       console.error('Error getting subscription history:', error);
@@ -672,3 +721,7 @@ class PaymentService {
 }
 
 export const paymentService = new PaymentService();
+Modify src/services/paymentService.ts:
+Update the `useOptimization` method to decrement the correct feature credit count based on the feature type (e.g., 'jd_optimization', 'score_check', 'guided_build').
+Modify the `canOptimize` method to check the correct feature credit count based on the feature type.
+--- a/src/services/paymentService.ts+++ b/src/services/paymentService.ts@@ -403,34 +403,96 @@   }  // Use optimization (decrement count)-async useOptimization(userId: string): Promise<{ success: boolean; remaining: number }> {-  try {-    // Get active subscription-    const subscription = await this.getUserSubscription(userId);--    if (!subscription) {-      return { success: false, remaining: 0 };-    }-    const remaining = subscription.optimizationsTotal - subscription.optimizationsUsed;-    if (remaining <= 0) {-      return { success: false, remaining: 0 };-    }-    // Update optimization count-    const { error } = await supabase-      .from('subscriptions')-      .update({ -        optimizations_used: subscription.optimizationsUsed + 1,-        updated_at: new Date().toISOString()-      })-      .eq('id', subscription.id);--    if (error) {-      console.error('Error using optimization:', error);-      return { success: false, remaining: 0 };-    }-    return { success: true, remaining: remaining - 1 };-  } catch (error) {-    console.error('Error using optimization:', error);-    return { success: false, remaining: 0 };-  }++async useFeatureCredit(userId: string, featureType: 'optimization' | 'score_check' | 'guided_build' | 'linkedin_messages'): Promise<{ success: boolean; remaining: number }> {+  try {+    const subscription = await this.getUserSubscription(userId);+    if (!subscription) {+      return { success: false, remaining: 0 };+    }+    const updateData: { [key: string]: number | string } = { updated_at: new Date().toISOString() };+    let remaining: number;+    switch (featureType) {+      case 'optimization':+        if (subscription.optimizationsTotal === Infinity) return { success: true, remaining: Infinity };+        remaining = subscription.optimizationsTotal - subscription.optimizationsUsed;+        if (remaining <= 0) return { success: false, remaining: 0 };+        updateData.optimizations_used = subscription.optimizationsUsed + 1;+        break;+      case 'score_check':+        if (subscription.scoreChecksTotal === Infinity) return { success: true, remaining: Infinity };+        remaining = subscription.scoreChecksTotal - subscription.scoreChecksUsed;+        if (remaining <= 0) return { success: false, remaining: 0 };+        updateData.score_checks_used = subscription.scoreChecksUsed + 1;+        break;+      case 'guided_build':+        if (subscription.guidedBuildsTotal === Infinity) return { success: true, remaining: Infinity };+        remaining = subscription.guidedBuildsTotal - subscription.guidedBuildsUsed;+        if (remaining <= 0) return { success: false, remaining: 0 };+        updateData.guided_builds_used = subscription.guidedBuildsUsed + 1;+        break;+      case 'linkedin_messages':+        if (subscription.linkedinMessagesTotal === Infinity) return { success: true, remaining: Infinity };+        remaining = subscription.linkedinMessagesTotal - subscription.linkedinMessagesUsed;+        if (remaining <= 0) return { success: false, remaining: 0 };+        updateData.linkedin_messages_used = subscription.linkedinMessagesUsed + 1;+        break;+      default:+        return { success: false, remaining: 0 };+    }+    const { error } = await supabase+      .from('subscriptions')+      .update(updateData)+      .eq('id', subscription.id);+    if (error) {+      console.error(`Error using ${featureType} credit:`, error);+      return { success: false, remaining: 0 };+    }+    return { success: true, remaining: remaining - 1 };+  } catch (error) {+    console.error(`Error using feature credit for ${featureType}:`, error);+    return { success: false, remaining: 0 };+  }+}  // Check if user can optimize-async canOptimize(userId: string): Promise<{ canOptimize: boolean; remaining: number; subscription?: Subscription }> {-  try {-    const subscription = await this.getUserSubscription(userId);--    if (!subscription) {-      return { canOptimize: false, remaining: 0 };-    }-    const remaining = subscription.optimizationsTotal - subscription.optimizationsUsed;-    return { -      canOptimize: remaining > 0, -      remaining,-      subscription-    };-  } catch (error) {-    console.error('Error checking subscription:', error);-    return { canOptimize: false, remaining: 0 };-  }++async canUseFeature(userId: string, featureType: 'optimization' | 'score_check' | 'guided_build' | 'linkedin_messages'): Promise<{ canUse: boolean; remaining: number; subscription?: Subscription }> {+  try {+    const subscription = await this.getUserSubscription(userId);+    if (!subscription) {+      return { canUse: false, remaining: 0 };+    }+    let remaining: number;+    let total: number;+    let used: number;+    switch (featureType) {+      case 'optimization':+        total = subscription.optimizationsTotal;+        used = subscription.optimizationsUsed;+        break;+      case 'score_check':+        total = subscription.scoreChecksTotal;+        used = subscription.scoreChecksUsed;+        break;+      case 'guided_build':+        total = subscription.guidedBuildsTotal;+        used = subscription.guidedBuildsUsed;+        break;+      case 'linkedin_messages':+        total = subscription.linkedinMessagesTotal;+        used = subscription.linkedinMessagesUsed;+        break;+      default:+        return { canUse: false, remaining: 0 };+    }+    if (total === Infinity) {+      return { canUse: true, remaining: Infinity, subscription };+    }+    remaining = total - used;+    return { +      canUse: remaining > 0, +      remaining,+      subscription+    };+  } catch (error) {+    console.error(`Error checking feature usage for ${featureType}:`, error);+    return { canUse: false, remaining: 0 };+  } }  // Get subscription hist
