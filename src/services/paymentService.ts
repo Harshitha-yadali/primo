@@ -587,171 +587,173 @@ class PaymentService {
     }
   }
 
-  // Use optimization (decrement count)
-  async useOptimization(userId: string): Promise<{ success: boolean; remaining: number }> {
-    try {
-      // Get active subscription
-      const subscription = await this.getUserSubscription(userId);
-      
-      if (!subscription) {
-        return { success: false, remaining: 0 };
-      }
+  // Use optimization (decrement count)
+  async useOptimization(userId: string): Promise<{ success: boolean; remaining: number }> {
+    try {
+      // Get active subscription
+      const subscription = await this.getUserSubscription(userId);
+      
+      if (!subscription) {
+        return { success: false, remaining: 0 };
+      }
 
-      const remaining = subscription.optimizationsTotal - subscription.optimizationsUsed;
-      
-      if (remaining <= 0) {
-        return { success: false, remaining: 0 };
-      }
+      const remaining = subscription.optimizationsTotal - subscription.optimizationsUsed;
+      
+      if (remaining <= 0) {
+        return { success: false, remaining: 0 };
+      }
 
-      // Update optimization count
-      const { error } = await supabase
-        .from('subscriptions')
-        .update({  
-          optimizations_used: subscription.optimizationsUsed + 1,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', subscription.id);
+      // Update optimization count
+      const { error } = await supabase
+        .from('subscriptions')
+        .update({  
+          optimizations_used: subscription.optimizationsUsed + 1,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', subscription.id);
 
-      if (error) {
-        console.error('Error using optimization:', error);
-        return { success: false, remaining: 0 };
-      }
+      if (error) {
+        console.error('Error using optimization:', error);
+        return { success: false, remaining: 0 };
+      }
 
-      return { success: true, remaining: remaining - 1 };
-    } catch (error) {
-      console.error('Error using optimization:', error);
-      return { success: false, remaining: 0 };
-    }
-  }
+      return { success: true, remaining: remaining - 1 };
+    } catch (error) {
+      console.error('Error using optimization:', error);
+      return { success: false, remaining: 0 };
+    }
+  }
 
-  // Check if user can optimize
-  async canOptimize(userId: string): Promise<{ canOptimize: boolean; remaining: number; subscription?: Subscription }> {
-    try {
-      const subscription = await this.getUserSubscription(userId);
-      
-      if (!subscription) {
-        return { canOptimize: false, remaining: 0 };
-      }
+  // Check if user can optimize
+  async canOptimize(userId: string): Promise<{ canOptimize: boolean; remaining: number; subscription?: Subscription }> {
+    try {
+      const subscription = await this.getUserSubscription(userId);
+      
+      if (!subscription) {
+        return { canOptimize: false, remaining: 0 };
+      }
 
-      const remaining = subscription.optimizationsTotal - subscription.optimizationsUsed;
-      
-      return {  
-        canOptimize: remaining > 0,  
-        remaining,
-        subscription
-      };
-    } catch (error) {
-      console.error('Error checking subscription:', error);
-      return { canOptimize: false, remaining: 0 };
-    }
-  }
+      const remaining = subscription.optimizationsTotal - subscription.optimizationsUsed;
+      
+      return {  
+        canOptimize: remaining > 0,  
+        remaining,
+        subscription
+      };
+    } catch (error) {
+      console.error('Error checking subscription:', error);
+      return { canOptimize: false, remaining: 0 };
+    }
+  }
 
-  // Get subscription history
-  async getSubscriptionHistory(userId: string): Promise<Subscription[]> {
-    try {
-      const { data, error } = await supabase
-        .from('subscriptions')
-        .select(`
-          *,
-          optimizations_used,
-          optimizations_total,
-          score_checks_used,
-          score_checks_total,
-          linkedin_messages_used,
-          linkedin_messages_total,
-          guided_builds_used,
-          guided_builds_total
-        `)
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false });
+  // Get subscription history
+  async getSubscriptionHistory(userId: string): Promise<Subscription[]> {
+    try {
+      const { data, error } = await supabase
+        .from('subscriptions')
+        .select(`
+          *,
+          optimizations_used,
+          optimizations_total,
+          score_checks_used,
+          score_checks_total,
+          linkedin_messages_used,
+          linkedin_messages_total,
+          guided_builds_used,
+          guided_builds_total
+        `)
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error getting subscription history:', error);
-        return [];
-      }
+      if (error) {
+        console.error('Error getting subscription history:', error);
+        return [];
+      }
 
-      return data.map(sub => ({
-        id: sub.id,
-        userId: sub.user_id,
-        planId: sub.plan_id,
-        status: sub.status,
-        startDate: sub.start_date,
-        endDate: sub.end_date,
-        optimizationsUsed: sub.optimizations_used,
-        optimizationsTotal: sub.optimizations_total,
-        paymentId: sub.payment_id,
-        couponUsed: sub.coupon_used,
-        scoreChecksUsed: sub.score_checks_used,
-        scoreChecksTotal: sub.score_checks_total,
-        linkedinMessagesUsed: sub.linkedin_messages_used,
-        linkedinMessagesTotal: sub.linkedin_messages_total,
-        guidedBuildsUsed: sub.guided_builds_used,
-        guidedBuildsTotal: sub.guided_builds_total
-      }));
-    } catch (error) {
-      console.error('Error getting subscription history:', error);
-      return [];
-    }
-  }
+      return data.map(sub => ({
+        id: sub.id,
+        userId: sub.user_id,
+        planId: sub.plan_id,
+        status: sub.status,
+        startDate: sub.start_date,
+        endDate: sub.end_date,
+        optimizationsUsed: sub.optimizations_used,
+        optimizationsTotal: sub.optimizations_total,
+        paymentId: sub.payment_id,
+        couponUsed: sub.coupon_used,
+        scoreChecksUsed: sub.score_checks_used,
+        scoreChecksTotal: sub.score_checks_total,
+        linkedinMessagesUsed: sub.linkedin_messages_used,
+        linkedinMessagesTotal: sub.linkedin_messages_total,
+        guidedBuildsUsed: sub.guided_builds_used,
+        guidedBuildsTotal: sub.guided_builds_total
+      }));
+    } catch (error) {
+      console.error('Error getting subscription history:', error);
+      return [];
+    }
+  }
 
-  // Get payment transactions
-  async getPaymentHistory(userId: string): Promise<any[]> {
-    try {
-      const { data, error } = await supabase
-        .from('payment_transactions')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false });
+  // Get payment transactions
+  async getPaymentHistory(userId: string): Promise<any[]> {
+    try {
+      const { data, error } = await supabase
+        .from('payment_transactions')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error getting payment history:', error);
-        return [];
-      }
+      if (error) {
+        console.error('Error getting payment history:', error);
+        return [];
+      }
 
-      return data;
-    } catch (error) {
-      console.error('Error getting payment history:', error);
-      return [];
-    }
-  }
+      return data;
+    } catch (error) {
+      console.error('Error getting payment history:', error);
+      return [];
+    }
+  }
 
-  // Cancel subscription
-  async cancelSubscription(subscriptionId: string): Promise<{ success: boolean; error?: string }> {
-    try {
-      const { error } = await supabase
-        .from('subscriptions')
-        .update({ status: 'cancelled' })
-        .eq('id', subscriptionId);
+  // Cancel subscription
+  async cancelSubscription(subscriptionId: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      const { error } = await supabase
+        .from('subscriptions')
+        .update({ status: 'cancelled' })
+        .eq('id', subscriptionId);
 
-      if (error) {
-        console.error('Error cancelling subscription:', error);
-        return { success: false, error: 'Failed to cancel subscription' };
-      }
+      if (error) {
+        console.error('Error cancelling subscription:', error);
+        return { success: false, error: 'Failed to cancel subscription' };
+      }
 
-      return { success: true };
-    } catch (error) {
-      console.error('Error cancelling subscription:', error);
-      return { success: false, error: 'Failed to cancel subscription' };
-    }
-  }
+      return { success: true };
+    } catch (error) {
+      console.error('Error cancelling subscription:', error);
+      return { success: false, error: 'Failed to cancel subscription' };
+    }
+  }
 
-  // Activate free trial for new users
-  async activateFreeTrial(userId: string): Promise<{ success: boolean; error?: string }> {
-    try {
-      // Check if user already has an active subscription
-      const existingSubscription = await this.getUserSubscription(userId);
-      if (existingSubscription) {
-        return { success: false, error: 'User already has an active subscription' };
-      }
+  // Activate free trial for new users
+  async activateFreeTrial(userId: string): Promise<{ success: boolean; error?: string }> {
+    try {
+      // Check if user already has an active subscription
+      const existingSubscription = await this.getUserSubscription(userId);
+      if (existingSubscription) {
+        return { success: false, error: 'User already has an active subscription' };
+      }
 
-      // Create free trial subscription
-      const result = await this.processFreeSubscription('free_trial', userId);
-      return result;
-    } catch (error) {
-      console.error('Error activating free trial:', error);
-      return { success: false, error: 'Failed to activate free trial' };
-    }
-  }
+      // Create free trial subscription
+      const result = await this.processFreeSubscription('free_trial', userId);
+      return result;
+    } catch (error) {
+      console.error('Error activating free trial:', error);
+      return { success: false, error: 'Failed to activate free trial' };
+    }
+  }
 }
 
 export const paymentService = new PaymentService();
+
+
