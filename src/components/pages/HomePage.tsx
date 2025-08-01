@@ -298,54 +298,7 @@ export const HomePage: React.FC<HomePageProps> = ({
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {paymentService.getPlans()
-                .filter(p => ['career_pro_max', 'career_boost_plus', 'pro_resume_kit'].includes(p.id))
-                .map((plan) => (
-                  <div
-                    key={plan.id}
-                    className={`relative rounded-xl shadow-lg border-2 transition-all duration-300 hover:shadow-xl hover:scale-105 ${
-                      plan.popular ? 'border-indigo-500 shadow-2xl shadow-indigo-500/20 ring-4 ring-indigo-100' : 'border-gray-200 hover:border-indigo-300'
-                    }`}
-                  >
-                    {plan.popular && (
-                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                        <span className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
-                          🏆 Most Popular
-                        </span>
-                      </div>
-                    )}
-                    <div className="p-6 text-center">
-                      <div className={`bg-gradient-to-r ${plan.gradient} w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-4 text-white shadow-lg`}>
-                        {getPlanIcon(plan.icon)}
-                      </div>
-                      <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-                      <p className="text-gray-600 text-sm mb-4">{plan.tag}</p>
-                      <div className="text-3xl font-bold text-gray-900 mb-4">₹{plan.price}</div>
-                      <ul className="text-left text-sm text-gray-700 space-y-2 mb-6">
-                        {plan.features.slice(0, 3).map((feature, idx) => (
-                          <li key={idx} className="flex items-start">
-                            <Check className="w-4 h-4 text-green-500 mr-2 mt-0.5 flex-shrink-0" />
-                            <span>{feature}</span>
-                          </li>
-                        ))}
-                        {plan.features.length > 3 && (
-                          <li className="flex items-center text-gray-500">
-                            <Plus className="w-4 h-4 mr-2 flex-shrink-0" />
-                            <span>{plan.features.length - 3} more features...</span>
-                          </li>
-                        )}
-                      </ul>
-                      <button
-                        onClick={onShowSubscriptionPlans}
-                        className="w-full btn-primary py-3"
-                      >
-                        Get Started
-                      </button>
-                    </div>
-                  </div>
-                ))}
-            </div>
+            
             <div className="text-center mt-12">
               <button
                 onClick={onShowSubscriptionPlans}
