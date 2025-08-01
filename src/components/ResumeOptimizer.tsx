@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 // CORRECTED IMPORT STATEMENT:
 // The Header component is in the same directory, so the path should be './Header'.
-import { Header } from './Header'; 
+import { Header } from './Header';
 import { Navigation } from './navigation/Navigation';
 
 // Added ChevronUp and ChevronDown
@@ -42,7 +42,7 @@ interface ResumeOptimizerProps {
   onShowAuth: () => void;
   onShowProfile: (mode?: 'profile' | 'wallet') => void;
   // Added the new prop for navigating back
-  onNavigateBack: () => void; 
+  onNavigateBack: () => void;
 }
 
 const ResumeOptimizer: React.FC<ResumeOptimizerProps> = ({
@@ -657,7 +657,7 @@ const ResumeOptimizer: React.FC<ResumeOptimizerProps> = ({
           <>
             <button
               onClick={onNavigateBack}
-              className="mb-6 inline-flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+              className="mb-6 bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800 shadow-md hover:shadow-lg py-3 px-5 rounded-xl inline-flex items-center space-x-2 transition-all duration-200"
             >
               <ArrowLeft className="w-5 h-5" />
               <span>Back to Home</span>
