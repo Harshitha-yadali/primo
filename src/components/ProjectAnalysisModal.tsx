@@ -849,7 +849,14 @@ export const ProjectAnalysisModal: React.FC<ProjectAnalysisModalProps> = ({
                     {updatedResume.projects?.map((project, index) => (
                       <div key={index} className="border-l-2 border-green-300 pl-3 sm:pl-4">
                         <h4 className="font-medium text-gray-900 mb-2 text-sm sm:text-base break-words">{project.title}</h4>
-                        {/* Removed the ul element that iterated over project.bullets */}
+                        <ul className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-gray-700">
+                          {project.bullets.map((bullet, i) => (
+                            <li key={i} className="flex items-start break-words">
+                              <span className="text-green-600 mr-2">•</span>
+                              <span className="break-words">{bullet}</span>
+                            </li>
+                          ))}
+                        </ul>
                         {project.githubUrl && (
                           <a
                             href={project.githubUrl as string}
@@ -937,4 +944,3 @@ export const ProjectAnalysisModal: React.FC<ProjectAnalysisModalProps> = ({
       </div>
     </div>
   );
-};
