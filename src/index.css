@@ -69,7 +69,7 @@
 @layer components {
   /* Container with responsive padding */
   .container-responsive {
-    @apply w-full max-w-8xl mx-auto px-4 sm:px-6 lg:px-4;
+    @apply w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-4;
   }
   
   /* Button base styles */
