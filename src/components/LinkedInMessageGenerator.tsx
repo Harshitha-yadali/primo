@@ -332,7 +332,7 @@ export const LinkedInMessageGenerator: React.FC<LinkedInMessageGeneratorProps> =
               className="mb-6 bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800 shadow-md hover:shadow-lg py-3 px-5 rounded-xl inline-flex items-center space-x-2 transition-all duration-200"
             >
               <ArrowLeft className="w-5 h-5" />
-           <span class="block md:hidden text-blue-600 underline">Back to Home</span>
+           <span class="block sm:hidden text-blue-600 underline">Back to Home</span>
 
             </button>
 
