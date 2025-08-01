@@ -660,7 +660,7 @@ const ResumeOptimizer: React.FC<ResumeOptimizerProps> = ({
               className="mb-6 bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800 shadow-md hover:shadow-lg py-3 px-5 rounded-xl inline-flex items-center space-x-2 transition-all duration-200"
             >
               <ArrowLeft className="w-5 h-5" />
-              <span>Back to Home</span>
+              <span className="hidden sm:block">Back to Home</span>
             </button>
             <div className="text-center mb-8">
               <div className="w-20 h-20 rounded-full overflow-hidden shadow-lg mx-auto mb-4">
