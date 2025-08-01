@@ -573,12 +573,6 @@ class PaymentService {
         linkedinMessagesUsed: data.linkedin_messages_used,
         linkedinMessagesTotal: data.linkedin_messages_total,
         guidedBuildsUsed: data.guided_builds_used,
-        couponUsed: data.coupon_used,
-        scoreChecksUsed: data.score_checks_used,
-        scoreChecksTotal: data.score_checks_total,
-        linkedinMessagesUsed: data.linkedin_messages_used,
-        linkedinMessagesTotal: data.linkedin_messages_total,
-        guidedBuildsUsed: data.guided_builds_used,
         guidedBuildsTotal: data.guided_builds_total
       };
     } catch (error) {
@@ -755,5 +749,3 @@ class PaymentService {
 }
 
 export const paymentService = new PaymentService();
-
-
