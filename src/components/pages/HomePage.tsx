@@ -298,14 +298,6 @@ export const HomePage: React.FC<HomePageProps> = ({
               </div>
             </div>
             
-            <div className="text-center mb-12">
-              <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-                🏆 Choose Your Perfect Plan
-              </h3>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Unlock full potential with our flexible and affordable AI-powered resume optimization plans.
-              </p>
-            </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {paymentService.getPlans()
                 .filter(p => ['career_pro_max', 'career_boost_plus', 'pro_resume_kit'].includes(p.id))
