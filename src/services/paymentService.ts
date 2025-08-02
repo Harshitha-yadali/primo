@@ -280,10 +280,8 @@ class PaymentService {
   }
 
   // Create Razorpay order via backend
-  private async createOrder(planId: string, couponCode?: string, walletDeduction?: number): Promise<{ orderId: string; amount: number; keyId: string }> {
+  private async createOrder(planId: string, grandTotal: number, addOnsTotal: number, couponCode?: string, walletDeduction?: number): Promise<{ orderId: string; amount: number; keyId: string }> {
     try {
-      // This createOrder method still relies on its own getSession, which is generally fine
-      // if it's called outside the problematic modal context.
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
         throw new Error('User not authenticated');
@@ -302,6 +300,8 @@ class PaymentService {
         },
         body: JSON.stringify({
           planId,
+          amount: grandTotal, // Pass the grand total to the backend
+          addOnsTotal,
           couponCode: couponCode || undefined,
           walletDeduction: walletDeduction || 0
         }),
@@ -321,20 +321,15 @@ class PaymentService {
 
   /**
    * Verifies a Razorpay payment by calling a Supabase Edge Function.
-   * This method now explicitly accepts the access token to ensure reliable authentication,
-   * especially in mobile contexts where supabase.auth.getSession() might be flaky.
    */
   private async verifyPayment(
     razorpay_order_id: string,
     razorpay_payment_id: string,
     razorpay_signature: string,
-    accessToken: string // <--- NEW: Access token passed directly
+    accessToken: string
   ): Promise<{ success: boolean; subscriptionId?: string; error?: string }> {
-    console.log('verifyPayment: STARTING FUNCTION EXECUTION (with explicit access token).'); // Absolute first log
+    console.log('verifyPayment: STARTING FUNCTION EXECUTION (with explicit access token).');
     try {
-      // REMOVED: supabase.auth.getSession() from here.
-      // We are now relying on the 'accessToken' parameter passed from processPayment.
-
       console.log('verifyPayment: Checking provided access token parameter...');
       if (!accessToken) {
         console.error('verifyPayment: Access token NOT provided as a parameter. Throwing error.');
@@ -350,12 +345,12 @@ class PaymentService {
 
       const fullFunctionUrl = `${supabaseUrl}/functions/v1/verify-payment`;
       console.log('verifyPayment: Full function URL for fetch:', fullFunctionUrl);
-      console.log('📱 Full function URL for mobile (using VITE_SUPABASE_URL):', fullFunctionUrl); // Bonus Debug Tip
+      console.log('📱 Full function URL for mobile (using VITE_SUPABASE_URL):', fullFunctionUrl);
 
       const response = await fetch(fullFunctionUrl, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${accessToken}`, // <--- Using the passed accessToken
+          'Authorization': `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
@@ -387,7 +382,8 @@ class PaymentService {
     userEmail: string,
     userName: string,
     couponCode?: string,
-    walletDeduction?: number
+    walletDeduction?: number,
+    addOnsTotal?: number
   ): Promise<{ success: boolean; subscriptionId?: string; error?: string }> {
     try {
       // Load Razorpay script
@@ -396,8 +392,6 @@ class PaymentService {
         throw new Error('Failed to load payment gateway');
       }
 
-      // CRITICAL: Get session BEFORE creating order or calling verifyPayment
-      // This ensures we have the access token ready before the Razorpay modal handler fires.
       console.log('processPayment: Attempting to get user session for payment processing...');
       const { data: { session } } = await supabase.auth.getSession();
       console.log('processPayment: Raw getSession result:', { sessionData: session });
@@ -406,36 +400,34 @@ class PaymentService {
         console.error('processPayment: User not authenticated or access token missing. Aborting payment process.');
         throw new Error('User not authenticated for payment processing. Please log in again.');
       }
-      const userAccessToken = session.access_token; // Store the access token here
+      const userAccessToken = session.access_token;
 
-      // Create order via backend
-      // The createOrder method still handles its own session retrieval, which is fine.
-      const orderData = await this.createOrder(paymentData.planId, couponCode, walletDeduction);
+      // Create order via backend, now passing grandTotal and addOnsTotal
+      const orderData = await this.createOrder(paymentData.planId, paymentData.amount, addOnsTotal || 0, couponCode, walletDeduction);
       console.log('processPayment: Order created successfully:', orderData.orderId);
 
       return new Promise((resolve) => {
         const options: RazorpayOptions = {
           key: orderData.keyId,
-          amount: orderData.amount, // Amount is already in paise from backend
+          amount: orderData.amount,
           currency: paymentData.currency,
           name: 'Resume Optimizer',
           description: `Subscription for ${this.getPlanById(paymentData.planId)?.name}`,
           order_id: orderData.orderId,
           handler: async (response: RazorpayResponse) => {
-            console.log('Razorpay handler fired. Response:', response); // Existing log
+            console.log('Razorpay handler fired. Response:', response);
             try {
               console.log('Attempting to verify payment with Supabase Edge Function...');
-              // IMPORTANT: Pass the pre-fetched access token to verifyPayment
               const verificationResult = await this.verifyPayment(
                 response.razorpay_order_id,
                 response.razorpay_payment_id,
                 response.razorpay_signature,
-                userAccessToken // <--- Passing the pre-fetched access token here
+                userAccessToken
               );
-              console.log('Verification result from verifyPayment:', verificationResult); // Existing log
+              console.log('Verification result from verifyPayment:', verificationResult);
               resolve(verificationResult);
             } catch (error) {
-              console.error('Error during payment verification in handler:', error); // Existing log
+              console.error('Error during payment verification in handler:', error);
               console.error('Detailed verification error:', error instanceof Error ? error.message : String(error));
               resolve({ success: false, error: 'Payment verification failed' });
             }
@@ -449,7 +441,7 @@ class PaymentService {
           },
           modal: {
             ondismiss: () => {
-              console.log('Razorpay modal dismissed by user.'); // Existing log
+              console.log('Razorpay modal dismissed by user.');
               resolve({ success: false, error: 'Payment cancelled by user' });
             },
           },
@@ -459,13 +451,13 @@ class PaymentService {
         razorpay.open();
       });
     } catch (error) {
-      console.error('Payment processing error in processPayment:', error); // Existing log
+      console.error('Payment processing error in processPayment:', error);
       return { success: false, error: error instanceof Error ? error.message : 'Payment processing failed' };
     }
   }
 
   // New method to process free subscriptions
-  async processFreeSubscription(planId: string, userId: string, couponCode?: string): Promise<{ success: boolean; subscriptionId?: string; error?: string }> {
+  async processFreeSubscription(planId: string, userId: string, couponCode?: string, addOnsTotal?: number): Promise<{ success: boolean; subscriptionId?: string; error?: string }> {
     try {
       const plan = this.getPlanById(planId);
       if (!plan) {
@@ -749,3 +741,71 @@ class PaymentService {
 }
 
 export const paymentService = new PaymentService();
+// Payment types for the application
+export interface SubscriptionPlan {
+  id: string;
+  name: string;
+  price: number;
+  duration: string;
+  optimizations: number;
+  scoreChecks: number;
+  linkedinMessages: number;
+  guidedBuilds: number;
+  tag: string;
+  tagColor: string;
+  gradient: string;
+  icon: string;
+  features: string[];
+  popular?: boolean;
+}
+
+export interface PaymentData {
+  planId: string;
+  amount: number;
+  currency: string;
+}
+
+export interface RazorpayOptions {
+  key: string;
+  amount: number;
+  currency: string;
+  name: string;
+  description: string;
+  order_id: string;
+  handler: (response: RazorpayResponse) => void;
+  prefill: {
+    name: string;
+    email: string;
+  };
+  theme: {
+    color: string;
+  };
+  modal: {
+    ondismiss: () => void;
+  };
+}
+
+export interface RazorpayResponse {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
+}
+
+export interface Subscription {
+  id: string;
+  userId: string;
+  planId: string;
+  status: string;
+  startDate: string;
+  endDate: string;
+  optimizationsUsed: number;
+  optimizationsTotal: number;
+  paymentId: string | null;
+  couponUsed: string | null;
+  scoreChecksUsed: number;
+  scoreChecksTotal: number;
+  linkedinMessagesUsed: number;
+  linkedinMessagesTotal: number;
+  guidedBuildsUsed: number;
+  guidedBuildsTotal: number;
+}
