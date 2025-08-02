@@ -105,10 +105,10 @@ export const AboutUs: React.FC = () => {
                   From Frustration to Innovation
                 </h3>
                 <p className="text-lg text-gray-700 leading-relaxed">
-                  PrimoBoost AI was born from a simple observation: talented professionals were struggling to get noticed by employers, not because they lacked skills, but because their resumes weren't optimized for modern hiring processes. Our founder, **Rishitha**, experienced this firsthand and decided to leverage cutting-edge AI to level the playing field.
+                  PrimoBoost AI was born from a moment of frustration turned into purpose: seeing skilled professionals overlooked because their resumes weren’t optimized for modern hiring. Rishitha, our founder, lived that pain and chose to solve it by using intelligent AI to give applicants the clarity and alignment recruiters actually respond to.
                 </p>
                 <p className="text-lg text-gray-700 leading-relaxed">
-                  As the first of its kind in India, our platform is designed to be highly effective and affordable, ensuring that every job seeker has the tools they need to succeed. We believe everyone deserves a chance to showcase their potential and crack their dream job.
+                  Today, as the first platform of its kind in India, we make hyper-personalized, JD-aligned resume optimization affordable and accessible. We believe opportunity should come from fit, not luck—so we equip serious job seekers with tailored resumes, project-level suggestions, and outreach that convert
                 </p>
                 <div className="bg-white p-6 rounded-2xl shadow-lg border border-blue-100">
                   <div className="flex items-start space-x-4">
