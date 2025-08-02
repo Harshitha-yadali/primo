@@ -153,7 +153,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5"></div>
         <div className="relative container-responsive py-12 sm:py-16 lg:py-20">
-          <div className="text-left max-w-4xl mx-auto">
+          <div className="text-center max-w-4xl mx-auto">
             {/* Logo and Brand */}
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden shadow-xl mr-4">
