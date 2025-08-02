@@ -184,26 +184,7 @@ export const HomePage: React.FC<HomePageProps> = ({
             </p>
 
             {/* Quick Stats */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-12">
-              {stats.map((stat, index) => (
-                <div
-                  key={index}
-                  className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-white/50"
-                >
-                  <div className="flex items-center justify-center mb-3">
-                    <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white p-2 sm:p-3 rounded-full">
-                      {stat.icon}
-                    </div>
-                  </div>
-                  <div className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">
-                    {stat.number}
-                  </div>
-                  <div className="text-xs sm:text-sm text-gray-600 font-medium">
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
-            </div>
+          
           </div>
         </div>
       </div>
