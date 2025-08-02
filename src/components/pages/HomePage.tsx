@@ -163,7 +163,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="text-left">
+              <div className="text-center">
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
                   PrimoBoost AI
                 </h1>
