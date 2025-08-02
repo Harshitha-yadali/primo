@@ -1,49 +1,79 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Check, Star, Zap, Crown, Clock, X, Tag, Sparkles, ArrowRight, Info, ChevronLeft, ChevronRight, Timer, Target, Rocket, Briefcase, Infinity, CheckCircle, AlertCircle, Wrench, Gift, Plus } from 'lucide-react';
+import {
+  Check,
+  Star,
+  Zap,
+  Crown,
+  Clock,
+  X,
+  Tag,
+  Sparkles,
+  ArrowRight,
+  Info,
+  ChevronLeft,
+  ChevronRight,
+  Timer,
+  Target,
+  Rocket,
+  Briefcase,
+  Infinity,
+  CheckCircle,
+  AlertCircle,
+  Wrench,
+  Gift,
+  Plus,
+} from 'lucide-react';
 import { SubscriptionPlan } from '../../types/payment';
 import { paymentService } from '../../services/paymentService';
 import { supabase } from '../../lib/supabaseClient';
-
 import { useAuth } from '../../contexts/AuthContext';
 
 interface SubscriptionPlansProps {
-  isOpen: boolean; // Re-added isOpen prop
-  onNavigateBack: () => void; // Renamed from onClose
+  isOpen: boolean;
+  onNavigateBack: () => void;
   onSubscriptionSuccess: () => void;
 }
 
+type AddOn = {
+  id: string;
+  name: string;
+  price: number;
+};
+
+type AppliedCoupon = {
+  code: string;
+  discount: number;
+  finalAmount: number;
+};
+
 export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
-  isOpen, // Destructure isOpen again
-  onNavigateBack, // Destructure renamed prop
-  onSubscriptionSuccess
+  isOpen,
+  onNavigateBack,
+  onSubscriptionSuccess,
 }) => {
   const { user } = useAuth();
-  const [selectedPlan, setSelectedPlan] = useState<string>('pro_pack'); // Default to pro pack (most popular)
+  const [selectedPlan, setSelectedPlan] = useState<string>('pro_pack');
   const [isProcessing, setIsProcessing] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(2); // Start with pro pack (index 2)
+  const [currentSlide, setCurrentSlide] = useState(2);
   const [couponCode, setCouponCode] = useState('');
-  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discount: number; finalAmount: number } | null>(null);
+  const [appliedCoupon, setAppliedCoupon] = useState<AppliedCoupon | null>(null);
   const [couponError, setCouponError] = useState('');
-  const carouselRef = useRef<HTMLDivElement>(null);
-
-  // Wallet balance states
   const [walletBalance, setWalletBalance] = useState<number>(0);
   const [useWalletBalance, setUseWalletBalance] = useState<boolean>(false);
   const [loadingWallet, setLoadingWallet] = useState<boolean>(true);
   const [showAddOns, setShowAddOns] = useState<boolean>(false);
-  const [selectedAddOns, setSelectedAddOns] = useState<{[key: string]: number}>({});
+  const [selectedAddOns, setSelectedAddOns] = useState<{ [key: string]: number }>({});
+  const carouselRef = useRef<HTMLDivElement>(null);
 
-  const plans = paymentService.getPlans();
-  const addOns = paymentService.getAddOns();
+  const plans: SubscriptionPlan[] = paymentService.getPlans();
+  const addOns: AddOn[] = paymentService.getAddOns();
 
-  // Set initial selected plan to the current slide
   useEffect(() => {
     if (plans.length > 0) {
-      setSelectedPlan(plans[currentSlide]?.id || 'pro_pack');
+      setSelectedPlan(plans[currentSlide]?.id || plans[0].id);
     }
   }, [currentSlide, plans]);
 
-  // Fetch wallet balance when component mounts
   useEffect(() => {
     if (user && isOpen) {
       fetchWalletBalance();
@@ -52,21 +82,18 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
 
   const fetchWalletBalance = async () => {
     if (!user) return;
-
     setLoadingWallet(true);
     try {
       const { data: transactions, error } = await supabase
         .from('wallet_transactions')
         .select('amount, status')
         .eq('user_id', user.id);
-
       if (error) {
         console.error('Error fetching wallet balance:', error);
         return;
       }
-
-      const completedTransactions = transactions?.filter(t => t.status === 'completed') || [];
-      const balance = completedTransactions.reduce((sum, transaction) => sum + parseFloat(transaction.amount), 0);
+      const completed = (transactions || []).filter((t: any) => t.status === 'completed');
+      const balance = completed.reduce((sum: number, tr: any) => sum + parseFloat(tr.amount), 0);
       setWalletBalance(Math.max(0, balance));
     } catch (err) {
       console.error('Error fetching wallet data:', err);
@@ -74,21 +101,31 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
       setLoadingWallet(false);
     }
   };
-  // CRUCIAL: Return null if isOpen is false
+
   if (!isOpen) return null;
 
   const getPlanIcon = (iconType: string) => {
     switch (iconType) {
-      case 'crown': return <Crown className="w-5 h-5 sm:w-6 sm:h-6" />;
-      case 'zap': return <Zap className="w-5 h-5 sm:w-6 sm:h-6" />;
-      case 'rocket': return <Rocket className="w-5 h-5 sm:w-6 sm:h-6" />;
-      case 'target': return <Target className="w-5 h-5 sm:w-6 sm:h-6" />;
-      case 'wrench': return <Wrench className="w-5 h-5 sm:w-6 sm:h-6" />;
-      case 'check_circle': return <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6" />;
-      case 'gift': return <Gift className="w-5 h-5 sm:w-6 sm:h-6" />;
-      case 'briefcase': return <Briefcase className="w-5 h-5 sm:w-6 sm:h-6" />;
-      case 'infinity': return <Infinity className="w-5 h-5 sm:w-6 sm:h-6" />;
-      default: return <Star className="w-5 h-5 sm:w-6 sm:h-6" />;
+      case 'crown':
+        return <Crown className="w-5 h-5 sm:w-6 sm:h-6" />;
+      case 'zap':
+        return <Zap className="w-5 h-5 sm:w-6 sm:h-6" />;
+      case 'rocket':
+        return <Rocket className="w-5 h-5 sm:w-6 sm:h-6" />;
+      case 'target':
+        return <Target className="w-5 h-5 sm:w-6 sm:h-6" />;
+      case 'wrench':
+        return <Wrench className="w-5 h-5 sm:w-6 sm:h-6" />;
+      case 'check_circle':
+        return <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6" />;
+      case 'gift':
+        return <Gift className="w-5 h-5 sm:w-6 sm:h-6" />;
+      case 'briefcase':
+        return <Briefcase className="w-5 h-5 sm:w-6 sm:h-6" />;
+      case 'infinity':
+        return <Infinity className="w-5 h-5 sm:w-6 sm:h-6" />;
+      default:
+        return <Star className="w-5 h-5 sm:w-6 sm:h-6" />;
     }
   };
 
@@ -109,14 +146,12 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
       setCouponError('Please enter a coupon code');
       return;
     }
-
     const result = paymentService.applyCoupon(selectedPlan, couponCode.trim());
-    
     if (result.couponApplied) {
       setAppliedCoupon({
         code: result.couponApplied,
         discount: result.discountAmount,
-        finalAmount: result.finalAmount
+        finalAmount: result.finalAmount,
       });
       setCouponError('');
     } else {
@@ -131,110 +166,84 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
     setCouponError('');
   };
 
-  const selectedPlanData = plans.find(p => p.id === selectedPlan);
-  
-  // Calculate add-ons total
-  const addOnsTotal = Object.entries(selectedAddOns).reduce((total, [addOnId, quantity]) => {
+  const selectedPlanData = plans.find((p) => p.id === selectedPlan);
+
+  const addOnsTotal = Object.entries(selectedAddOns).reduce((total, [addOnId, qty]) => {
     const addOn = paymentService.getAddOnById(addOnId);
-    return total + (addOn ? addOn.price * quantity : 0);
+    return total + (addOn ? addOn.price * qty : 0);
   }, 0);
 
-  // Calculate final price with coupon and wallet deduction
-  let finalPrice = appliedCoupon ? appliedCoupon.finalAmount : selectedPlanData?.price || 0;
-  const walletDeduction = useWalletBalance ? Math.min(walletBalance, finalPrice) : 0;
-  finalPrice = Math.max(0, finalPrice - walletDeduction);
-  
-  const grandTotal = finalPrice + addOnsTotal;
+  let planPrice = selectedPlanData?.price || 0;
+  if (appliedCoupon) {
+    planPrice = appliedCoupon.finalAmount;
+  }
+  const walletDeduction = useWalletBalance ? Math.min(walletBalance, planPrice) : 0;
+  const finalPlanPrice = Math.max(0, planPrice - walletDeduction);
+  const grandTotal = finalPlanPrice + addOnsTotal;
 
   const handlePayment = async () => {
-    if (!user) return;
-
-    const plan = plans.find(p => p.id === selectedPlan);
-    if (!plan) return;
-
+    if (!user || !selectedPlanData) return;
     setIsProcessing(true);
-    console.log('handlePayment: Starting payment process. isProcessing set to true.'); // ADDED LOG
-
     try {
-      if (grandTotal === 0) { // Check grandTotal, not finalPrice
-        console.log('handlePayment: Grand total is 0, processing as free subscription.'); // ADDED LOG
-        // Process free subscription
+      if (grandTotal === 0) {
         const result = await paymentService.processFreeSubscription(
           selectedPlan,
           user.id,
           appliedCoupon ? appliedCoupon.code : undefined,
-          addOnsTotal, // Pass add-ons total for a free plan
+          addOnsTotal
         );
-
         if (result.success) {
-          console.log('handlePayment: Free subscription successful.'); // ADDED LOG
           onSubscriptionSuccess();
         } else {
-          console.error('handlePayment: Free subscription failed.', result.error); // ADDED LOG
-          // Changed to a custom message box instead of alert()
-          console.error(result.error || 'Failed to activate free plan. Please try again.');
+          console.error(result.error || 'Failed to activate free plan.');
         }
       } else {
-        console.log('handlePayment: Grand total is > 0, proceeding with Razorpay payment.'); // ADDED LOG
-        // Proceed with Razorpay payment
         const paymentData = {
           planId: selectedPlan,
-          amount: grandTotal, // Corrected: Pass grandTotal
+          amount: grandTotal,
           currency: 'INR',
-          finalAmount: grandTotal, // Corrected: Pass grandTotal
+          finalAmount: grandTotal,
           couponCode: appliedCoupon ? appliedCoupon.code : undefined,
           walletDeduction: walletDeduction,
-          addOnsTotal: addOnsTotal // Pass addOnsTotal here
+          addOnsTotal: addOnsTotal,
         };
-
         const result = await paymentService.processPayment(
           paymentData,
           user.email,
           user.name,
           walletDeduction,
-          addOnsTotal // Pass addOnsTotal here
+          addOnsTotal
         );
-
         if (result.success) {
-          console.log('handlePayment: Razorpay payment successful.'); // ADDED LOG
           onSubscriptionSuccess();
         } else {
-          console.error('handlePayment: Razorpay payment failed.', result.error); // ADDED LOG
-          // Changed to a custom message box instead of alert()
-          console.error(result.error || 'Payment failed. Please try again.');
+          console.error(result.error || 'Payment failed.');
         }
       }
     } catch (error) {
-      console.error('handlePayment: Caught error during payment process:', error); // ADDED LOG
-      // Changed to a custom message box instead of alert()
-      console.error('Payment failed. Please try again.');
+      console.error('Payment process error:', error);
     } finally {
       setIsProcessing(false);
-      console.log('handlePayment: Payment process finished. isProcessing set to false.'); // ADDED LOG
     }
   };
 
   const handleAddOnQuantityChange = (addOnId: string, quantity: number) => {
-    setSelectedAddOns(prev => ({
+    setSelectedAddOns((prev) => ({
       ...prev,
-      [addOnId]: Math.max(0, quantity)
+      [addOnId]: Math.max(0, quantity),
     }));
   };
 
   return (
-    // Outer modal overlay div
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-2 sm:p-4 backdrop-blur-sm">
-      <div className="bg-white rounded-xl sm:rounded-2xl lg:rounded-3xl w-full max-w-7xl h-[90vh] flex flex-col"> {/* Adjusted classes */}
-        {/* Header */}
+      <div className="bg-white rounded-xl sm:rounded-2xl lg:rounded-3xl w-full max-w-7xl h-[90vh] flex flex-col">
         <div className="relative bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 px-3 sm:px-6 py-4 sm:py-8 border-b border-gray-100 flex-shrink-0">
-          {/* Removed close button */}
           <button
-            onClick={onNavigateBack} // Use onNavigateBack here
+            onClick={onNavigateBack}
             className="absolute top-2 sm:top-4 left-2 sm:left-4 w-10 h-10 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors rounded-full hover:bg-white/50 z-10 min-w-[44px] min-h-[44px]"
           >
             <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
           </button>
-          
           <div className="text-center max-w-4xl mx-auto px-8">
             <div className="bg-gradient-to-r from-indigo-600 to-purple-600 w-12 h-12 sm:w-20 sm:h-20 rounded-xl sm:rounded-3xl flex items-center justify-center mx-auto mb-3 sm:mb-6 shadow-lg">
               <Sparkles className="w-6 h-6 sm:w-10 sm:h-10 text-white" />
@@ -248,13 +257,12 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
           </div>
         </div>
 
-        <div className="p-3 sm:p-6 lg:p-8 overflow-y-auto flex-1"> {/* Removed min-h-0 */}
-          {/* Mobile Carousel (visible on mobile) */}
+        <div className="p-3 sm:p-6 lg:p-8 overflow-y-auto flex-1">
+          {/* Mobile Carousel */}
           <div className="block md:hidden mb-4 sm:mb-8">
             <div className="relative">
-              {/* Carousel Container */}
               <div className="overflow-hidden rounded-xl sm:rounded-3xl">
-                <div 
+                <div
                   ref={carouselRef}
                   className="flex transition-transform duration-300 ease-in-out"
                   style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -276,37 +284,37 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
                             </span>
                           </div>
                         )}
-
                         <div className="p-3 sm:p-6">
-                          {/* Plan Header */}
                           <div className="text-center mb-3 sm:mb-6">
-                            <div className={`bg-gradient-to-r ${plan.gradient} w-10 h-10 sm:w-16 sm:h-16 rounded-lg sm:rounded-2xl flex items-center justify-center mx-auto mb-2 sm:mb-4 text-white shadow-lg`}>
-                              {getPlanIcon(plan.icon)}
+                            <div
+                              className={`bg-gradient-to-r ${plan.gradient || ''} w-10 h-10 sm:w-16 sm:h-16 rounded-lg sm:rounded-2xl flex items-center justify-center mx-auto mb-2 sm:mb-4 text-white shadow-lg`}
+                            >
+                              {getPlanIcon(plan.icon || '')}
                             </div>
-                            
-                            {/* Plan Tag */}
-                            <div className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium border mb-2 sm:mb-3 ${plan.tagColor}`}>
+                            <div
+                              className={`inline-flex items-center px-2 sm:px-3 py-1 rounded-full text-xs font-medium border mb-2 sm:mb-3 ${
+                                plan.tagColor || ''
+                              }`}
+                            >
                               {plan.tag}
                             </div>
-                            
                             <h3 className="text-base sm:text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-                            
                             <div className="text-center mb-2 sm:mb-4">
-                              <span className="text-xl sm:text-3xl font-bold text-gray-900">₹{plan.price}</span>
-                              <span className="text-gray-600 ml-1 text-xs sm:text-base">/{plan.duration.toLowerCase()}</span>
+                              <span className="text-xl sm:text-3xl font-bold text-gray-900">
+                                ₹{plan.price}
+                              </span>
+                              <span className="text-gray-600 ml-1 text-xs sm:text-base">
+                                /{plan.duration.toLowerCase()}
+                              </span>
                             </div>
                           </div>
-
-                          {/* Optimizations Count */}
                           <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg sm:rounded-2xl p-2 sm:p-4 text-center mb-3 sm:mb-6">
                             <div className="text-lg sm:text-2xl font-bold text-indigo-600">{plan.optimizations}</div>
                             <div className="text-xs sm:text-sm text-gray-600">Resume Credits</div>
                           </div>
-
-                          {/* Features */}
                           <ul className="space-y-1 sm:space-y-3 mb-3 sm:mb-6 max-h-32 sm:max-h-none overflow-y-auto sm:overflow-visible">
-                            {plan.features.slice(0, 4).map((feature, featureIndex) => (
-                              <li key={featureIndex} className="flex items-start">
+                            {plan.features.slice(0, 4).map((feature: string, fi: number) => (
+                              <li key={fi} className="flex items-start">
                                 <Check className="w-3 h-3 sm:w-5 sm:h-5 text-emerald-500 mr-2 sm:mr-3 mt-0.5 flex-shrink-0" />
                                 <span className="text-gray-700 text-xs sm:text-sm break-words">{feature}</span>
                               </li>
@@ -318,8 +326,6 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
                   ))}
                 </div>
               </div>
-
-              {/* Navigation Arrows */}
               <button
                 onClick={prevSlide}
                 className="absolute left-1 sm:left-2 top-1/2 transform -translate-y-1/2 bg-white/90 hover:bg-white text-gray-700 p-2 rounded-full shadow-lg transition-all duration-200 z-10 min-w-[44px] min-h-[44px] flex items-center justify-center"
@@ -332,17 +338,13 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
               >
                 <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6" />
               </button>
-
-              {/* Dots Indicator */}
               <div className="flex justify-center space-x-2 mt-3 sm:mt-6">
-                {plans.map((_, index) => (
+                {plans.map((_, idx) => (
                   <button
-                    key={index}
-                    onClick={() => goToSlide(index)}
-                    className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-200 min-w-[20px] min-h-[20px] ${
-                      index === currentSlide
-                        ? 'bg-indigo-600 scale-125'
-                        : 'bg-gray-300 hover:bg-gray-400'
+                    key={idx}
+                    onClick={() => goToSlide(idx)}
+                    className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-200 ${
+                      idx === currentSlide ? 'bg-indigo-600 scale-125' : 'bg-gray-300 hover:bg-gray-400'
                     }`}
                   />
                 ))}
@@ -350,7 +352,7 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
             </div>
           </div>
 
-          {/* Desktop Grid (hidden on mobile) */}
+          {/* Desktop Grid */}
           <div className="hidden md:grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-6 mb-4 lg:mb-8">
             {plans.map((plan) => (
               <div
@@ -369,48 +371,44 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
                     </span>
                   </div>
                 )}
-
                 <div className="p-3 lg:p-6">
-                  {/* Plan Header */}
                   <div className="text-center mb-3 lg:mb-6">
-                    <div className={`bg-gradient-to-r ${plan.gradient} w-10 h-10 lg:w-16 lg:h-16 rounded-lg lg:rounded-2xl flex items-center justify-center mx-auto mb-2 lg:mb-4 text-white shadow-lg`}>
-                      {getPlanIcon(plan.icon)}
+                    <div
+                      className={`bg-gradient-to-r ${plan.gradient || ''} w-10 h-10 lg:w-16 lg:h-16 rounded-lg lg:rounded-2xl flex items-center justify-center mx-auto mb-2 lg:mb-4 text-white shadow-lg`}
+                    >
+                      {getPlanIcon(plan.icon || '')}
                     </div>
-                    
-                    {/* Plan Tag */}
-                    <div className={`inline-flex items-center px-2 lg:px-3 py-1 rounded-full text-xs font-medium border mb-1 lg:mb-3 ${plan.tagColor}`}>
+                    <div
+                      className={`inline-flex items-center px-2 lg:px-3 py-1 rounded-full text-xs font-medium border mb-1 lg:mb-3 ${
+                        plan.tagColor || ''
+                      }`}
+                    >
                       {plan.tag}
                     </div>
-                    
                     <h3 className="text-sm lg:text-xl font-bold text-gray-900 mb-2 break-words">{plan.name}</h3>
-                    
                     <div className="text-center mb-2 lg:mb-4">
                       <span className="text-lg lg:text-3xl font-bold text-gray-900">₹{plan.price}</span>
-                      <span className="text-gray-600 ml-1 text-xs lg:text-base">/{plan.duration.toLowerCase()}</span>
+                      <span className="text-gray-600 ml-1 text-xs lg:text-base">
+                        /{plan.duration.toLowerCase()}
+                      </span>
                     </div>
                   </div>
-
-                  {/* Optimizations Count */}
                   <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg lg:rounded-2xl p-2 lg:p-4 text-center mb-3 lg:mb-6">
                     <div className="text-lg lg:text-2xl font-bold text-indigo-600">{plan.optimizations}</div>
                     <div className="text-xs lg:text-sm text-gray-600">Resume Credits</div>
                   </div>
-
-                  {/* Features */}
                   <ul className="space-y-1 lg:space-y-3 mb-3 lg:mb-6 max-h-24 lg:max-h-none overflow-y-auto lg:overflow-visible">
-                    {plan.features.slice(0, 4).map((feature, index) => (
+                    {plan.features.slice(0, 4).map((feature: string, index: number) => (
                       <li key={index} className="flex items-start">
                         <Check className="w-3 h-3 lg:w-5 lg:h-5 text-emerald-500 mr-1 lg:mr-3 mt-0.5 flex-shrink-0" />
                         <span className="text-gray-700 text-xs lg:text-sm break-words">{feature}</span>
                       </li>
                     ))}
                   </ul>
-
-                  {/* Select Button */}
                   <button
                     className={`w-full py-2 lg:py-3 px-2 lg:px-4 rounded-lg lg:rounded-xl font-semibold transition-all duration-300 text-xs lg:text-base min-h-[44px] ${
                       selectedPlan === plan.id
-                        ? `bg-gradient-to-r ${plan.gradient} text-white shadow-lg transform scale-105`
+                        ? `bg-gradient-to-r ${plan.gradient || ''} text-white shadow-lg transform scale-105`
                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                     }`}
                   >
@@ -448,66 +446,61 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
                   <span className="text-gray-700">Duration:</span>
                   <span className="font-semibold">{selectedPlanData?.duration}</span>
                 </div>
-                
-                {/* Coupon Section */}
+
                 <div className="border-t border-gray-200 pt-3 mt-3">
-                  <div className="space-y-3">
-                    {!appliedCoupon ? (
-                      <div className="flex flex-col sm:flex-row gap-2">
-                        <input
-                          type="text"
-                          value={couponCode}
-                          onChange={(e) => setCouponCode(e.target.value)}
-                          placeholder="Enter coupon code"
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm min-h-[44px]"
-                          onKeyPress={(e) => e.key === 'Enter' && handleApplyCoupon()}
-                        />
+                  {!appliedCoupon ? (
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <input
+                        type="text"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value)}
+                        placeholder="Enter coupon code"
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm min-h-[44px]"
+                        onKeyPress={(e) => e.key === 'Enter' && handleApplyCoupon()}
+                      />
+                      <button
+                        onClick={handleApplyCoupon}
+                        className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm min-h-[44px]"
+                      >
+                        Apply Coupon
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
+                          <span className="text-green-800 font-medium text-sm">
+                            Coupon "{appliedCoupon.code}" applied
+                          </span>
+                        </div>
                         <button
-                          onClick={handleApplyCoupon}
-                          className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-sm min-h-[44px]"
+                          onClick={handleRemoveCoupon}
+                          className="text-green-600 hover:text-green-800 text-sm underline"
                         >
-                          Apply Coupon
+                          Remove
                         </button>
                       </div>
-                    ) : (
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-3">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center">
-                            <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
-                            <span className="text-green-800 font-medium text-sm">
-                              Coupon "{appliedCoupon.code}" applied
-                            </span>
-                          </div>
-                          <button
-                            onClick={handleRemoveCoupon}
-                            className="text-green-600 hover:text-green-800 text-sm underline"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                        <div className="text-green-700 text-sm mt-1">
-                          You saved ₹{appliedCoupon.discount}!
-                        </div>
+                      <div className="text-green-700 text-sm mt-1">
+                        You saved ₹{appliedCoupon.discount}!
                       </div>
-                    )}
-                    
-                    {couponError && (
-                      <div className="text-red-600 text-sm flex items-center">
-                        <AlertCircle className="w-4 h-4 mr-1" />
-                        {couponError}
-                      </div>
-                    )}
-                  </div>
+                    </div>
+                  )}
+                  {couponError && (
+                    <div className="text-red-600 text-sm flex items-center mt-1">
+                      <AlertCircle className="w-4 h-4 mr-1" />
+                      {couponError}
+                    </div>
+                  )}
                 </div>
-                
+
                 <div className="border-t border-gray-200 pt-2 sm:pt-3 mt-3">
-                  {/* Wallet Balance Usage */}
                   {!loadingWallet && walletBalance > 0 && (
                     <div className="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg">
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm font-medium text-green-800">Use Wallet Balance</span>
                         <button
-                          onClick={() => setUseWalletBalance(!useWalletBalance)}
+                          onClick={() => setUseWalletBalance((prev) => !prev)}
                           className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                             useWalletBalance ? 'bg-green-600' : 'bg-gray-300'
                           }`}
@@ -522,14 +515,12 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
                       <div className="text-sm text-green-700">
                         Available: ₹{walletBalance.toFixed(2)}
                         {useWalletBalance && (
-                          <span className="block mt-1">
-                            Using: ₹{walletDeduction.toFixed(2)}
-                          </span>
+                          <span className="block mt-1">Using: ₹{walletDeduction.toFixed(2)}</span>
                         )}
                       </div>
                     </div>
                   )}
-                  
+
                   {appliedCoupon && appliedCoupon.discount > 0 && (
                     <div className="flex justify-between items-center text-sm text-gray-600 mb-2">
                       <span>Original Price:</span>
@@ -550,19 +541,18 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
                   )}
                   <div className="flex justify-between items-center text-base sm:text-xl font-bold">
                     <span>Total Amount:</span>
-                    <span className="text-indigo-600">₹{grandTotal}</span>
+                    <span className="text-indigo-600">₹{grandTotal.toFixed(2)}</span>
                   </div>
-                  
                   {addOnsTotal > 0 && (
                     <div className="text-sm text-gray-600 mt-2">
-                      Plan: ₹{finalPrice} + Add-ons: ₹{addOnsTotal}
+                      Plan: ₹{finalPlanPrice.toFixed(2)} + Add-ons: ₹{addOnsTotal.toFixed(2)}
                     </div>
                   )}
                 </div>
               </div>
             </div>
 
-            {/* Add-ons Section */}
+            {/* Add-ons */}
             <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg sm:rounded-2xl p-3 sm:p-6 mb-3 sm:mb-6 border border-blue-200">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-base sm:text-xl font-semibold text-gray-900 flex items-center">
@@ -570,17 +560,19 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
                   🛒 Add-Ons (Optional)
                 </h3>
                 <button
-                  onClick={() => setShowAddOns(!showAddOns)}
+                  onClick={() => setShowAddOns((prev) => !prev)}
                   className="text-blue-600 hover:text-blue-700 font-medium text-sm"
                 >
                   {showAddOns ? 'Hide' : 'Show'} Add-ons
                 </button>
               </div>
-              
               {showAddOns && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                   {addOns.map((addOn) => (
-                    <div key={addOn.id} className="bg-white rounded-lg p-3 sm:p-4 border border-gray-200">
+                    <div
+                      key={addOn.id}
+                      className="bg-white rounded-lg p-3 sm:p-4 border border-gray-200 flex flex-col"
+                    >
                       <div className="flex items-center justify-between mb-2">
                         <div>
                           <h4 className="font-medium text-gray-900 text-sm">{addOn.name}</h4>
@@ -588,14 +580,18 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
                         </div>
                         <div className="flex items-center space-x-2">
                           <button
-                            onClick={() => handleAddOnQuantityChange(addOn.id, (selectedAddOns[addOn.id] || 0) - 1)}
+                            onClick={() =>
+                              handleAddOnQuantityChange(addOn.id, (selectedAddOns[addOn.id] || 0) - 1)
+                            }
                             className="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center text-gray-600"
                           >
                             -
                           </button>
                           <span className="w-8 text-center font-medium">{selectedAddOns[addOn.id] || 0}</span>
                           <button
-                            onClick={() => handleAddOnQuantityChange(addOn.id, (selectedAddOns[addOn.id] || 0) + 1)}
+                            onClick={() =>
+                              handleAddOnQuantityChange(addOn.id, (selectedAddOns[addOn.id] || 0) + 1)
+                            }
                             className="w-8 h-8 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center"
                           >
                             +
@@ -621,28 +617,27 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
               >
                 {isProcessing ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 sm:h-6 sm:w-6 border-2 border-white border-t-transparent"></div>
+                    <div className="animate-spin rounded-full h-4 w-4 sm:h-6 sm:w-6 border-2 border-white border-t-transparent" />
                     <span className="break-words">Processing Payment...</span>
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-4 h-4 sm:w-6 sm:h-6 flex-shrink-0" />
                     <span className="break-words text-center">
-                      {grandTotal === 0 ? 'Get Free Plan' : `Pay ₹${grandTotal} - Start Optimizing`}
+                      {grandTotal === 0 ? 'Get Free Plan' : `Pay ₹${grandTotal.toFixed(2)} - Start Optimizing`}
                     </span>
                     <ArrowRight className="w-3 h-3 sm:w-5 sm:h-5 flex-shrink-0" />
                   </>
                 )}
               </button>
-              
               <p className="text-gray-500 text-xs sm:text-sm mt-3 sm:mt-4 flex items-center justify-center break-words px-4">
                 <Info className="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" />
-                <span className="break-words text-center">
-                  Secure payment powered by Razorpay • 256-bit SSL encryption
-                </span>
+                <span>Secure payment powered by Razorpay • 256-bit SSL encryption</span>
               </p>
             </div>
           </div>
         </div>
       </div>
     </div>
+  );
+};
