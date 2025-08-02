@@ -327,7 +327,7 @@ export const LinkedInMessageGenerator: React.FC<LinkedInMessageGeneratorProps> =
       <div className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
         <div className="container-responsive">
           <div className="flex items-center justify-between h-16">
-          <button
+           <button
               onClick={onNavigateBack}
               className="mb-6 bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800 shadow-md hover:shadow-lg py-3 px-5 rounded-xl inline-flex items-center space-x-2 transition-all duration-200"
             >
