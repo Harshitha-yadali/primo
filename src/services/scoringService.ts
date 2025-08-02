@@ -21,6 +21,7 @@ ANALYSIS REQUIREMENTS:
     - Experience relevance (30% weight)
     - Education/qualifications match (15% weight)
     - Keywords presence (15% weight)
+    
 
 2. Identify key strengths that align with the job
 3. Identify specific areas for improvement
@@ -106,47 +107,47 @@ SCORING CRITERIA (Total: 100 points, calculated from weighted sum of categories)
 
 1. ATS Compatibility (15 points max):
     - 15 points: No tables, columns, or unusual fonts; Proper file structure (PDF or DOCX, not image); Bullet formatting is plain and consistent.
-    - **Detailed checks:** Consistency in font sizes, bold/italic usage, date formats, spacing, and section alignment. Use of simple, ATS-friendly fonts (e.g., Arial, Times New Roman, Calibri). Checks for a single-column layout and avoidance of tables, images, or excessive graphical elements. Ensuring proper section headings (e.g., WORK EXPERIENCE, EDUCATION, SKILLS) for accurate parsing by ATS.
+    - **Detailed checks:** Consistency in font sizes, bold/italic usage, date formats, spacing, and section alignment. Use of simple, ATS-friendly fonts (e.g., Arial, Times New Roman, Calibri). Checks for a single-column layout and avoidance of tables, images, or excessive graphical elements. Ensuring proper section headings (e.g., WORK EXPERIENCE, EDUCATION, SKILLS) for accurate parsing by ATS only words to give easy understand way.
     - 0-14 points: Deductions for each deviation from ATS best practices.
 
 2. Keyword & Skill Match (20 points max):
     - 20 points: Excellent alignment of technical & soft skills from JD; All tools, technologies, and certifications are present and relevant; Strong use of role-specific verbs.
-    - **Detailed checks:** Highlighting presence and absence of critical keywords and skills directly from the job description or industry standards. Recommending adding both hard and soft skills as explicitly required by the target job. Evaluate if the resume sufficiently demonstrates proficiency in listed skills.
+    - **Detailed checks:** Highlighting presence and absence of critical keywords and skills directly from the job description or industry standards. Recommending adding both hard and soft skills as explicitly required by the target job. Evaluate if the resume sufficiently demonstrates proficiency in listed skills only words to give easy understand way.
     - 0-19 points: Deductions based on missing keywords, irrelevant skills, or weak verb usage.
 
 3. Project & Work Relevance (15 points max):
     - 15 points: All projects and work experience are highly aligned with JD; Quantified impact (e.g., “reduced time by 30%”) is consistently present.
-    - **Detailed checks:** Whether bullet points are accomplishment-oriented (focus on impact and results) instead of merely listing responsibilities. Consistent quantification of achievements with numbers, percentages, or metrics. Verification that experiences are in reverse chronological order and clearly dated.
+    - **Detailed checks:** Whether bullet points are accomplishment-oriented (focus on impact and results) instead of merely listing responsibilities. Consistent quantification of achievements with numbers, percentages, or metrics. Verification that experiences are in reverse chronological order and clearly dated only words to give easy understand way.
     - 0-14 points: Deductions for irrelevant projects/experience or lack of quantifiable achievements.
 
 4. Structure & Flow (10 points max):
     - 10 points: Logical section order (Summary > Skills > Experience > Projects > Education/Certifications); No missing key sections; Excellent use of whitespace and consistent margins.
-    - **Detailed checks:** Ensuring resumes are the proper length (e.g., 1 page for <10 years’ experience, 2 pages for 10+). Highlighting the absence or misuse of photos, personal information (beyond contact), or outdated/unnecessary sections like “Objective” (unless for students/freshers), or "References available upon request." Analyzing each resume section (Work Experience, Education, Projects, Additional Info like Certifications, Languages) for completeness, clarity, and conciseness. Checking proper formatting of education details (degrees, school names, graduation year, GPA/CGPA if included), skills lists, languages, and professional memberships.
+    - **Detailed checks:** Ensuring resumes are the proper length (e.g., 1 page for <10 years’ experience, 2 pages for 10+). Highlighting the absence or misuse of photos, personal information (beyond contact), or outdated/unnecessary sections like “Objective” (unless for students/freshers), or "References available upon request." Analyzing each resume section (Work Experience, Education, Projects, Additional Info like Certifications, Languages) for completeness, clarity, and conciseness. Checking proper formatting of education details (degrees, school names, graduation year, GPA/CGPA if included), skills lists, languages, and professional memberships only words to give easy understand way.
     - 0-9 points: Deductions for illogical order, missing critical sections, or poor formatting.
 
 5. Critical Fixes & Red Flags (10 points max):
     - 10 points: All essential contact info (email, LinkedIn, phone) is present and correctly formatted; No overused or repeated words; Consistent use of strong action verbs and no passive language; No grammatical errors or spelling issues.
-    - **Detailed checks:** Flagging use of personal pronouns (e.g., "I", "my") which should be omitted. Discouraging vague adverbs (e.g., "very," "really"), buzzwords (e.g., "synergy," "paradigm shift"), and ambiguous language. Thoroughly checking for spelling, grammar, or typographical errors throughout the resume.
+    - **Detailed checks:** Flagging use of personal pronouns (e.g., "I", "my") which should be omitted. Discouraging vague adverbs (e.g., "very," "really"), buzzwords (e.g., "synergy," "paradigm shift"), and ambiguous language. Thoroughly checking for spelling, grammar, or typographical errors throughout the resume only words to give easy understand way .
     - 0-9 points: Deductions for each red flag identified.
 
 6. **Impact Score (0-10 points):**
     - **Criteria:** Strong Action Verbs, Quantified Accomplishments, Achievement-Oriented Content, Measurable Results.
-    - **Detailed checks:** How well does each bullet point demonstrate impact and value? Are strong action verbs used consistently to start accomplishments? Are results quantified with numbers, percentages, or other metrics wherever possible? Does the content clearly show *what* was achieved and *what was the outcome*?
+    - **Detailed checks:** How well does each bullet point demonstrate impact and value? Are strong action verbs used consistently to start accomplishments? Are results quantified with numbers, percentages, or other metrics wherever possible? Does the content clearly show *what* was achieved and *what was the outcome* only words to give easy understand way?
     - 0-10 points: Score based on the degree to which accomplishments are impactful and quantified.
 
 7. **Brevity Score (0-10 points):**
     - **Criteria:** Conciseness, Word Economy, Avoiding Redundancy, Direct Language.
-    - **Detailed checks:** Is there any unnecessary filler? Can sentences be shortened without losing meaning? Are there repeated phrases or information? Is the language direct and to the point, avoiding verbose explanations?
+    - **Detailed checks:** Is there any unnecessary filler? Can sentences be shortened without losing meaning? Are there repeated phrases or information? Is the language direct and to the point, avoiding verbose explanations only words to give easy understand way?
     - 0-10 points: Score based on the resume's conciseness and efficiency of language.
 
 8. **Style Score (0-10 points):**
     - **Criteria:** Professional Tone, Consistency in Formatting, Clarity of Language, Overall Polish.
-    - **Detailed checks:** Does the resume maintain a professional and confident tone? Is formatting (e.g., bolding, bullet styles, capitalization) consistent throughout? Is the language clear, precise, and free of jargon (unless industry-standard)? Does the resume look polished and well-edited?
+    - **Detailed checks:** Does the resume maintain a professional and confident tone? Is formatting (e.g., bolding, bullet styles, capitalization) consistent throughout? Is the language clear, precise, and free of jargon (unless industry-standard)? Does the resume look polished and well-edited only words to give easy understand way ?
     - 0-10 points: Score based on the overall professional presentation and writing style.
 
 9. **Skills Score (0-10 points):**
     - **Criteria:** Relevance to JD, Proficiency Indicated, Variety (Technical/Soft), Placement.
-    - **Detailed checks:** How directly relevant are the listed skills to the job description? Is there any indication of proficiency level (e.g., "proficient in", "expert in")? Is there a good balance between technical and soft skills (if applicable to the role)? Are skills placed logically and easy to find?
+    - **Detailed checks:** How directly relevant are the listed skills to the job description? Is there any indication of proficiency level (e.g., "proficient in", "expert in")? Is there a good balance between technical and soft skills (if applicable to the role)? Are skills placed logically and easy to find only words to give easy understand way?
     - 0-10 points: Score based on the quality, relevance, and presentation of the skills section.
 
 CALCULATION OF TOTAL SCORE:
@@ -158,6 +159,8 @@ ANALYSIS REQUIREMENTS:
 - Provide detailed breakdown and reasoning for each category's score within the 'details' field. This field MUST contain specific, actionable feedback relevant to the checks outlined for each category.
 - Identify specific actionable recommendations for overall improvement in the 'recommendations' array, especially for scores below 70% in any *individual category* (not just totalScore). These recommendations should be concrete and directly related to the issues found.
 - Assign a letter grade (A+ 95-100, A 90-94, B+ 85-89, B 80-84, C+ 75-79, C 70-74, D 60-69, F <60).
+
+-section order summary education and work experience and  project and skill certifications any not this flow -10 points per section unders and miss section -20 if any section miss 
 
 Respond ONLY with valid JSON in this exact structure:
 
