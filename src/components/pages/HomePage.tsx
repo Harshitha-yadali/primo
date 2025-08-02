@@ -44,6 +44,7 @@ export const HomePage: React.FC<HomePageProps> = ({
   onShowSubscriptionPlans,
   userSubscription // Destructure new prop
 }) => {
+  const [showOptimizationDropdown, setShowOptimizationDropdown] = React.useState(false);
   const [showPlanDetails, setShowPlanDetails] = React.useState(false); // New state for the dropdown
 
   // Helper function to get plan icon based on icon string
@@ -57,9 +58,9 @@ export const HomePage: React.FC<HomePageProps> = ({
   };
 
   // Helper function to check if a feature is available based on subscription
-  // This helper should only be called AFTER checking isAuthenticated
   const isFeatureAvailable = (featureId: string) => {
-    if (!userSubscription) return false;
+    if (!isAuthenticated) return false; // Must be authenticated to check subscription
+    if (!userSubscription) return false; // No active subscription
 
     switch (featureId) {
       case 'optimizer':
@@ -75,36 +76,26 @@ export const HomePage: React.FC<HomePageProps> = ({
     }
   };
 
-  // The corrected handleFeatureClick function with proper logic flow
   const handleFeatureClick = (feature: Feature) => {
     console.log('Feature clicked:', feature.id);
     console.log('Feature requiresAuth:', feature.requiresAuth);
     console.log('User isAuthenticated:', isAuthenticated);
     console.log('User Subscription:', userSubscription);
 
-    // 1. If the feature doesn't require auth, navigate directly.
-    if (!feature.requiresAuth) {
-      console.log('Feature does not require auth. Navigating...');
-      onPageChange(feature.id);
-      return;
-    }
-
-    // 2. If the user is NOT authenticated, prompt them to sign in.
-    if (!isAuthenticated) {
-      console.log('User not authenticated. Showing auth modal.');
-      onShowAuth();
-      return;
-    }
-
-    // 3. Now that the user is authenticated, check for credits.
+    // If the feature requires an active plan (or credits) and the user doesn't have it
     if (!isFeatureAvailable(feature.id)) {
-      console.log('User is authenticated but has no credits. Showing subscription plans.');
-      onShowSubscriptionPlans();
-      return;
+      // If not authenticated, prompt to sign in first
+      if (!isAuthenticated) {
+        onShowAuth();
+        return;
+      } else {
+        // If authenticated but no credits/plan, show subscription plans
+        onShowSubscriptionPlans(); // Show subscription plans for upgrade
+        return; // Stop further execution
+      }
     }
 
-    // 4. If all checks pass, navigate to the feature page.
-    console.log('User is authenticated and has credits. Navigating to page.');
+    console.log('User is authenticated or feature does not require auth. Navigating to page.');
     onPageChange(feature.id);
   };
 
@@ -153,7 +144,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5"></div>
         <div className="relative container-responsive py-12 sm:py-16 lg:py-20">
-          <div className="text-center max-w-4xl mx-auto">
+          <div className="text-left max-w-4xl mx-auto">
             {/* Logo and Brand */}
             <div className="flex items-center justify-center mb-6">
               <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden shadow-xl mr-4">
@@ -163,7 +154,7 @@ export const HomePage: React.FC<HomePageProps> = ({
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="text-center">
+              <div className="text-left">
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900">
                   PrimoBoost AI
                 </h1>
@@ -184,7 +175,26 @@ export const HomePage: React.FC<HomePageProps> = ({
             </p>
 
             {/* Quick Stats */}
-          
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-12">
+              {stats.map((stat, index) => (
+                <div
+                  key={index}
+                  className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border border-white/50"
+                >
+                  <div className="flex items-center justify-center mb-3">
+                    <div className="bg-gradient-to-r from-blue-500 to-purple-500 text-white p-2 sm:p-3 rounded-full">
+                      {stat.icon}
+                    </div>
+                  </div>
+                  <div className="text-xl sm:text-2xl font-bold text-gray-900 mb-1">
+                    {stat.number}
+                  </div>
+                  <div className="text-xs sm:text-sm text-gray-600 font-medium">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -342,7 +352,44 @@ export const HomePage: React.FC<HomePageProps> = ({
       </div>
 
       {/* CTA Section */}
-      
+      <div className="bg-white py-16">
+        <div className="container-responsive text-left">
+          <div className="max-w-2xl mx-auto">
+            <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
+              Ready to Land Your Dream Job?
+            </h3>
+            <p className="text-lg text-gray-600 mb-8">
+              Join thousands of professionals who have already transformed their careers with PrimoBoost AI.
+            </p>
+            
+            {!isAuthenticated ? (
+              <button
+                onClick={onShowAuth}
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 flex items-center space-x-2 mx-auto"
+              >
+                <Sparkles className="w-5 h-5" />
+                <span>Get Started Free</span>
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            ) : (
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button
+                  onClick={() => onPageChange('guided-builder')}
+                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                >
+                  Build New Resume
+                </button>
+                <button
+                  onClick={() => onPageChange('optimizer')}
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl"
+                >
+                  Optimize Existing
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
