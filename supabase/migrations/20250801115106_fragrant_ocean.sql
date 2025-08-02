@@ -37,6 +37,6 @@ ADD CONSTRAINT  check_guided_builds_usage CHECK (guided_builds_used <= guided_bu
 
 -- Add check constraints to ensure non-negative values
 ALTER TABLE public.subscriptions
-ADD CONSTRAINT IF NOT EXISTS check_score_checks_non_negative CHECK (score_checks_used >= 0 AND score_checks_total >= 0),
+ADD CONSTRAINT check_score_checks_non_negative CHECK (score_checks_used >= 0 AND score_checks_total >= 0),
 ADD CONSTRAINT IF NOT EXISTS check_linkedin_messages_non_negative CHECK (linkedin_messages_used >= 0 AND linkedin_messages_total >= 0),
 ADD CONSTRAINT IF NOT EXISTS check_guided_builds_non_negative CHECK (guided_builds_used >= 0 AND guided_builds_total >= 0);
