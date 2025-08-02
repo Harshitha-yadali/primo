@@ -646,4 +646,4 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
         </div>
       </div>
     </div>
-  );
+ 
