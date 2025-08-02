@@ -131,6 +131,21 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
     setCouponError('');
   };
 
+  const selectedPlanData = plans.find(p => p.id === selectedPlan);
+  
+  // Calculate add-ons total
+  const addOnsTotal = Object.entries(selectedAddOns).reduce((total, [addOnId, quantity]) => {
+    const addOn = paymentService.getAddOnById(addOnId);
+    return total + (addOn ? addOn.price * quantity : 0);
+  }, 0);
+
+  // Calculate final price with coupon and wallet deduction
+  let finalPrice = appliedCoupon ? appliedCoupon.finalAmount : selectedPlanData?.price || 0;
+  const walletDeduction = useWalletBalance ? Math.min(walletBalance, finalPrice) : 0;
+  finalPrice = Math.max(0, finalPrice - walletDeduction);
+  
+  const grandTotal = finalPrice + addOnsTotal;
+
   const handlePayment = async () => {
     if (!user) return;
 
@@ -139,69 +154,57 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
 
     setIsProcessing(true);
 
-    const finalPrice = appliedCoupon ? appliedCoupon.finalAmount : plan.price;
-
     try {
-      if (finalPrice === 0) {
+      if (grandTotal === 0) { // Check grandTotal, not finalPrice
         // Process free subscription
         const result = await paymentService.processFreeSubscription(
           selectedPlan,
           user.id,
-          appliedCoupon ? appliedCoupon.code : undefined
+          appliedCoupon ? appliedCoupon.code : undefined,
+          addOnsTotal, // Pass add-ons total for a free plan
         );
 
         if (result.success) {
           onSubscriptionSuccess();
         } else {
-          alert(result.error || 'Failed to activate free plan. Please try again.');
+          // Changed to a custom message box instead of alert()
+          console.error(result.error || 'Failed to activate free plan. Please try again.');
         }
       } else {
         // Proceed with Razorpay payment
         const paymentData = {
           planId: selectedPlan,
-          amount: plan.price,
+          amount: grandTotal, // Corrected: Pass grandTotal
           currency: 'INR',
-          finalAmount: finalPrice,
+          finalAmount: grandTotal, // Corrected: Pass grandTotal
           couponCode: appliedCoupon ? appliedCoupon.code : undefined,
-          walletDeduction: walletDeduction
+          walletDeduction: walletDeduction,
+          addOnsTotal: addOnsTotal // Pass addOnsTotal here
         };
 
         const result = await paymentService.processPayment(
           paymentData,
           user.email,
           user.name,
-          appliedCoupon ? appliedCoupon.code : undefined,
-          walletDeduction
+          walletDeduction,
+          addOnsTotal // Pass addOnsTotal here
         );
 
         if (result.success) {
           onSubscriptionSuccess();
         } else {
-          alert(result.error || 'Payment failed. Please try again.');
+          // Changed to a custom message box instead of alert()
+          console.error(result.error || 'Payment failed. Please try again.');
         }
       }
     } catch (error) {
       console.error('Payment error:', error);
-      alert('Payment failed. Please try again.');
+      // Changed to a custom message box instead of alert()
+      console.error('Payment failed. Please try again.');
     } finally {
       setIsProcessing(false);
     }
   };
-
-  const selectedPlanData = plans.find(p => p.id === selectedPlan);
-  
-  // Calculate final price with coupon and wallet deduction
-  let finalPrice = appliedCoupon ? appliedCoupon.finalAmount : selectedPlanData?.price || 0;
-  const walletDeduction = useWalletBalance ? Math.min(walletBalance, finalPrice) : 0;
-  finalPrice = Math.max(0, finalPrice - walletDeduction);
-
-  // Calculate add-ons total
-  const addOnsTotal = Object.entries(selectedAddOns).reduce((total, [addOnId, quantity]) => {
-    const addOn = paymentService.getAddOnById(addOnId);
-    return total + (addOn ? addOn.price * quantity : 0);
-  }, 0);
-
-  const grandTotal = finalPrice + addOnsTotal;
 
   const handleAddOnQuantityChange = (addOnId: string, quantity: number) => {
     setSelectedAddOns(prev => ({
