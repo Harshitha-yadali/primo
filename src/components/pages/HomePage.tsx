@@ -361,19 +361,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       </div>
 
       {/* CTA Section */}
-      <div className="bg-white py-16">
-        <div className="container-responsive text-left">
-          <div className="max-w-2xl mx-auto">
-            
-          
-            
-           
-              
-       
-            )}
-          </div>
-        </div>
-      </div>
+      
     </div>
   );
 };
