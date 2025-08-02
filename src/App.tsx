@@ -3,7 +3,6 @@ import { Menu, X, Home, Info, BookOpen, Phone, FileText, LogIn, LogOut, User, Wa
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Header } from './components/Header';
 import { Navigation } from './components/navigation/Navigation';
-// import { MobileNavBar } from './components/navigation/MobileNavBar'; // <--- REMOVED IMPORT
 import ResumeOptimizer from './components/ResumeOptimizer';
 import { HomePage } from './components/pages/HomePage';
 import { GuidedResumeBuilder } from './components/GuidedResumeBuilder';
@@ -15,11 +14,9 @@ import { Tutorials } from './components/pages/Tutorials';
 import { AuthModal } from './components/auth/AuthModal';
 import { UserProfileManagement } from './components/UserProfileManagement';
 import { SubscriptionPlans } from './components/payment/SubscriptionPlans';
-import { paymentService } from './services/paymentService'; // Import paymentService
-
+import { paymentService } from './services/paymentService';
 
 function App() {
-  // This line must be at the top of the function
   const { isAuthenticated, user } = useAuth();
 
   const [currentPage, setCurrentPage] = useState('new-home');
@@ -30,21 +27,19 @@ function App() {
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [profileViewMode, setProfileViewMode] = useState<'profile' | 'wallet'>('profile');
-  const [userSubscription, setUserSubscription] = useState<any>(null); // New state for user subscription
+  const [userSubscription, setUserSubscription] = useState<any>(null);
 
-  // Handle mobile menu toggle
   const handleMobileMenuToggle = () => {
     setShowMobileMenu(!showMobileMenu);
   };
 
   const logoImage = "https://res.cloudinary.com/dlkovvlud/image/upload/w_1000,c_fill,ar_1:1,g_auto,r_max,bo_5px_solid_red,b_rgb:262c35/v1751536902/a-modern-logo-design-featuring-primoboos_XhhkS8E_Q5iOwxbAXB4CqQ_HnpCsJn4S1yrhb826jmMDw_nmycqj.jpg";
 
-  // Handle page change from mobile nav
   const handlePageChange = (page: string) => {
     if (page === 'menu') {
       handleMobileMenuToggle();
     } else if (page === 'profile') {
-      handleShowProfile(); // Defaults to 'profile' mode
+      handleShowProfile();
       setShowMobileMenu(false);
     } else {
       setCurrentPage(page);
@@ -52,25 +47,20 @@ function App() {
     }
   };
 
-  // Handle showing auth modal
   const handleShowAuth = () => {
-    console.log('handleShowAuth called in App.tsx');
     setShowAuthModal(true);
-    console.log('showAuthModal set to true');
     setShowMobileMenu(false);
   };
 
-  // UPDATED: Handle showing profile modal with an optional mode
   const handleShowProfile = (mode: 'profile' | 'wallet' = 'profile') => {
     setProfileViewMode(mode);
     setShowProfileManagement(true);
     setShowMobileMenu(false);
   };
 
-  // Handle profile completion
   const handleProfileCompleted = () => {
     setShowProfileManagement(false);
-    setCurrentPage('new-home'); // Redirect to home or a dashboard after profile update
+    setCurrentPage('new-home');
     setSuccessMessage('Profile updated successfully!');
     setShowSuccessNotification(true);
     setTimeout(() => {
@@ -79,12 +69,14 @@ function App() {
     }, 3000);
   };
 
-  // New function to navigate back to the home page
   const handleNavigateHome = () => {
     setCurrentPage('new-home');
   };
 
-  // Fetch user subscription on auth state change
+  const handleShowSubscriptionPlans = () => {
+    setShowSubscriptionPlans(true);
+  };
+
   useEffect(() => {
     const fetchSubscription = async () => {
       if (isAuthenticated && user) {
@@ -96,15 +88,13 @@ function App() {
     };
     fetchSubscription();
   }, [isAuthenticated, user]);
-  
-  // Close mobile menu on window resize
+
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 768) { // 768px is typically md breakpoint
+      if (window.innerWidth >= 768) {
         setShowMobileMenu(false);
       }
     };
-
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
@@ -112,11 +102,11 @@ function App() {
   const renderCurrentPage = (isAuthenticatedProp: boolean) => {
     switch (currentPage) {
       case 'new-home':
-        return <HomePage onPageChange={setCurrentPage} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} onShowSubscriptionPlans={() => setShowSubscriptionPlans(true)} userSubscription={userSubscription} />;
+        return <HomePage onPageChange={setCurrentPage} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} onShowSubscriptionPlans={handleShowSubscriptionPlans} userSubscription={userSubscription} />;
       case 'guided-builder':
-        return <GuidedResumeBuilder onNavigateBack={() => setCurrentPage('new-home')} userSubscription={userSubscription} onShowSubscriptionPlans={() => setShowSubscriptionPlans(true)} />;
+        return <GuidedResumeBuilder onNavigateBack={() => setCurrentPage('new-home')} userSubscription={userSubscription} onShowSubscriptionPlans={handleShowSubscriptionPlans} />;
       case 'score-checker':
-        return <ResumeScoreChecker onNavigateBack={() => setCurrentPage('new-home')} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} userSubscription={userSubscription} onShowSubscriptionPlans={() => setShowSubscriptionPlans(true)} />;
+        return <ResumeScoreChecker onNavigateBack={() => setCurrentPage('new-home')} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} userSubscription={userSubscription} onShowSubscriptionPlans={handleShowSubscriptionPlans} />;
       case 'optimizer':
         return (
           <main className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
@@ -130,24 +120,22 @@ function App() {
       case 'tutorials':
         return <Tutorials />;
       case 'linkedin-generator':
-        return <LinkedInMessageGenerator onNavigateBack={() => setCurrentPage('new-home')} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} userSubscription={userSubscription} onShowSubscriptionPlans={() => setShowSubscriptionPlans(true)} />;
+        return <LinkedInMessageGenerator onNavigateBack={() => setCurrentPage('new-home')} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} userSubscription={userSubscription} onShowSubscriptionPlans={handleShowSubscriptionPlans} />;
       default:
-        return <HomePage onPageChange={setCurrentPage} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} />;
+        // This is the key fix: ensure all necessary props are passed in the default case.
+        return <HomePage onPageChange={setCurrentPage} isAuthenticated={isAuthenticatedProp} onShowAuth={handleShowAuth} onShowSubscriptionPlans={handleShowSubscriptionPlans} userSubscription={userSubscription} />;
     }
   };
 
-
   return (
     <div className="min-h-screen pb-safe-bottom safe-area">
-      {/* Global Success Notification */}
       {showSuccessNotification && (
         <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 p-3 bg-green-500 text-white rounded-lg shadow-lg animate-fade-in-down">
           {successMessage}
         </div>
       )}
 
-      {currentPage === 'new-home' ? (
-        // For home page, show the header with navigation integrated
+      {currentPage === 'new-home' || currentPage === 'optimizer' ? (
         <>
           <Header onMobileMenuToggle={handleMobileMenuToggle} showMobileMenu={showMobileMenu} onShowProfile={handleShowProfile}>
             <Navigation currentPage={currentPage} onPageChange={setCurrentPage} />
@@ -155,52 +143,43 @@ function App() {
           {renderCurrentPage(isAuthenticated)}
         </>
       ) : (
-        currentPage === 'optimizer' ? (
-          renderCurrentPage(isAuthenticated)
-        ) : (
-          // For other pages, show a simpler header with navigation
-          <>
-            <header className="bg-white/95 backdrop-blur-sm shadow-sm border-b border-secondary-200 sticky top-0 z-40">
-              <div className="container-responsive">
-                <div className="flex items-center justify-between h-14 sm:h-16">
-                  <button
-                    onClick={() => setCurrentPage('new-home')}
-                    className="flex items-center space-x-2 sm:space-x-3 hover:opacity-80 transition-opacity"
-                  >
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl overflow-hidden shadow-lg">
-                      <img
-                        src={logoImage}
-                        alt="PrimoBoost AI Logo"
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div>
-                      <h1 className="text-lg sm:text-xl font-bold text-secondary-900">PrimoBoost AI</h1>
-                    </div>
-                  </button>
-
-                  <div className="hidden md:block">
-                    <Navigation currentPage={currentPage} onPageChange={setCurrentPage} />
+        <>
+          <header className="bg-white/95 backdrop-blur-sm shadow-sm border-b border-secondary-200 sticky top-0 z-40">
+            <div className="container-responsive">
+              <div className="flex items-center justify-between h-14 sm:h-16">
+                <button
+                  onClick={() => setCurrentPage('new-home')}
+                  className="flex items-center space-x-2 sm:space-x-3 hover:opacity-80 transition-opacity"
+                >
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl overflow-hidden shadow-lg">
+                    <img
+                      src={logoImage}
+                      alt="PrimoBoost AI Logo"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
+                  <div>
+                    <h1 className="text-lg sm:text-xl font-bold text-secondary-900">PrimoBoost AI</h1>
+                  </div>
+                </button>
 
-                  {/* Mobile Menu Button */}
-                  <button
-                    onClick={handleMobileMenuToggle}
-                    className="min-w-touch min-h-touch p-2 text-secondary-600 hover:text-secondary-900 hover:bg-secondary-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 md:hidden"
-                  >
-                    <Menu className="w-6 h-6" />
-                  </button>
+                <div className="hidden md:block">
+                  <Navigation currentPage={currentPage} onPageChange={setCurrentPage} />
                 </div>
+
+                <button
+                  onClick={handleMobileMenuToggle}
+                  className="min-w-touch min-h-touch p-2 text-secondary-600 hover:text-secondary-900 hover:bg-secondary-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 md:hidden"
+                >
+                  <Menu className="w-6 h-6" />
+                </button>
               </div>
-            </header>
-            {renderCurrentPage(isAuthenticated)}
-          </>
-        )
+            </div>
+          </header>
+          {renderCurrentPage(isAuthenticated)}
+        </>
       )}
 
-      {/* <MobileNavBar /> REMOVED as per instruction */}
-
-      {/* Mobile Menu Overlay */}
       {showMobileMenu && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
@@ -235,14 +214,13 @@ function App() {
                     { id: 'about', label: 'About Us', icon: <Info className="w-5 h-5" /> },
                     { id: 'tutorials', label: 'Tutorials', icon: <BookOpen className="w-5 h-5" /> },
                     { id: 'contact', label: 'Contact', icon: <Phone className="w-5 h-5" /> },
-                    // Conditionally render the 'referral' item
                     ...(isAuthenticated ? [{ id: 'referral', label: 'Referral', icon: <Wallet className="w-5 h-5" /> }] : []),
                   ].map((item) => (
                     <button
                       key={item.id}
                       onClick={() => {
                         if (item.id === 'referral') {
-                          handleShowProfile('wallet'); // Pass 'wallet' mode here
+                          handleShowProfile('wallet');
                           setShowMobileMenu(false);
                         } else {
                           setCurrentPage(item.id);
@@ -262,13 +240,12 @@ function App() {
                 </nav>
               </div>
 
-              {/* Authentication Section */}
               <div className="border-t border-secondary-200 pt-4">
                 <AuthButtons
                   onPageChange={setCurrentPage}
                   onClose={() => setShowMobileMenu(false)}
                   onShowAuth={handleShowAuth}
-                  onShowProfile={handleShowProfile} // onShowProfile passed directly
+                  onShowProfile={handleShowProfile}
                 />
               </div>
 
@@ -294,17 +271,14 @@ function App() {
         </div>
       )}
 
-      {/* Auth Modal */}
       <AuthModal
         isOpen={showAuthModal}
         onClose={() => {
           setShowAuthModal(false);
-          console.log('AuthModal closed, showAuthModal set to false');
         }}
         onProfileFillRequest={handleShowProfile}
       />
 
-      {/* Profile Management Modal */}
       <UserProfileManagement
         isOpen={showProfileManagement}
         onClose={() => setShowProfileManagement(false)}
@@ -312,7 +286,6 @@ function App() {
         viewMode={profileViewMode}
       />
 
-      {/* Subscription Plans Modal */}
       {showSubscriptionPlans && (
         <SubscriptionPlans
           isOpen={showSubscriptionPlans}
@@ -332,7 +305,6 @@ function App() {
   );
 }
 
-// Authentication Buttons Component (moved inside App.tsx for AuthProvider context access)
 const AuthButtons: React.FC<{
   onPageChange: (page: string) => void;
   onClose: () => void;
@@ -346,7 +318,7 @@ const AuthButtons: React.FC<{
     setIsLoggingOut(true);
     try {
       await logout();
-      onClose(); // Close mobile menu after logout
+      onClose();
     } catch (error) {
       console.error('Logout failed:', error);
     } finally {
@@ -357,8 +329,7 @@ const AuthButtons: React.FC<{
   const handleLogin = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Sign in button clicked - calling onShowAuth');
-    onShowAuth(); // This should show the auth modal and close the mobile menu
+    onShowAuth();
   };
 
   return (
@@ -376,7 +347,7 @@ const AuthButtons: React.FC<{
             </div>
           </div>
           <button
-            onClick={() => onShowProfile('profile')} // Pass 'profile' mode explicitly
+            onClick={() => onShowProfile('profile')}
             className="w-full flex items-center space-x-3 min-h-touch px-4 py-3 rounded-xl font-medium transition-all duration-200 text-secondary-700 hover:text-primary-600 hover:bg-primary-50"
           >
             <User className="w-5 h-5" />
