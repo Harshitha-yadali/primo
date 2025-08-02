@@ -31,7 +31,7 @@ CREATE INDEX IF NOT EXISTS idx_subscriptions_guided_builds ON public.subscriptio
 
 -- Add check constraints to ensure used counts don't exceed totals
 ALTER TABLE public.subscriptions
-ADD CONSTRAINT IF NOT EXISTS check_score_checks_usage CHECK (score_checks_used <= score_checks_total),
+ADD CONSTRAINT check_score_checks_usage CHECK (score_checks_used <= score_checks_total),
 ADD CONSTRAINT IF NOT EXISTS check_linkedin_messages_usage CHECK (linkedin_messages_used <= linkedin_messages_total),
 ADD CONSTRAINT IF NOT EXISTS check_guided_builds_usage CHECK (guided_builds_used <= guided_builds_total);
 
