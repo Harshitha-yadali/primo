@@ -1,12 +1,12 @@
 import React from 'react';
-import { 
-  Users, 
-  Target, 
-  Award, 
-  Sparkles, 
-  TrendingUp, 
-  Shield, 
-  Clock, 
+import {
+  Users,
+  Target,
+  Award,
+  Sparkles,
+  TrendingUp,
+  Shield,
+  Clock,
   CheckCircle,
   Star,
   Zap,
@@ -35,8 +35,8 @@ export const AboutUs: React.FC = () => {
     },
     {
       icon: <Target className="w-8 h-8" />,
-      title: 'Industry-Specific Keywords',
-      description: 'Get targeted keyword suggestions based on your industry and desired role.'
+      title: 'JD-Based Projects',
+      description: 'Get targeted project suggestions based on your job description to make your resume more relevant.'
     },
     {
       icon: <Zap className="w-8 h-8" />,
@@ -105,10 +105,10 @@ export const AboutUs: React.FC = () => {
                   From Frustration to Innovation
                 </h3>
                 <p className="text-lg text-gray-700 leading-relaxed">
-                  PrimoBoost AI was born from a simple observation: talented professionals were struggling to get noticed by employers, not because they lacked skills, but because their resumes weren't optimized for modern hiring processes.
+                  PrimoBoost AI was born from a simple observation: talented professionals were struggling to get noticed by employers, not because they lacked skills, but because their resumes weren't optimized for modern hiring processes. Our founder, **Rishitha**, experienced this firsthand and decided to leverage cutting-edge AI to level the playing field.
                 </p>
                 <p className="text-lg text-gray-700 leading-relaxed">
-                  Our founders, having experienced the challenges of job hunting firsthand, decided to leverage cutting-edge AI technology to level the playing field. We believe everyone deserves a chance to showcase their potential.
+                  As the first of its kind in India, our platform is designed to be highly effective and affordable, ensuring that every job seeker has the tools they need to succeed. We believe everyone deserves a chance to showcase their potential and crack their dream job.
                 </p>
                 <div className="bg-white p-6 rounded-2xl shadow-lg border border-blue-100">
                   <div className="flex items-start space-x-4">
