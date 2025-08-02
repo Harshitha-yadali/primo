@@ -30,10 +30,28 @@ CREATE INDEX IF NOT EXISTS idx_subscriptions_linkedin_messages ON public.subscri
 CREATE INDEX IF NOT EXISTS idx_subscriptions_guided_builds ON public.subscriptions(guided_builds_used, guided_builds_total);
 
 -- Add check constraints to ensure used counts don't exceed totals
-ALTER TABLE public.subscriptions
-ADD CONSTRAINT check_score_checks_usage CHECK (score_checks_used <= score_checks_total),
-ADD CONSTRAINT  check_linkedin_messages_usage CHECK (linkedin_messages_used <= linkedin_messages_total),
-ADD CONSTRAINT  check_guided_builds_usage CHECK (guided_builds_used <= guided_builds_total);
+DO $$
+BEGIN
+    ALTER TABLE public.subscriptions
+    ADD CONSTRAINT check_score_checks_usage CHECK (score_checks_used <= score_checks_total);
+EXCEPTION
+    WHEN duplicate_object THEN NULL; -- Ignore if constraint already exists
+END $$;
+
+DO $$
+BEGIN
+    ALTER TABLE public.subscriptions
+    ADD CONSTRAINT check_linkedin_messages_usage CHECK (linkedin_messages_used <= linkedin_messages_total);
+EXCEPTION
+    WHEN duplicate_object THEN NULL; -- Ignore if constraint already exists
+END $$;
+DO $$
+BEGIN
+    ALTER TABLE public.subscriptions
+    ADD CONSTRAINT check_guided_builds_usage CHECK (guided_builds_used <= guided_builds_total);
+EXCEPTION
+    WHEN duplicate_object THEN NULL; -- Ignore if constraint already exists
+END $$;
 
 -- Add check constraints to ensure non-negative values
 ALTER TABLE public.subscriptions
