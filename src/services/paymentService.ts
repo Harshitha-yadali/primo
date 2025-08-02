@@ -281,18 +281,24 @@ class PaymentService {
 
   // Create Razorpay order via backend
   private async createOrder(planId: string, grandTotal: number, addOnsTotal: number, couponCode?: string, walletDeduction?: number): Promise<{ orderId: string; amount: number; keyId: string }> {
+    console.log('createOrder: Function called to create a new order.');
     try {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
+        console.error('createOrder: User not authenticated.');
         throw new Error('User not authenticated');
       }
 
       const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
       if (!supabaseUrl) {
+        console.error('createOrder: Supabase URL not configured.');
         throw new Error('Supabase URL not configured');
       }
+      
+      const fullFunctionUrl = `${supabaseUrl}/functions/v1/create-order`;
+      console.log('createOrder: Calling backend function at:', fullFunctionUrl);
 
-      const response = await fetch(`${supabaseUrl}/functions/v1/create-order`, {
+      const response = await fetch(fullFunctionUrl, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
@@ -307,14 +313,19 @@ class PaymentService {
         }),
       });
 
+      console.log('createOrder: Received response from backend with status:', response.status);
+
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('createOrder: Backend returned an error:', errorData);
         throw new Error(errorData.error || 'Failed to create payment order');
       }
 
-      return await response.json();
+      const orderResult = await response.json();
+      console.log('createOrder: Order created successfully with Order ID:', orderResult.orderId);
+      return orderResult;
     } catch (error) {
-      console.error('Error creating order:', error);
+      console.error('createOrder: Error creating order:', error);
       throw new Error('Failed to create payment order');
     }
   }
@@ -385,12 +396,15 @@ class PaymentService {
     walletDeduction?: number,
     addOnsTotal?: number
   ): Promise<{ success: boolean; subscriptionId?: string; error?: string }> {
+    console.log('processPayment: Function called with paymentData:', paymentData);
     try {
       // Load Razorpay script
       const scriptLoaded = await this.loadRazorpayScript();
       if (!scriptLoaded) {
+        console.error('processPayment: Failed to load payment gateway script.');
         throw new Error('Failed to load payment gateway');
       }
+      console.log('processPayment: Razorpay script loaded successfully.');
 
       console.log('processPayment: Attempting to get user session for payment processing...');
       const { data: { session } } = await supabase.auth.getSession();
@@ -401,15 +415,16 @@ class PaymentService {
         throw new Error('User not authenticated for payment processing. Please log in again.');
       }
       const userAccessToken = session.access_token;
+      console.log('processPayment: User session and access token obtained.');
 
       // Create order via backend, now passing grandTotal and addOnsTotal
       const orderData = await this.createOrder(paymentData.planId, paymentData.amount, addOnsTotal || 0, couponCode, walletDeduction);
-      console.log('processPayment: Order created successfully:', orderData.orderId);
+      console.log('processPayment: Order created successfully:', orderData.orderId, 'Amount:', orderData.amount);
 
       return new Promise((resolve) => {
         const options: RazorpayOptions = {
           key: orderData.keyId,
-          amount: orderData.amount,
+          amount: orderData.amount, // Amount in smallest currency unit (paise)
           currency: paymentData.currency,
           name: 'Resume Optimizer',
           description: `Subscription for ${this.getPlanById(paymentData.planId)?.name}`,
@@ -449,6 +464,7 @@ class PaymentService {
 
         const razorpay = new window.Razorpay(options);
         razorpay.open();
+        console.log('processPayment: Razorpay modal opened.');
       });
     } catch (error) {
       console.error('Payment processing error in processPayment:', error);
