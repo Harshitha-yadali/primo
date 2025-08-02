@@ -33,7 +33,7 @@ CREATE INDEX IF NOT EXISTS idx_subscriptions_guided_builds ON public.subscriptio
 ALTER TABLE public.subscriptions
 ADD CONSTRAINT check_score_checks_usage CHECK (score_checks_used <= score_checks_total),
 ADD CONSTRAINT  check_linkedin_messages_usage CHECK (linkedin_messages_used <= linkedin_messages_total),
-ADD CONSTRAINT IF NOT EXISTS check_guided_builds_usage CHECK (guided_builds_used <= guided_builds_total);
+ADD CONSTRAINT  check_guided_builds_usage CHECK (guided_builds_used <= guided_builds_total);
 
 -- Add check constraints to ensure non-negative values
 ALTER TABLE public.subscriptions
