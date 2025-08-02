@@ -153,9 +153,11 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
     if (!plan) return;
 
     setIsProcessing(true);
+    console.log('handlePayment: Starting payment process. isProcessing set to true.'); // ADDED LOG
 
     try {
       if (grandTotal === 0) { // Check grandTotal, not finalPrice
+        console.log('handlePayment: Grand total is 0, processing as free subscription.'); // ADDED LOG
         // Process free subscription
         const result = await paymentService.processFreeSubscription(
           selectedPlan,
@@ -165,12 +167,15 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
         );
 
         if (result.success) {
+          console.log('handlePayment: Free subscription successful.'); // ADDED LOG
           onSubscriptionSuccess();
         } else {
+          console.error('handlePayment: Free subscription failed.', result.error); // ADDED LOG
           // Changed to a custom message box instead of alert()
           console.error(result.error || 'Failed to activate free plan. Please try again.');
         }
       } else {
+        console.log('handlePayment: Grand total is > 0, proceeding with Razorpay payment.'); // ADDED LOG
         // Proceed with Razorpay payment
         const paymentData = {
           planId: selectedPlan,
@@ -191,18 +196,21 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
         );
 
         if (result.success) {
+          console.log('handlePayment: Razorpay payment successful.'); // ADDED LOG
           onSubscriptionSuccess();
         } else {
+          console.error('handlePayment: Razorpay payment failed.', result.error); // ADDED LOG
           // Changed to a custom message box instead of alert()
           console.error(result.error || 'Payment failed. Please try again.');
         }
       }
     } catch (error) {
-      console.error('Payment error:', error);
+      console.error('handlePayment: Caught error during payment process:', error); // ADDED LOG
       // Changed to a custom message box instead of alert()
       console.error('Payment failed. Please try again.');
     } finally {
       setIsProcessing(false);
+      console.log('handlePayment: Payment process finished. isProcessing set to false.'); // ADDED LOG
     }
   };
 
@@ -639,4 +647,3 @@ export const SubscriptionPlans: React.FC<SubscriptionPlansProps> = ({
       </div>
     </div>
   );
-};
