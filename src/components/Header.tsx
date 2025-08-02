@@ -4,7 +4,6 @@ import { useAuth } from '../contexts/AuthContext';
 import { AuthModal } from './auth/AuthModal';
 import { DeviceManagement } from './security/DeviceManagement';
 
-
 interface HeaderProps {
   children?: React.ReactNode;
   onMobileMenuToggle?: () => void;
@@ -24,6 +23,9 @@ export const Header: React.FC<HeaderProps> = ({
   const [showDeviceManagement, setShowDeviceManagement] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // Add this console.log statement to inspect the isAuthenticated value
+  console.log('Header: isAuthenticated =', isAuthenticated);
 
   const handleLogout = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -94,7 +96,6 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
               <div className="hidden xs:block">
                 <h1 className="text-lg sm:text-xl font-bold text-secondary-900">PrimoBoost AI</h1>
-
               </div>
               <div className="xs:hidden">
                 <h1 className="text-base font-bold text-secondary-900">PrimoBoost AI</h1>
@@ -156,7 +157,7 @@ export const Header: React.FC<HeaderProps> = ({
                         </button>
 
                         {/* Device Management Option */}
-                       
+                        
                       </> {/* End Fragment */}
 
                       <button
